@@ -131,17 +131,18 @@ $(document).ready(function () {
                 $('.kl-menu-moveBlock').hide();
             }
         }
-        var window_height = window.screen.availHeight * 0.6;
-        $('.kl-product-container .kl-item-card2').each(function (index) {
-            var parentTop = $(this).parents('.kl-product-container').first().offset().top;
-            if ($(this).hasClass('kl-fly-up')) {
-                // return false;
-            } else {
-                if ((scroll + window_height) > parentTop) {
-                    $(this).addClass('kl-fly-up')
-                } else {}
-            }
-        })
+        // var window_height = window.screen.availHeight * 0.6;
+        // $('.kl-product-container .kl-item-card2').each(function (index) {
+        //     var parentTop = $(this).parents('.kl-product-container').first().offset().top;
+        //     if ($(this).hasClass('kl-fly-up')) {
+        //         // return false;
+        //     } else {
+        //         if ((scroll + window_height) > parentTop) {
+        //             $(this).addClass('kl-fly-up')
+        //         } else {}
+        //     }
+        // })
+
         // var learnMoreTop = $('.kl-learnMore').first().offset().top;
         // if (!$('.kl-learnMoreMagnifier').first().hasClass('kl-fly-up')) {
         //     if ((scroll + window_height) > learnMoreTop) {
@@ -149,52 +150,52 @@ $(document).ready(function () {
         //     }
         // }
 
-        var itemCard1TitleLineCount = 0;
-        $('.kl-item-card1-title').each(function () {
-            $(this).html(removeBr($(this).html()))
-            itemCard1TitleLineCount = Math.max(countLines($(this).get(0)), itemCard1TitleLineCount)
-        })
-        $('.kl-item-card1-title').each(function () {
-            var thisLineCount = countLines($(this).get(0));
-            // console.log(thisLineCount, itemCard1TitleLineCount,thisLineCount < itemCard1TitleLineCount, $(this).html())
-            if (thisLineCount < itemCard1TitleLineCount) {
-                var res = $(this).html() + '<br>';
-                for (var i = 0; i < (itemCard1TitleLineCount - thisLineCount); i++) {
-                    res += '<br>';
-                }
-                $(this).html(res)
-            }
-        })
-        var klItemCard1DespLineCount = 0;
-        $('.kl-item-card1-desp').each(function () {
-            $(this).html(removeBr($(this).html()))
-            klItemCard1DespLineCount = Math.max(countLines($(this).get(0)), klItemCard1DespLineCount)
-        })
-        $('.kl-item-card1-desp').each(function () {
-            var thisLineCount = countLines($(this).get(0));
-            if (thisLineCount < klItemCard1DespLineCount) {
-                var res = $(this).html() + '<br>';
-                for (var i = 0; i < (klItemCard1DespLineCount - thisLineCount); i++) {
-                    res += '<br>';
-                }
-                $(this).html(res)
-            }
-        })
-        var klItemCard3TitleLineCount = 0;
-        $('.kl-item-card3-title').each(function () {
-            $(this).html(removeBr($(this).html()))
-            klItemCard3TitleLineCount = Math.max(countLines($(this).get(0)), klItemCard3TitleLineCount)
-        })
-        $('.kl-item-card3-title').each(function () {
-            var thisLineCount = countLines($(this).get(0));
-            if (thisLineCount < klItemCard3TitleLineCount) {
-                var res = $(this).html() + '<br>';
-                for (var i = 0; i < (klItemCard3TitleLineCount - thisLineCount); i++) {
-                    res += '<br>';
-                }
-                $(this).html(res)
-            }
-        })
+        // var itemCard1TitleLineCount = 0;
+        // $('.kl-item-card1-title').each(function () {
+        //     $(this).html(removeBr($(this).html()))
+        //     itemCard1TitleLineCount = Math.max(countLines($(this).get(0)), itemCard1TitleLineCount)
+        // })
+        // $('.kl-item-card1-title').each(function () {
+        //     var thisLineCount = countLines($(this).get(0));
+        //     // console.log(thisLineCount, itemCard1TitleLineCount,thisLineCount < itemCard1TitleLineCount, $(this).html())
+        //     if (thisLineCount < itemCard1TitleLineCount) {
+        //         var res = $(this).html() + '<br>';
+        //         for (var i = 0; i < (itemCard1TitleLineCount - thisLineCount); i++) {
+        //             res += '<br>';
+        //         }
+        //         $(this).html(res)
+        //     }
+        // })
+        // var klItemCard1DespLineCount = 0;
+        // $('.kl-item-card1-desp').each(function () {
+        //     $(this).html(removeBr($(this).html()))
+        //     klItemCard1DespLineCount = Math.max(countLines($(this).get(0)), klItemCard1DespLineCount)
+        // })
+        // $('.kl-item-card1-desp').each(function () {
+        //     var thisLineCount = countLines($(this).get(0));
+        //     if (thisLineCount < klItemCard1DespLineCount) {
+        //         var res = $(this).html() + '<br>';
+        //         for (var i = 0; i < (klItemCard1DespLineCount - thisLineCount); i++) {
+        //             res += '<br>';
+        //         }
+        //         $(this).html(res)
+        //     }
+        // })
+        // var klItemCard3TitleLineCount = 0;
+        // $('.kl-item-card3-title').each(function () {
+        //     $(this).html(removeBr($(this).html()))
+        //     klItemCard3TitleLineCount = Math.max(countLines($(this).get(0)), klItemCard3TitleLineCount)
+        // })
+        // $('.kl-item-card3-title').each(function () {
+        //     var thisLineCount = countLines($(this).get(0));
+        //     if (thisLineCount < klItemCard3TitleLineCount) {
+        //         var res = $(this).html() + '<br>';
+        //         for (var i = 0; i < (klItemCard3TitleLineCount - thisLineCount); i++) {
+        //             res += '<br>';
+        //         }
+        //         $(this).html(res)
+        //     }
+        // })
 
 
     }
@@ -208,11 +209,11 @@ $(document).ready(function () {
             var h = parseInt(styles.height, 10);
             newklItemLiHeight = Math.max(h, klItemLiHeight);
         })
-        if (newklItemLiHeight != klItemLiHeight) {
-            klItemLiHeight = newklItemLiHeight;
-            $('.kl-product-container').find('.kl-item-li-4').height(klItemLiHeight)
-            $('.kl-product-container').find('.kl-item-li-4').find('.kl-item-card2').height(klItemLiHeight - 20)
-        }
+        // if (newklItemLiHeight != klItemLiHeight) {
+        //     klItemLiHeight = newklItemLiHeight;
+        //     $('.kl-product-container').find('.kl-item-li-4').height(klItemLiHeight)
+        //     $('.kl-product-container').find('.kl-item-li-4').find('.kl-item-card2').height(klItemLiHeight - 20)
+        // }
     }
     resizeListHeight()
 
