@@ -1,0 +1,47 @@
+@keyframes kl-fly-up {
+    0% {
+        will-change: transform;
+        /*優化動畫卡頓1*/
+        /*position:relative;優化動畫卡頓2*/
+        /*z-index: 1;優化動畫卡頓2*/
+        opacity: 0;
+        /*初始狀態 透明度為0*/
+        transform: translateY(100px);
+        /*初始狀態 文件流下100px*/
+    }
+
+    100% {
+        opacity: 1;
+        /*結尾狀態 透明度為1*/
+        transform: translateY(0px);
+        /*初始狀態 恢復正常位置*/
+    }
+}
+
+@-webkit-keyframes kl-Slides-fade {
+    from {
+        opacity: .4
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes kl-Slides-fade {
+    from {
+        opacity: .4
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes animatedBackground {
+    0% { background-position: 50% 0; }
+    25% { background-position: 60% 0; }
+    50% { background-position: 50% 0; }
+    75% { background-position: 40% 0; }
+    100% { background-position: 50% 0; }
+}
