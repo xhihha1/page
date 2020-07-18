@@ -53,10 +53,10 @@ body {
 }
 
 .kl-main-subtitle {
-    font-weight: 600;
-    font-size: 24px;
-    line-height: 28px;
-    color: #cbe8ff;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 30px;
+    color: #FFFFFF;
 }
 
 .kl-main-image {
@@ -334,7 +334,7 @@ body {
 
 .kl-item-card3-title {
     text-align: center;
-    font-weight: 400;
+    font-weight: 600;
     font-size: 16px;
     line-height: 20px;
     color: #FFFFFF;
@@ -347,7 +347,7 @@ body {
     font-weight: 300;
     font-size: 14px;
     line-height: 18px;
-    color: #cbe8ff;
+    color: #FFFFFF;
     box-sizing: border-box;
     padding: 0 0 20px 0;
 }
