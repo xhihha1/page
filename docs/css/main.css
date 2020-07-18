@@ -129,7 +129,7 @@ body {
     background-image: url(../assets/product_01.jpg);
     background-repeat: no-repeat;
     background-position: center top;
-    background-attachment: fixed;
+    /* background-attachment: fixed; */
     background-size: cover;
     min-height: 300px;
 }
@@ -733,7 +733,7 @@ margin-left: -100px;
 
     .kl-slide-card {
         /* height: 100%; */
-        height: auto;
+        height: 400px;
     }
 
     .kl-clearBoth-sm {
