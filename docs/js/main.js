@@ -142,12 +142,12 @@ $(document).ready(function () {
                 } else {}
             }
         })
-        var learnMoreTop = $('.kl-learnMore').first().offset().top;
-        if (!$('.kl-learnMoreMagnifier').first().hasClass('kl-fly-up')) {
-            if ((scroll + window_height) > learnMoreTop) {
-                $('.kl-learnMoreMagnifier').first().addClass('kl-fly-up')
-            }
-        }
+        // var learnMoreTop = $('.kl-learnMore').first().offset().top;
+        // if (!$('.kl-learnMoreMagnifier').first().hasClass('kl-fly-up')) {
+        //     if ((scroll + window_height) > learnMoreTop) {
+        //         $('.kl-learnMoreMagnifier').first().addClass('kl-fly-up')
+        //     }
+        // }
 
         var itemCard1TitleLineCount = 0;
         $('.kl-item-card1-title').each(function () {

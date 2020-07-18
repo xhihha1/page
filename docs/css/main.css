@@ -53,7 +53,7 @@ body {
 }
 
 .kl-main-subtitle {
-    font-weight: 400;
+    font-weight: 600;
     font-size: 24px;
     line-height: 28px;
     color: #cbe8ff;
@@ -124,6 +124,16 @@ body {
     line-height: 18px;
     color: #FFFFFF;
 }
+
+#kl-fullbg{
+    background-image: url(../assets/product_01.jpg);
+    background-repeat: no-repeat;
+    background-position: left top;
+    background-attachment: fixed;
+    background-size: cover;
+    min-height: 300px;
+}
+
 
 /* slideshow */
 .kl-gallery {
@@ -220,60 +230,6 @@ body {
     animation-duration: 1.5s;
 }
 
-.kl-learnMore {
-    background-image: url(../images/service_bg.jpg);
-    background-repeat: no-repeat;
-    background-color: rgb(4, 91, 201);
-    background-position: 50% 84%;
-    background-size: 100vw;
-    width: 100%;
-    padding: 108px;
-    box-sizing: border-box;
-}
-
-.kl-learnMore>.kl-container-l {
-    position: relative;
-}
-
-.kl-learnMoreMagnifier {
-    position: absolute;
-    right: 0px;
-    top: -130px;
-    display: inline-block;
-    width: 420px;
-    opacity: 0;
-}
-
-.kl-learnMoreMagnifier.kl-fly-up {
-    animation-name: kl-fly-up;
-    /*動畫名稱*/
-    animation-duration: 1.2s;
-    /*動畫持續時間*/
-    animation-iteration-count: 1;
-    /*動畫次數*/
-    animation-delay: 0s;
-    /*延遲時間*/
-    opacity: 1;
-}
-
-.kl-learnMoreMagnifier img {
-    width: 100%;
-}
-
-.kl-learnMoreTitle {
-    width: calc(100% - 350px);
-    text-align: left;
-    font-weight: 700;
-    font-size: 26px;
-    color: #FFFFFF;
-    /* line-height: 100px; */
-    /* height: 100px; */
-}
-
-.kl-learnMoreTitle img {
-    vertical-align: middle;
-    height: 50px;
-}
 
 /* ruggedized design*/
 .kl-item-ul {
@@ -320,40 +276,11 @@ body {
     font-weight: 700;
     font-size: 16px;
     line-height: 24px;
-    color: #0078D7;
+    color: rgb(174,140,46);
     box-sizing: border-box;
     padding: 10px 0px;
 }
 
-.kl-item-card1-desp {
-    text-align: left;
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 18px;
-    color: #555555;
-    box-sizing: border-box;
-    padding: 4px 0px 10px 0px;
-}
-
-.kl-item-card1-list {
-    text-align: left;
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 18px;
-    color: #9a9a9a;
-    box-sizing: border-box;
-}
-
-.kl-item-card1-list ul {
-    padding-left: 20px;
-}
-
-.kl-item-card1-list li {
-    list-style: disc;
-    list-style-type: disc;
-    list-style-position: outside;
-    box-sizing: border-box;
-}
 
 .kl-item-card2 {
     width: 100%;
@@ -759,18 +686,6 @@ a.kl-slide-card-learnmore-btn:active {
 
 /*slide end*/
 
-.kl-fly-up {
-    animation-name: kl-fly-up;
-    /*動畫名稱*/
-    animation-duration: 1.2s;
-    /*動畫持續時間*/
-    animation-iteration-count: 1;
-    /*動畫次數*/
-    animation-delay: 0s;
-    /*延遲時間*/
-    opacity: 1;
-}
-
 .kl-slide-card1-img,
 .kl-slide-card2-img {
     display: none;
@@ -980,10 +895,6 @@ margin-left: -100px;
         /* background-color: #f00; */
     }
 
-    .kl-item-card1-list ul {
-        padding-left: 20px;
-    }
-
     /* ruggedized design*/
     .kl-item-card1-image img {
         width: 70%;
@@ -1013,39 +924,6 @@ margin-left: -100px;
         z-index: 100;
     }
 
-    /* learn more */
-    .kl-learnMoreMagnifier {
-        position: relative;
-        right: auto;
-        top: auto;
-        display: block;
-        text-align: right;
-        width: 100%;
-        height: 200px;
-        opacity: 0;
-    }
-
-    .kl-learnMoreMagnifier img {
-        width: auto;
-        max-width: 90%;
-    }
-
-    .kl-learnMoreTitle {
-        width: calc(100% - 50px);
-        text-align: left;
-        font-weight: 700;
-        font-size: 24px;
-        line-height: 30px;
-        color: #FFFFFF;
-        /* line-height: 100px; */
-        /* height: 100px; */
-    }
-
-    .kl-learnMoreTitle img {
-        position: absolute;
-        right: 0px;
-        top: 0px;
-    }
 
     /*slide*/
     .kl-gallery {
@@ -1282,11 +1160,6 @@ margin-left: -100px;
         width: 100%;
     }
 
-    .kl-learnMore {
-        padding: 20px;
-        background-position: 80% 84%;
-        background-size: 210vh;
-    }
 
     .kl-support {
         padding: 10px;
@@ -1314,7 +1187,7 @@ margin-left: -100px;
     }
 
     .kl-main-title {
-        width: 70%;
+        width: 80%;
         font-size: 30px;
         line-height: 38px;
     }
@@ -1349,26 +1222,6 @@ margin-left: -100px;
         height: auto;
     }
 
-    .kl-learnMore {
-        background-position: 86% 80%;
-        background-size: 100vh;
-        width: 100%;
-        padding: 40px;
-    }
-
-    .kl-learnMoreTitle {
-        width: calc(100% - 300px);
-        line-height: 30px;
-    }
-
-    .kl-learnMoreMagnifier {
-        position: absolute;
-        right: 0px;
-        top: -70px;
-        display: inline-block;
-        width: 300px;
-    }
-
     .kl-item-card4-title {
         font-size: 14px;
         line-height: 18px;
@@ -1377,7 +1230,7 @@ margin-left: -100px;
 
 @media screen and (min-width: 920px) {
     .kl-main-title {
-        width: 50%;
+        width: 80%;
         font-size: 36px;
         line-height: 42px;
         margin-bottom: 0.3em;
