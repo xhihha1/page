@@ -2,6 +2,7 @@
   // https://www.wikihow.com/Set-up-Tarot-Cards
   function tarotClass () {
     this.defaultOption = {
+      model: 'RiderWaite',
       tarotDeck: 'All_Arcana', // 'All_Arcana', 'Major_Arcana', 'Minor_Arcana'
       totalCardNum: 78, // 78, 22, 56
       cardArray: [],
@@ -52,19 +53,39 @@
   }
   tarotClass.prototype.getSpreadList = function () {
     this.spreadList = [
-      { type: 'one_card_spread', num: 1},
-      { type: 'three_card_spread', num: 3},
-      { type: 'five_card_spread', num: 5},
-      { type: 'ellipse_spread', num: 7},
-      { type: 'celtic_cross_spread', num: 10},
-      { type: 'thirteen_spread', num: 13},
-      { type: 'other_spread', num: 0}
+      { type: 'one_card_spread', num: 1, name: 'one'},
+      { type: 'two_card_spread', num: 2, name: 'two'},
+      { type: 'three_card_spread', num: 3, name: 'three'},
+      { type: 'four_card_spread', num: 4, name: 'four'},
+      { type: 'five_card_spread', num: 5, name: 'five'},
+      { type: 'five1_card_spread', num: 5, name: 'five1'},
+      { type: 'mental_healing', num: 5, name: 'mentalHealing'},
+      { type: 'five_card_cross', num: 5, name: 'fiveCross'},
+      { type: 'ellipse_spread', num: 7, name: 'ellipseSpread'},
+      { type: 'horseshoe', num: 7, name: 'horseshoe'},
+      { type: 'hexagram', num: 7, name: 'hexagram'},
+      { type: 'celtic_cross_spread', num: 10, name: 'celticCross'},
+      { type: 'zodiac_twelve_spread', num: 12, name: 'zodiac12'},
+      { type: 'zodiac_thirteen_spread', num: 13, name: 'zodiac13'},
+      { type: 'other_spread', num: 0, name: 'other'}
     ]
     return this
+  }
+  tarotClass.prototype.getSpreadByType = function (type) {
+    return this.spreadList.find(item => {
+      return item.type === type
+    })
+  }
+  tarotClass.prototype.getCurrentSpread = function () {
+    const type = this.defaultOption.spreadType
+    return this.spreadList.find(item => {
+      return item.type === type
+    })
   }
   // 選牌牌陣
   tarotClass.prototype.chooseSpreadByIndex = function (spreadIndex) {
     const spreadObject = this.spreadList[spreadIndex]
+    console.log('spreadObject', spreadObject)
     if (spreadObject) {
       this.defaultOption.spreadType = spreadObject.type
       this.defaultOption.spreadNumber = spreadObject.num
@@ -122,20 +143,80 @@
       { name: 'hangedMan' },
       { name: 'hermit' },
       { name: 'hierophant' },
-      { name: 'hightPriestess' },
-      { name: 'judgment' },
+      { name: 'highPriestess' },
+      { name: 'judgement' },
       { name: 'justice' },
       { name: 'lovers' },
       { name: 'magician' },
       { name: 'moon' },
-      { name: 'star' },
+      { name: 'stars' },
       { name: 'strength' },
       { name: 'sun' },
       { name: 'temperance' },
       { name: 'tower' },
       { name: 'world' }
     ]
-    const minorArcana = []
+    const minorArcana = [
+      { name: 'aceCups' },
+      { name: 'twoCups' },
+      { name: 'threeCups' },
+      { name: 'fourCups' },
+      { name: 'fiveCups' },
+      { name: 'sixCups' },
+      { name: 'sevenCups' },
+      { name: 'eightCups' },
+      { name: 'nineCups' },
+      { name: 'tenCups' },
+      { name: 'pageCups' },
+      { name: 'knightCups' },
+      { name: 'queenCups' },
+      { name: 'kingCups' },
+      // ---
+      { name: 'aceSwords' },
+      { name: 'twoSwords' },
+      { name: 'threeSwords' },
+      { name: 'fourSwords' },
+      { name: 'fiveSwords' },
+      { name: 'sixSwords' },
+      { name: 'sevenSwords' },
+      { name: 'eightSwords' },
+      { name: 'nineSwords' },
+      { name: 'tenSwords' },
+      { name: 'pageSwords' },
+      { name: 'knightSwords' },
+      { name: 'queenSwords' },
+      { name: 'kingSwords' },
+      // ---
+      { name: 'aceWands' },
+      { name: 'twoWands' },
+      { name: 'threeWands' },
+      { name: 'fourWands' },
+      { name: 'fiveWands' },
+      { name: 'sixWands' },
+      { name: 'sevenWands' },
+      { name: 'eightWands' },
+      { name: 'nineWands' },
+      { name: 'tenWands' },
+      { name: 'pageWands' },
+      { name: 'knightWands' },
+      { name: 'queenWands' },
+      { name: 'kingWands' },
+      // ---
+      { name: 'acePentacles' },
+      { name: 'twoPentacles' },
+      { name: 'threePentacles' },
+      { name: 'fourPentacles' },
+      { name: 'fivePentacles' },
+      { name: 'sixPentacles' },
+      { name: 'sevenPentacles' },
+      { name: 'eightPentacles' },
+      { name: 'ninePentacles' },
+      { name: 'tenPentacles' },
+      { name: 'pagePentacles' },
+      { name: 'knightPentacles' },
+      { name: 'queenPentacles' },
+      { name: 'kingPentacles' }
+    ]
     if (this.defaultOption.tarotDeck === 'Major_Arcana') {
       this.cardList = majorArcana
     } else if (this.defaultOption.tarotDeck === 'Minor_Arcana') {
@@ -143,7 +224,6 @@
     } else {
       this.cardList = majorArcana.concat(minorArcana)
     }
-    
     return this
   }
 

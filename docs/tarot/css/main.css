@@ -1,0 +1,289 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+#main {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: aqua;
+}
+.page{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: cadetblue;
+    display: none;
+    box-sizing: border-box;
+}
+/* #home .contain{
+    position: relative;
+    width: 100%;
+    height: calc(100% - 50px);
+    background-color: blue;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+} */
+#home .contain .resultCard {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 50px 10px;
+}
+#home .contain .resultCard img {
+    max-width: 50%;
+    box-sizing: border-box;
+}
+.cardInfo{
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+}
+.cardInfo > ul{
+    width: 100%;
+}
+/* #home .navigation{
+    position: relative;
+    width: 100%;
+    height: 50px;
+    background-color: blueviolet;
+}
+#home .navigation ul{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+#home .navigation li{
+    display: block;
+    width: 33%;
+    text-align: center;
+    box-sizing: border-box;
+} */
+/*   */
+.page .contain{
+    position: relative;
+    width: 100%;
+    height: calc(100% - 50px);
+    background-color: black;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    text-align: center;
+}
+.page .navigation{
+    position: relative;
+    width: 100%;
+    height: 50px;
+    background-color: rgb(200,200,198);
+}
+.page .navigation ul{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+.page .navigation li{
+    display: block;
+    width: 33%;
+    text-align: center;
+    box-sizing: border-box;
+}
+.reversed{
+    transform: rotate(180deg);
+}
+.hide{
+    display: none;
+}
+.white{
+    color: white;
+}
+
+.singleCardInfo{
+    width: 100%;
+    display: flex;
+    box-sizing: border-box;
+    background-color: rgb(240,240,240);
+    color: rgb(50,50,50);
+    border: 2px solid rgb(200,166,118);
+    margin-bottom: 10px;
+}
+.singleCardInfoLeft{
+    position: relative;
+    width: 300px;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 10px;
+}
+.singleCardInfoLeft img {
+    max-width: 100%;
+}
+.singleCardInfoRight{
+    position: relative;
+    width: calc(100% - 300px);
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+#chooseArcanaPg .contain{
+    padding: 50px;
+    background-image: url(../img/images.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: black;
+}
+#allCard {
+    padding: 10px 20px;
+    color: rgb(255,255,255);
+    background-color: rgba(61,12,11,1);
+    border-radius: 5px;
+    border: none;
+    margin-bottom: 30px;
+}
+#onlyMajor, #onlyMinor{
+    padding: 10px 20px;
+    color: rgb(255,255,255);
+    background-color: rgba(61,12,11,1);
+    border-radius: 5px;
+    border: none;
+    margin-bottom: 30px;
+}
+#onlyMajor:hover, #allCard:hover, #onlyMinor:hover {
+    color: rgb(255,215,74);
+}
+
+#shufflePg{
+    position: relative;
+}
+#flipOne{
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    background-color: rgba(200,200,198,0.7);
+    color: rgb(200,166,118);
+    border-radius: 5px;
+    margin: 5px;
+}
+#product-slider{
+    width: calc(100% - 60px);
+    height: calc(100% - 100px);
+    position: relative;
+    margin: 50px auto 0 auto;
+    box-sizing: border-box;
+}
+#product-slider > div {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    box-sizing: border-box;
+    border: 2px solid rgb(200,166,118);
+    text-align: center;
+}
+.spreadListCard{
+    color: white;
+    overflow: hidden;
+}
+.spreadImgCard{
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0 auto;
+}
+
+#pickCardArea {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+.cardImgListflex{
+    position: relative;
+    width: 16%;
+    text-align: center;
+}
+.cardImgListflex > img {
+    max-width: calc(100% - 10px);
+}
+.selectCover{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(200,200,198,0.4);
+    color: aliceblue;
+    font-size: 40px;
+    text-align: center;
+    line-height: 100%;
+    display: none;
+}
+#resultPg .spreadArea{
+    position: relative;
+    width: 100%;
+}
+#resultPg .spreadArea img{
+    max-width: calc(100% - 60px);
+    margin: 0 auto;
+}
+.resultSpreadImg{
+    max-width: calc(100% - 60px);
+    margin: 0 auto;
+}
+.resultSpreadName{
+    text-align: center;
+    color: white;
+    font-size: 30px;
+    line-height: 60px;
+}
+
+
+/* slider */
+
+.kl-product-slider {
+    width: 100%;
+}
+
+.kl-product-slider * {
+    box-sizing: border-box;
+}
+
+.kl-product-slider .slick-slide {
+  margin: 0px 0px;
+}
+
+.kl-product-slider .slick-slide img {
+  width: 100%;
+}
+
+.kl-product-slider .slick-slide {
+  transition: all ease-in-out .3s;
+  opacity: .9;
+}
+
+.kl-product-slider .slick-active {
+  opacity: 1;
+}
+
+.kl-product-slider .slick-current {
+  opacity: 1;
+}
+.kl-product-slider .slick-dots li button:before {
+    font-size: 10px;
+    opacity: 1;
+    color: #cbcbcb;
+}
+.kl-product-slider .slick-dots li.slick-active button:before{
+    opacity: 1;
+    color: #00a0e9;
+}
