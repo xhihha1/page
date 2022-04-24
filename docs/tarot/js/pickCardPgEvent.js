@@ -27,7 +27,8 @@
                 target.find('.selectCover').text(this.selectIndex)
                 target.find('.selectCover').show()
                 const idx = target.prevAll('.cardImgListflex').length
-                this.card.chooseCardByIndex(idx)
+                const pickIndex = card.defaultOption.cardArray[idx].index
+                this.card.chooseCardByIndex(pickIndex)
             }
         }.bind(this))
     }
@@ -43,9 +44,9 @@
             str += '<div class="cardImgListflex">'
             str += '    <img class="singleCardImg backcover" src="./tarot/img/backImage.png">'
             // if (card.defaultOption.cardArray[i].reversed === -1) {
-            //     str += '    <img class="singleCardImg frontcover hide reversed" src="./tarot/img/'+card.defaultOption.model+'/'+cardName+'.jpg">'
+            //     str += '    <img class="singleCardImg frontcover reversed" src="./tarot/img/'+card.defaultOption.model+'/'+cardName+'.jpg">'
             // } else {
-            //     str += '    <img class="singleCardImg frontcover" hide src="./tarot/img/'+card.defaultOption.model+'/'+cardName+'.jpg">'
+            //     str += '    <img class="singleCardImg frontcover" src="./tarot/img/'+card.defaultOption.model+'/'+cardName+'.jpg">'
             // }
             str += '<div class="selectCover"></div>'
             str += '</div>'
