@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Tarot</title>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport"
+        content="width=device-width,height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="apple-touch-icon-precomposed" href="icon/Key_logo.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="icon/Key_logo.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="icon/Key_logo.png" />
+    <link rel="SHORTCUT ICON" href="icon/Key_logo.png">
+    <!-- <script src="./tarot/libs/jquery/jquery-3.5.1.min.js"></script> -->
+    <script src="./tarot/libs/fabric/fabric.min.js"></script>
+    <style>
+        #c{
+            border: 1px solid #F00;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="add">add</button>
+    <button id="addImg">addImg</button>
+    <button id="json">Json</button>
+    <button id="loadJson">loadJson</button>
+    <canvas id="c" width="1000" height="1000"></canvas>
+    <textarea id="jsonStr"></textarea>
+</body>
+<script>
+(function() {
+
+  var $ = function(id){return document.getElementById(id)};
+
+function add() {
+  var red = new fabric.Rect({
+    top: 0, left: 0, width: 199, height: 340, fill: 'rgb(37,53,73)' });
+    canvas.add(red)
+}
+
+function toJSON () {
+  console.log(canvas.toJSON());
+  console.log(JSON.stringify(canvas.toJSON()));
+}
+
+
+function loadJSON () {
+  var x = document.getElementById("jsonStr").value;
+  canvas.loadFromJSON(x, canvas.renderAll.bind(canvas));
+}
+
+function addImg () {
+  fabric.Image.fromURL('./tarot/img/backImage.png', function(img) {
+    const oImg = img.set({ left: 0, top: 0})
+    canvas.add(oImg)
+  })
+}
+
+
+
+var canvas = this.__canvas = new fabric.Canvas('c');
+var red = new fabric.Rect({
+  top: 0, left: 0, width: 199, height: 340, fill: 'rgb(37,53,73)' });
+
+// fabric.Object.prototype.transparentCorners = false;
+canvas.add(red)
+
+var addmore = $('add')
+var printJson = $('json')
+var loadJson = $('loadJson')
+var addImgI = $('addImg')
+
+
+    addmore.onclick = add;
+    printJson.onclick = toJSON;
+    loadJson.onclick = loadJSON;
+    addImgI.onclick = addImg;
+
+    
+
+    // multiselect.onclick = function() {
+    //   canvas.discardActiveObject();
+    //   var sel = new fabric.ActiveSelection(canvas.getObjects(), {
+    //     canvas: canvas,
+    //   });
+    //   canvas.setActiveObject(sel);
+    //   canvas.requestRenderAll();
+    // }
+
+    // group.onclick = function() {
+    //   if (!canvas.getActiveObject()) {
+    //     return;
+    //   }
+    //   if (canvas.getActiveObject().type !== 'activeSelection') {
+    //     return;
+    //   }
+    //   canvas.getActiveObject().toGroup();
+    //   canvas.requestRenderAll();
+    // }
+
+    // ungroup.onclick = function() {
+    //   if (!canvas.getActiveObject()) {
+    //     return;
+    //   }
+    //   if (canvas.getActiveObject().type !== 'group') {
+    //     return;
+    //   }
+    //   canvas.getActiveObject().toActiveSelection();
+    //   canvas.requestRenderAll();
+    // }
+
+    // discard.onclick = function() {
+    //   canvas.discardActiveObject();
+    //   canvas.requestRenderAll();
+    // }
+
+
+})();
+</script>
+</html>
