@@ -7,9 +7,11 @@
             if(this.flip){
                 this.flip = false
                 $('#flipOne').css('color', 'rgb(200,166,118)')
+                $('#flipOne').css('background-image', 'url(./tarot/img/icon/flip.png)')
             } else {
                 this.flip = true
                 $('#flipOne').css('color', 'rgb(200,0,0)')
+                $('#flipOne').css('background-image', 'url(./tarot/img/icon/flipOpen.png)')
             }
         }.bind(this))
         $('#chooseSpread').click(function(){

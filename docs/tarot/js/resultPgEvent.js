@@ -22,9 +22,15 @@
         str = ''
         for (let i=0;i<card.defaultOption.currentPickCard.length;i++) {
             const idx = card.defaultOption.currentPickCard[i].index
+            const reversed = card.defaultOption.currentPickCard[i].reversed === -1 ? true : false
             const cardName = card.cardList[idx].name
             str += '<div class="white">'
-            str += cardName
+            str += '<span>'+cardName+'</span>'
+            if (reversed) {
+                str += '<i class="downIcon"></i>'
+            } else {
+                str += '<i class="upIcon"></i>'
+            }
             str += '</div>'
         }
         $('#resultArea').html(str)

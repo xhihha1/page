@@ -21,7 +21,7 @@
                     str += '    <div class="singleCardInfoLeft"><img class="singleCardInfoImg" src="./tarot/img/'+card.defaultOption.model+'/'+cardName+'.jpg"></div>'
                 }
                 
-                str += '    <div class="singleCardInfoRight">123</div>'
+                str += '    <div class="singleCardInfoRight">'+cardName+'</div>'
                 str += '</li>'
                 $('.cardInfo').children('ul').append(str)
             }

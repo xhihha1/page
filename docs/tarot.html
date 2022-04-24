@@ -43,63 +43,106 @@
                     <ul>
                         <li class="singleCardInfo">
                             <div class="singleCardInfoLeft"><img class="singleCardInfoImg" src="./tarot/img/backImage.png"></div>
-                            <div class="singleCardInfoRight">123</div>
+                            <div class="singleCardInfoRight"></div>
                         </li>
                     </ul>
                 </div>
             </div>
             <div class="navigation">
                 <ul>
-                    <li id="info">Info</li>
-                    <li id="autoPick">Pick</li>
-                    <li id="start">start</li>
+                    <li id="info">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/home.png"></div>
+                        <div class="navigationText">Info</div>
+                    </li>
+                    <li id="autoPick">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/auto.png"></div>
+                        <div class="navigationText">Auto</div>
+                    </li>
+                    <li id="start">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/start.png"></div>
+                        <div class="navigationText">Start</div>
+                    </li>
                 </ul>
             </div>
         </section>
         <section id="chooseArcanaPg" class="page">
             <div class="contain">
+                <div class="pgTitle">Select</div>
                 <div><button id="allCard">Tarot deck 78 cards</button></div>
                 <div><button id="onlyMajor">Major Arcana 22 cards</button></div>
                 <div><button id="onlyMinor">Minor Arcana 56 cards</button></div>
             </div>
             <div class="navigation">
                 <ul>
-                    <li class="backHome">backHome</li>
-                    <li id="onlyMinorN">Minor</li>
-                    <li id="onlyMajorN">Major</li>
-                    <li id="allCardN">All</li>
+                    <li class="backHome">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/home.png"></div>
+                        <div class="navigationText">Home</div>
+                    </li>
+                    <li id="onlyMinorN">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/minor.png"></div>
+                        <div class="navigationText">Minor</div>
+                    </li>
+                    <li id="onlyMajorN">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/major.png"></div>
+                        <div class="navigationText">Major</div>
+                    </li>
+                    <li id="allCardN">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/alltarot.png"></div>
+                        <div class="navigationText">Tarot</div>
+                    </li>
                 </ul>
             </div>
         </section>
         <section id="shufflePg" class="page">
             <div class="contain">
-                <button id="flipOne">flip one</button>
+                <button id="flipOne"></button>
+                <div class="pgTitle">Shuffle Success</div>
                 <div id="shufflePgCardArea">
 
                 </div>
             </div>
             <div class="navigation">
                 <ul>
-                    <li class="backHome">backHome</li>
-                    <li id="cutCard">cut</li>
-                    <li id="chooseSpread">Spread</li>
+                    <li class="backHome">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/home.png"></div>
+                        <div class="navigationText">Home</div>
+                    </li>
+                    <li id="cutCard">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/cut.png"></div>
+                        <div class="navigationText">Cut</div>
+                    </li>
+                    <li id="chooseSpread">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/spread.png"></div>
+                        <div class="navigationText">Spread</div>
+                    </li>
                 </ul>
             </div>
         </section>
         <section id="cutPg" class="page">
             <div class="contain">
+                <div class="pgTitle">Cut card</div>
                 cutPg
             </div>
             <div class="navigation">
                 <ul>
-                    <li class="backHome">backHome</li>
-                    <li id="cutCardAgain">cut</li>
-                    <li id="finishCut">finish</li>
+                    <li class="backHome">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/home.png"></div>
+                        <div class="navigationText">Home</div>
+                    </li>
+                    <li id="cutCardAgain">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/cut.png"></div>
+                        <div class="navigationText">Cut</div>
+                    </li>
+                    <li id="finishCut">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/finish.png"></div>
+                        <div class="navigationText">Finish</div>
+                    </li>
                 </ul>
             </div>
         </section>
         <section id="spreadPg" class="page">
             <div class="contain">
+                <div class="pgTitle">Choose Spread</div>
                 <div id="product-slider" class="kl-product-slider">
                     <div class="white">A</div>
                     <div class="white">B</div>
@@ -107,20 +150,33 @@
             </div>
             <div class="navigation">
                 <ul>
-                    <li class="backHome">backHome</li>
-                    <li id="submitSpread">Choose</li>
+                    <li class="backHome">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/home.png"></div>
+                        <div class="navigationText">Home</div>
+                    </li>
+                    <li id="submitSpread">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/pick.png"></div>
+                        <div class="navigationText">Choose</div>
+                    </li>
                 </ul>
             </div>
         </section>
         <section id="pickCardPg" class="page">
-            <div class="contain" id="pickCardArea">
-                pickCardPg
+            <div class="contain">
+                <div class="pgTitle">Pick Card</div>
+                <div id="pickCardArea"></div>
             </div>
             <div class="navigation">
                 <ul>
-                    <li class="backHome">backHome</li>
-                    <li id="showSpread">Show Spread</li>
-                    <li id="finishPick">finish</li>
+                    <li class="backHome">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/home.png"></div>
+                        <div class="navigationText">Home</div>
+                    </li>
+                    <!-- <li id="showSpread">Show Spread</li> -->
+                    <li id="finishPick">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/result.png"></div>
+                        <div class="navigationText">Result</div>
+                    </li>
                 </ul>
             </div>
         </section>
@@ -130,12 +186,16 @@
             </div>
             <div class="navigation">
                 <ul>
-                    <li class="backHome">backHome</li>
+                    <li class="backHome">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/home.png"></div>
+                        <div class="navigationText">Home</div>
+                    </li>
                 </ul>
             </div>
         </section>
         <section id="resultPg" class="page">
             <div class="contain">
+                <div class="pgTitle">Result</div>
                 <div id="spreadArea"></div>
                 <div id="resultArea"></div>
                 <div class="cardInfo">
@@ -144,7 +204,10 @@
             </div>
             <div class="navigation">
                 <ul>
-                    <li class="backHome">backHome</li>
+                    <li class="backHome">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/home.png"></div>
+                        <div class="navigationText">Home</div>
+                    </li>
                     <!-- <li id="flipAll">flip all</li> -->
                 </ul>
             </div>

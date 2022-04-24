@@ -1,4 +1,5 @@
 https://xhihha1.github.io/page/
+https://xhihha1.github.io/page/tarot.html
 
 ## Welcome to GitHub Pages
 

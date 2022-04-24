@@ -23,6 +23,26 @@ ul {
     display: none;
     box-sizing: border-box;
 }
+.upIcon{
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    background-image: url(../img/icon/up.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+.downIcon{
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    background-image: url(../img/icon/down.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
 /* #home .contain{
     position: relative;
     width: 100%;
@@ -81,11 +101,19 @@ ul {
     box-sizing: border-box;
     text-align: center;
 }
+.page .pgTitle {
+    text-align: center;
+    color: rgb(200,166,118);
+    font-size: 32px;
+}
 .page .navigation{
     position: relative;
     width: 100%;
     height: 50px;
-    background-color: rgb(200,200,198);
+    background-color: rgb(37,53,73);
+    box-sizing: border-box;
+    border-top: 1px solid rgb(200,166,118);
+    overflow: hidden;
 }
 .page .navigation ul{
     width: 100%;
@@ -99,6 +127,23 @@ ul {
     width: 33%;
     text-align: center;
     box-sizing: border-box;
+}
+.page .navigation .navigationIcon{
+    text-align: center;
+    box-sizing: border-box;
+    padding-top: 5px;
+    height: 35px;
+}
+.page .navigation .navigationIcon img{
+    width: 30px;
+    height: 30px;
+}
+.page .navigation .navigationText{
+    height: 14px;
+    line-height: 15px;
+    font-size: 12px;
+    text-align: center;
+    color: rgb(200,166,118);
 }
 .reversed{
     transform: rotate(180deg);
@@ -114,10 +159,11 @@ ul {
     width: 100%;
     display: flex;
     box-sizing: border-box;
-    background-color: rgb(240,240,240);
-    color: rgb(50,50,50);
+    background-color: rgba(240,240,240,0.3);
+    color: rgb(200,166,118);
     border: 2px solid rgb(200,166,118);
     margin-bottom: 10px;
+    flex-wrap: wrap;
 }
 .singleCardInfoLeft{
     position: relative;
@@ -134,30 +180,33 @@ ul {
     width: calc(100% - 300px);
     box-sizing: border-box;
     padding: 10px;
+    text-align: left;
 }
 
 #chooseArcanaPg .contain{
-    padding: 50px;
-    background-image: url(../img/images.jpg);
+    /* background-image: url(../img/images.jpg); */
     background-position: center;
     background-repeat: no-repeat;
     background-color: black;
 }
 #allCard {
     padding: 10px 20px;
-    color: rgb(255,255,255);
-    background-color: rgba(61,12,11,1);
+    color: rgb(200,166,118);
+    background-color: rgb(37,53,73);
     border-radius: 5px;
     border: none;
+    margin-top: 30px;
     margin-bottom: 30px;
+    width: 200px;
 }
 #onlyMajor, #onlyMinor{
     padding: 10px 20px;
-    color: rgb(255,255,255);
-    background-color: rgba(61,12,11,1);
+    color: rgb(200,166,118);
+    background-color: rgb(37,53,73);
     border-radius: 5px;
     border: none;
     margin-bottom: 30px;
+    width: 200px;
 }
 #onlyMajor:hover, #allCard:hover, #onlyMinor:hover {
     color: rgb(255,215,74);
@@ -166,18 +215,41 @@ ul {
 #shufflePg{
     position: relative;
 }
+#shufflePgCardArea{
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+#shufflePg .cardImgList{
+    position: relative;
+    width: 16%;
+    text-align: center;
+}
+#shufflePg .cardImgList > img {
+    max-width: calc(100% - 10px);
+}
 #flipOne{
     position: fixed;
-    top: 0px;
-    right: 0px;
+    top: 15px;
+    right: 15px;
     background-color: rgba(200,200,198,0.7);
+    background-image: url(../img/icon/flip.png);
+    background-size: 30px;
+    background-position: center;
+    background-repeat: no-repeat;
     color: rgb(200,166,118);
     border-radius: 5px;
     margin: 5px;
+    z-index: 500;
+    width: 40px;
+    height:40px;
+    font-size: 10px;
+    border: none;
 }
 #product-slider{
     width: calc(100% - 60px);
-    height: calc(100% - 100px);
+    height: calc(100% - 150px);
     position: relative;
     margin: 50px auto 0 auto;
     box-sizing: border-box;
@@ -205,6 +277,7 @@ ul {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
+    width: 100%;
 }
 .cardImgListflex{
     position: relative;
@@ -281,9 +354,35 @@ ul {
 .kl-product-slider .slick-dots li button:before {
     font-size: 10px;
     opacity: 1;
-    color: #cbcbcb;
+    color: rgb(37,53,73);
 }
 .kl-product-slider .slick-dots li.slick-active button:before{
     opacity: 1;
-    color: #00a0e9;
+    color: rgb(200,166,118);
+}
+@media screen and (min-width: 768px) {
+    .resultSpreadImg{
+        max-width: 500px;
+    }
+}
+@media screen and (max-width: 767px) {
+    .singleCardInfoLeft{
+        position: relative;
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+        padding: 10px;
+    }
+    .singleCardInfoLeft img {
+        max-height: 150px;
+    }
+    .singleCardInfoRight{
+        position: relative;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+    }
+    .resultSpreadImg{
+        max-width: calc(100% - 60px);
+    }
 }
