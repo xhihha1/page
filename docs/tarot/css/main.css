@@ -120,11 +120,12 @@ ul {
     height: 100%;
     display: flex;
     flex-wrap: nowrap;
+    justify-content: center;
     justify-content: space-between;
 }
 .page .navigation li{
     display: block;
-    width: 33%;
+    min-width: 25%;
     text-align: center;
     box-sizing: border-box;
 }

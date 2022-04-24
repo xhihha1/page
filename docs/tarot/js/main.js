@@ -3,6 +3,7 @@
   function tarotClass () {
     this.defaultOption = {
       model: 'RiderWaite',
+      language: 'tw',
       tarotDeck: 'All_Arcana', // 'All_Arcana', 'Major_Arcana', 'Minor_Arcana'
       totalCardNum: 78, // 78, 22, 56
       cardArray: [],
@@ -10,6 +11,14 @@
       spreadType: 'one_card_spread',
       spreadNumber: 1
     }
+    // this.language = {
+    //   tw: {
+    //     card: []
+    //   },
+    //   en: {
+    //     card: []
+    //   }
+    // }
     this.cardList = []
     this.spreadList = []
     this.getCardList()
@@ -64,7 +73,9 @@
       { type: 'ellipse_spread', num: 7, name: 'ellipseSpread'},
       { type: 'horseshoe', num: 7, name: 'horseshoe'},
       { type: 'hexagram', num: 7, name: 'hexagram'},
+      { type: 'work_dicision_making', num: 9, name: 'workDicisionMaking'},
       { type: 'celtic_cross_spread', num: 10, name: 'celticCross'},
+      { type: 'relationship_spread', num: 10, name: 'relationship'},
       { type: 'zodiac_twelve_spread', num: 12, name: 'zodiac12'},
       { type: 'zodiac_thirteen_spread', num: 13, name: 'zodiac13'},
       { type: 'other_spread', num: 0, name: 'other'}
@@ -133,27 +144,27 @@
   tarotClass.prototype.getCardList = function () {
     // Major_Arcana, Minor_Arcana
     const majorArcana = [
-      { name: 'chariot' },
-      { name: 'death' },
-      { name: 'devil' },
-      { name: 'emperor' },
-      { name: 'empress' },
       { name: 'fool' },
-      { name: 'fortuneWheel' },
-      { name: 'hangedMan' },
-      { name: 'hermit' },
-      { name: 'hierophant' },
-      { name: 'highPriestess' },
-      { name: 'judgement' },
-      { name: 'justice' },
-      { name: 'lovers' },
       { name: 'magician' },
-      { name: 'moon' },
-      { name: 'stars' },
+      { name: 'highPriestess' },
+      { name: 'empress' },
+      { name: 'emperor' },
+      { name: 'hierophant' },
+      { name: 'lovers' },
+      { name: 'chariot' },
       { name: 'strength' },
-      { name: 'sun' },
+      { name: 'hermit' },
+      { name: 'fortuneWheel' },
+      { name: 'justice' },
+      { name: 'hangedMan' },
+      { name: 'death' },
       { name: 'temperance' },
+      { name: 'devil' },
       { name: 'tower' },
+      { name: 'stars' },
+      { name: 'moon' },
+      { name: 'sun' },
+      { name: 'judgement' },
       { name: 'world' }
     ]
     const minorArcana = [
@@ -225,6 +236,12 @@
       this.cardList = majorArcana.concat(minorArcana)
     }
     return this
+  }
+
+  tarotClass.prototype.getCardInfo = function (name) {
+    return this.language[this.defaultOption.language].card.find(function(i){
+      return i.name === name
+    }.bind(this))
   }
 
   global.tarotClass = tarotClass

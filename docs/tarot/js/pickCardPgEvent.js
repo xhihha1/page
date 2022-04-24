@@ -22,7 +22,7 @@
             } else {
                 target = undefined
             }
-            if(this.selectIndex < this.card.defaultOption.spreadNumber){
+            if(this.selectIndex < this.card.defaultOption.spreadNumber || this.card.defaultOption.spreadNumber === 0){
                 this.selectIndex++
                 target.find('.selectCover').text(this.selectIndex)
                 target.find('.selectCover').show()
