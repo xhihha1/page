@@ -44,9 +44,9 @@
             str += '<div class="cardImgListflex">'
             str += '    <img class="singleCardImg backcover" src="./tarot/img/backImage.png">'
             // if (card.defaultOption.cardArray[i].reversed === -1) {
-            //     str += '    <img class="singleCardImg frontcover reversed" src="./tarot/img/'+card.defaultOption.model+'/'+cardName+'.jpg">'
+            //     str += '    <img class="singleCardImg frontcover reversed" src="./tarot/img/'+card.defaultOption.model+'/'+cardName+'.png">'
             // } else {
-            //     str += '    <img class="singleCardImg frontcover" src="./tarot/img/'+card.defaultOption.model+'/'+cardName+'.jpg">'
+            //     str += '    <img class="singleCardImg frontcover" src="./tarot/img/'+card.defaultOption.model+'/'+cardName+'.png">'
             // }
             str += '<div class="selectCover"></div>'
             str += '</div>'

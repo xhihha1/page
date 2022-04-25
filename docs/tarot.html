@@ -18,8 +18,10 @@
     <script src="./tarot/libs/fabric/fabric.min.js"></script>
     <script src="./tarot/libs/slick/slick.min.js"></script>
     <script src="./tarot/js/main.js"></script>
-    <script src="./tarot/js/tw.js"></script>
+    <script src="./tarot/lang/RiderWaite/tw.js"></script>
+    <script src="./tarot/lang/Voyager/tw.js"></script>
     <script src="./tarot/js/homePgEvent.js"></script>
+    <script src="./tarot/js/infoPgEvent.js"></script>
     <script src="./tarot/js/chooseArcanaEvent.js"></script>
     <script src="./tarot/js/shufflePgEvent.js"></script>
     <script src="./tarot/js/cutPgEvent.js"></script>
@@ -151,7 +153,7 @@
             </div>
             <div class="navigation">
                 <ul>
-                    <li class="backHome">
+                    <li class="backHomeSpread">
                         <div class="navigationIcon"><img src="./tarot/img/icon/home.png"></div>
                         <div class="navigationText">Home</div>
                     </li>
@@ -213,6 +215,27 @@
                 </ul>
             </div>
         </section>
+        <section id="infoPg" class="page">
+            <div class="contain">
+                <div class="pgTitle">Setting</div>
+                <div class="infoList">
+                    <label>Select:
+                    <select id="selectModel">
+                        <option value='RiderWaite'>RiderWaite</option>
+                        <option value='Voyager'>Voyager</option>
+                    </select>
+                    </label>
+                </div>
+            </div>
+            <div class="navigation">
+                <ul>
+                    <li class="backHome">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/home.png"></div>
+                        <div class="navigationText">Home</div>
+                    </li>
+                </ul>
+            </div>
+        </section>
     </div>
 </body>
 <script>
@@ -224,6 +247,7 @@
     // card.shuffleCard()
     // console.log(JSON.stringify(card.defaultOption.cardArray))
     homePageEvnt()
+    infoPgEvent(card)
     chooseArcanaEvent(card)
     var shuffleObj = new shufflePgEvent(card)
     cutPgEvent()

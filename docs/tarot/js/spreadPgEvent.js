@@ -2,8 +2,14 @@
 (function(global){
     function spreadPgEvent(){
         this.card = card
+        $('.backHomeSpread').click(function(){
+            $('.page').hide()
+            $('#home').show()
+            $('#product-slider').slick('unslick');
+        })
         // $('#flipOne').click(function(){})
         $('#submitSpread').click(function(){
+            $('#product-slider').slick('unslick');
             $('.page').hide()
             $('#pickCardPg').show()
             // Get the current slide

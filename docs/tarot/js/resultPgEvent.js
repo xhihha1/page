@@ -39,7 +39,7 @@
             const idx = card.defaultOption.currentPickCard[i].index
             const cardName = card.cardList[idx].name
             const cardLangObj = card.getCardInfo(cardName)
-            const src = './tarot/img/'+card.defaultOption.model+'/'+cardName+'.jpg'
+            const src = './tarot/img/'+card.defaultOption.model+'/'+cardName+'.png'
             const reversed = card.defaultOption.currentPickCard[i].reversed === -1 ? 'reversed' : ''
             str += '<li class="singleCardInfo">'
             str += '    <div class="singleCardInfoLeft"><img class="singleCardInfoImg '+reversed+'" src="'+src+'"></div>'

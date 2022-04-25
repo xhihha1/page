@@ -45,16 +45,16 @@
             const cardName = card.cardList[card.defaultOption.cardArray[i].index].name
             str += '<div class="cardImgList">'
             if (card.defaultOption.cardArray[i].reversed === -1) {
-                str += '    <img class="singleCardImg frontcover reversed hide" src="./tarot/img/'+card.defaultOption.model+'/'+cardName+'.jpg">'
+                str += '    <img class="singleCardImg frontcover reversed hide" src="./tarot/img/'+card.defaultOption.model+'/'+cardName+'.png">'
             } else {
-                str += '    <img class="singleCardImg frontcover hide" src="./tarot/img/'+card.defaultOption.model+'/'+cardName+'.jpg">'
+                str += '    <img class="singleCardImg frontcover hide" src="./tarot/img/'+card.defaultOption.model+'/'+cardName+'.png">'
             }
             str += '    <img class="singleCardImg backcover" src="./tarot/img/backImage.png">'
             str += '</div>'
         }
         $('#shufflePgCardArea').html(str)
         // const cardName = card.cardList[card.defaultOption.currentPickCard[i].index].name
-        // "./tarot/img/'+card.defaultOption.model+'/'+cardName+'.jpg"
+        // "./tarot/img/'+card.defaultOption.model+'/'+cardName+'.png"
     }
 
 global.shufflePgEvent = shufflePgEvent

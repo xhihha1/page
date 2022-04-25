@@ -21,11 +21,31 @@
     // }
     this.cardList = []
     this.spreadList = []
+    this.changeModel()
     this.getCardList()
     this.getSpreadList()
     this.chooseArcana()
     return this
   } 
+  tarotClass.prototype.changeModelLanguage = function (modName) {
+    if (modName === 'RiderWaite') {
+      this.language = global.language[modName]
+    } else if (modName === 'Voyager') {
+      this.language = global.language[modName]
+    } else {
+      this.language = global.language['RiderWaite']
+    }
+  }
+  tarotClass.prototype.changeModel = function (modName) {
+    if (modName === 'RiderWaite') {
+      this.defaultOption.model = 'RiderWaite'
+    } else if (modName === 'Voyager') {
+      this.defaultOption.model = 'Voyager'
+    } else {
+      this.defaultOption.model = 'RiderWaite'
+    }
+    this.changeModelLanguage(modName)
+  }
   tarotClass.prototype.generateCardArray = function (num) {
     const ary = []
     for (var i = 0; i < num; i++) {

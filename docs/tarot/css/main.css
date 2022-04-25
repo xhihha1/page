@@ -320,6 +320,12 @@ ul {
     font-size: 30px;
     line-height: 60px;
 }
+#infoPg .infoList{
+    text-align: center;
+    color: white;
+    font-size: 16px;
+    line-height: 20px;
+}
 
 
 /* slider */
