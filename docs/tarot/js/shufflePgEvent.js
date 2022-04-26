@@ -49,7 +49,7 @@
             } else {
                 str += '    <img class="singleCardImg frontcover hide" src="./tarot/img/'+card.defaultOption.model+'/'+cardName+'.png">'
             }
-            str += '    <img class="singleCardImg backcover" src="./tarot/img/backImage.png">'
+            str += '    <img class="singleCardImg backcover" src="./tarot/img/'+card.defaultOption.model+'/backImage.png">'
             str += '</div>'
         }
         $('#shufflePgCardArea').html(str)

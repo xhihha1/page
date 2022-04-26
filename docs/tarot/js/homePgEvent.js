@@ -55,7 +55,9 @@
                 $('.singleCardImg').removeClass('reversed')
             }
         })
-        $('#info').click(function(){})
+
+        $('#home .singleCardImg').attr('src', './tarot/img/backImage.png')
+        $('#home .singleCardInfoImg').attr('src', './tarot/img/backImage.png')
     }
   global.homePageEvnt = homePageEvnt
 })(window)

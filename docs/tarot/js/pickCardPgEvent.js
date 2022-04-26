@@ -42,7 +42,7 @@
         for (let i=0;i<card.defaultOption.cardArray.length;i++) {
             const cardName = card.cardList[card.defaultOption.cardArray[i].index].name
             str += '<div class="cardImgListflex">'
-            str += '    <img class="singleCardImg backcover" src="./tarot/img/backImage.png">'
+            str += '    <img class="singleCardImg backcover" src="./tarot/img/'+card.defaultOption.model+'/backImage.png">'
             // if (card.defaultOption.cardArray[i].reversed === -1) {
             //     str += '    <img class="singleCardImg frontcover reversed" src="./tarot/img/'+card.defaultOption.model+'/'+cardName+'.png">'
             // } else {
