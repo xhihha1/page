@@ -33,17 +33,18 @@
                 
                 str += '    <div class="singleCardInfoRight">'
                 str += '        <div>Name: '+cardLangObj.title+'</div>'
-                str += '        <div>Mean: '+cardLangObj.mean+'</div>'
-                str += '        <div>Keyword: '+cardLangObj.keyword+'</div>'
-                str += '        <div>Love: '+cardLangObj.lovedKeyword+'</div>'
+                if(cardLangObj.mean) { str += '        <div>Mean: '+cardLangObj.mean+'</div>' }
+                if(cardLangObj.keyword) { str += '        <div>Keyword: '+cardLangObj.keyword+'</div>' }
+                if(cardLangObj.lovedKeyword) { str += '        <div>Love: '+cardLangObj.lovedKeyword+'</div>' }
                 if (card.defaultOption.currentPickCard[i].reversed === -1 && cardLangObj.reversed) {
                     str += '        <div>Reverse:</div>'
-                    str += '        <div>- Keyword: '+cardLangObj.reversed.keyword+'</div>'
-                    str += '        <div>- Love: '+cardLangObj.reversed.lovedKeyword+'</div>'
+                    if(cardLangObj.reversed.keyword) { str += '        <div>- Keyword: '+cardLangObj.reversed.keyword+'</div>' }
+                    if(cardLangObj.reversed.lovedKeyword) { str += '        <div>- Love: '+cardLangObj.reversed.lovedKeyword+'</div>' }
                 }
-                str += '        <div>Past: '+cardLangObj.past+'</div>'
-                str += '        <div>Current: '+cardLangObj.current+'</div>'
-                str += '        <div>Future: '+cardLangObj.future+'</div>'
+                if(cardLangObj.past) { str += '        <div>Past: '+cardLangObj.past+'</div>' }
+                if(cardLangObj.current) { str += '        <div>Current: '+cardLangObj.current+'</div>' }
+                if(cardLangObj.future) { str += '        <div>Future: '+cardLangObj.future+'</div>' }
+                if(cardLangObj.text) { str += '        <div>'+cardLangObj.text+'</div>' }
                 str += '    </div>'
                 str += '</li>'
                 $('.cardInfo').children('ul').append(str)
