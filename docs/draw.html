@@ -37,8 +37,15 @@
 
 function add() {
   var red = new fabric.Rect({
-    top: 0, left: 0, width: 199, height: 340, fill: 'rgb(37,53,73)' });
-    canvas.add(red)
+    top: 0,
+    left: 0,
+    width: 200,
+    height: 340,
+    originX: 'center',
+    originY: 'center',
+    fill: 'rgb(37,53,73)'
+  });
+  canvas.add(red)
 }
 
 function toJSON () {
@@ -63,7 +70,14 @@ function addImg () {
 
 var canvas = this.__canvas = new fabric.Canvas('c');
 var red = new fabric.Rect({
-  top: 0, left: 0, width: 199, height: 340, fill: 'rgb(37,53,73)' });
+  top: 0,
+  left: 0,
+  width: 200,
+  height: 340,
+  originX: 'center',
+  originY: 'center',
+  fill: 'rgb(37,53,73)'
+});
 
 // fabric.Object.prototype.transparentCorners = false;
 canvas.add(red)
