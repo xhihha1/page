@@ -16,8 +16,10 @@
     <script src="./tarot/libs/jquery/jquery-3.5.1.min.js"></script>
     <script src="./tarot/libs/threejs/three.min.js"></script>
     <script src="./tarot/libs/fabric/fabric.min.js"></script>
+    <script src="./tarot/libs/fabric/customClass.js"></script>
     <script src="./tarot/libs/slick/slick.min.js"></script>
     <script src="./tarot/js/main.js"></script>
+    <script src="./tarot/setting/modelSettting.js"></script>
     <script src="./tarot/lang/RiderWaite/tw.js"></script>
     <script src="./tarot/lang/Voyager/tw.js"></script>
     <script src="./tarot/js/homePgEvent.js"></script>
@@ -199,7 +201,12 @@
         <section id="resultPg" class="page">
             <div class="contain">
                 <div class="pgTitle">Result</div>
-                <div id="spreadArea"></div>
+                <div id="spreadArea">
+                    <div class="resultSpreadName"></div>
+                    <div class="resultSpreadCanvas">
+                        <canvas id="c"></canvas>
+                    </div>
+                </div>
                 <div id="resultArea"></div>
                 <div class="cardInfo">
                     <ul></ul>
@@ -210,6 +217,10 @@
                     <li class="backHome">
                         <div class="navigationIcon"><img src="./tarot/img/icon/home.png"></div>
                         <div class="navigationText">Home</div>
+                    </li>
+                    <li id="downloadImg">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/home.png"></div>
+                        <div class="navigationText">Save</div>
                     </li>
                     <!-- <li id="flipAll">flip all</li> -->
                 </ul>

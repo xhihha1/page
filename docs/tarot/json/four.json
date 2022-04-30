@@ -1,7 +1,7 @@
 {
     "version": "4.1.0",
     "objects": [{
-        "type": "rect",
+        "type": "NumCard",
         "version": "4.1.0",
         "originX": "center",
         "originY": "center",
@@ -34,7 +34,7 @@
         "rx": 0,
         "ry": 0
     }, {
-        "type": "rect",
+        "type": "NumCard",
         "version": "4.1.0",
         "originX": "center",
         "originY": "center",
@@ -67,7 +67,7 @@
         "rx": 0,
         "ry": 0
     }, {
-        "type": "rect",
+        "type": "NumCard",
         "version": "4.1.0",
         "originX": "center",
         "originY": "center",
@@ -100,7 +100,7 @@
         "rx": 0,
         "ry": 0
     }, {
-        "type": "rect",
+        "type": "NumCard",
         "version": "4.1.0",
         "originX": "center",
         "originY": "center",

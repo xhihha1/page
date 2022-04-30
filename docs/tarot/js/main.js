@@ -3,6 +3,9 @@
   function tarotClass () {
     this.defaultOption = {
       model: 'RiderWaite',
+      modelSetting: {
+        reversed: true
+      },
       language: 'tw',
       tarotDeck: 'All_Arcana', // 'All_Arcana', 'Major_Arcana', 'Minor_Arcana'
       totalCardNum: 78, // 78, 22, 56
@@ -36,6 +39,11 @@
       this.language = global.language['RiderWaite']
     }
   }
+  tarotClass.prototype.changeModelSetting = function (modName) {
+    if(global.modelSetting[modName]){
+      this.defaultOption.modelSetting = global.modelSetting[modName]
+    }
+  }
   tarotClass.prototype.changeModel = function (modName) {
     if (modName === 'RiderWaite') {
       this.defaultOption.model = 'RiderWaite'
@@ -44,6 +52,7 @@
     } else {
       this.defaultOption.model = 'RiderWaite'
     }
+    this.changeModelSetting(modName)
     this.changeModelLanguage(modName)
   }
   tarotClass.prototype.generateCardArray = function (num) {
@@ -72,9 +81,11 @@
   tarotClass.prototype.shuffleCard = function () {
     this.defaultOption.currentPickCard = []
     this.defaultOption.cardArray.sort(function (i) {
-      i.reversed = Math.random() > 0.5? 1: -1
+      if(this.defaultOption.modelSetting.reversed){
+        i.reversed = Math.random() > 0.5? 1: -1
+      }
       return Math.random() > 0.5? 1: -1
-    })
+    }.bind(this))
     return this
   }
   tarotClass.prototype.cutCard = function () {
