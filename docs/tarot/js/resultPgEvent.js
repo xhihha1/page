@@ -20,14 +20,13 @@
     }
 
     resultPgEvent.prototype.downloadImage = function (){
-        console.log('??????')
-        const pngData = this.__canvas.toDataURL({
+        const pngData = this.__canvasBack.toDataURL({
             format: 'jpeg',
-            quality: 0.8
+            quality: 1
         });
         var a = $("<a>")
         .attr("href", pngData)
-        .attr("download", "img.png")
+        .attr("download", "img.jpeg")
         .appendTo("body");
         a[0].click();
         a[0].remove();
@@ -96,6 +95,11 @@
     }
     resultPgEvent.prototype.initCanvas = function () {
         this.__canvas = new fabric.Canvas('c');
+        this.__canvasBack = new fabric.Canvas('hImg');
+        this.__canvas.on('after:render', function (opt) {
+            const j = this.__canvas.toJSON()
+            this.__canvasBack.loadFromJSON(j, this.__canvasBack.renderAll.bind(this.__canvasBack));
+        }.bind(this));
         $(window).resize(function() {
             this.__canvas.setDimensions({
                 width: $('.resultSpreadCanvas').width() || 1,
@@ -106,6 +110,10 @@
          }.bind(this))
     }
     resultPgEvent.prototype.loadJson = function (name){
+        if (name === 'other') {
+            this.otherJson()
+            return false
+        }
         $.getJSON( "./tarot/json/" + name + '.json', function( data ) {
             // $.each( data, function( key, val ) {
             //   items.push( "<li id='" + key + "'>" + val + "</li>" );
@@ -145,7 +153,63 @@
             canvas.setHeight($('.resultSpreadCanvas').height())
             canvas.loadFromJSON(this.data, canvas.renderAll.bind(canvas));
             canvas.setZoom(canvas.width/1000)
+            this.__canvasBack.loadFromJSON(this.data, this.__canvasBack.renderAll.bind(this.__canvasBack));
         }
+    }
+
+    resultPgEvent.prototype.otherJson = function () {
+        const jsonData = {
+            "version": "4.1.0",
+            "objects": []
+        }
+        const card = this.card
+        const srcList = []
+        for (let i=0;i<card.defaultOption.currentPickCard.length;i++) {
+            const idx = card.defaultOption.currentPickCard[i].index
+            const cardName = card.cardList[idx].name
+            // const cardLangObj = card.getCardInfo(cardName)
+            const reversed = card.defaultOption.currentPickCard[i].reversed === -1
+            const src = './tarot/img/'+card.defaultOption.model+'/'+cardName+'.png'
+            srcList.push({'src': src, 'reversed': reversed})
+            jsonData.objects.push({
+                "type": "image",
+                "version": "4.1.0",
+                "originX": "center",
+                "originY": "center",
+                "left": 400 + Math.round(100 * Math.random()),
+                "top": 400 + Math.round(100 * Math.random()),
+                "width": 200,
+                "height": 340,
+                "fill": "rgb(37,53,73)",
+                "stroke": null,
+                "strokeWidth": 1,
+                "strokeDashArray": null,
+                "strokeLineCap": "butt",
+                "strokeDashOffset": 0,
+                "strokeLineJoin": "miter",
+                "strokeMiterLimit": 4,
+                "scaleX": 1,
+                "scaleY": 1,
+                "angle": reversed? 180 : 0,
+                "flipX": false,
+                "flipY": false,
+                "opacity": 1,
+                "shadow": null,
+                "visible": true,
+                "backgroundColor": "",
+                "fillRule": "nonzero",
+                "paintFirst": "fill",
+                "globalCompositeOperation": "source-over",
+                "skewX": 0,
+                "skewY": 0,
+                "rx": 0,
+                "ry": 0,
+                "src": src
+            })
+        }
+        this.data = jsonData
+        const canvas = this.__canvas
+        this.drawCanvas(canvas)
     }
 global.resultPgEvent = resultPgEvent
 })(window)

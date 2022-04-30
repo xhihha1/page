@@ -320,6 +320,12 @@ ul {
     height: 100vw;
     margin: 0 auto;
 }
+#toImgArea{
+    position: absolute;
+    width: 0px;
+    height: 0px;
+    overflow: hidden;
+}
 #c {
     position: relative;
     top: 0px;
