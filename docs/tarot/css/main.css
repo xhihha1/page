@@ -316,8 +316,8 @@ ul {
 }
 .resultSpreadCanvas{
     position: relative;
-    width: 100vw;
-    height: 100vw;
+    width: calc(100vw - 60px);
+    height: calc(100vw - 60px);
     margin: 0 auto;
 }
 #toImgArea{
@@ -417,7 +417,7 @@ ul {
         max-width: calc(100% - 60px);
     }
     .resultSpreadCanvas{
-        width: 100vw;
-        height: 100vw;
+        width: calc(100vw - 60px);
+        height: calc(100vw - 60px);
     }
 }

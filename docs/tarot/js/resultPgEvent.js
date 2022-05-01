@@ -155,6 +155,9 @@
                         if(srcList[index]){
                             object.type = 'image'
                             object.src = srcList[index].src
+                            object.selectable = false
+                            object.hasBorders = false
+                            object.hasControls = false
                             if(srcList[index].reversed){
                                 object.angle = object.angle + 180
                             }
