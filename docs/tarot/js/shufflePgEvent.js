@@ -33,6 +33,9 @@
                 target = undefined
             }
             if(target && this.flip){
+                if(typeof target.children('.frontcover').attr('src') === 'undefined') {
+                    target.children('.frontcover').attr('src', target.children('.frontcover').data('src'))
+                }
                 target.children('.frontcover').hasClass('hide')? target.children('.frontcover').removeClass('hide') : target.children('.frontcover').addClass('hide');
                 target.children('.backcover').hasClass('hide')? target.children('.backcover').removeClass('hide') : target.children('.backcover').addClass('hide');
             }
@@ -45,9 +48,9 @@
             const cardName = card.cardList[card.defaultOption.cardArray[i].index].name
             str += '<div class="cardImgList">'
             if (card.defaultOption.cardArray[i].reversed === -1) {
-                str += '    <img class="singleCardImg frontcover reversed hide" src="./tarot/img/'+card.defaultOption.model+'/'+cardName+'.png">'
+                str += '    <img class="singleCardImg frontcover reversed hide" data-src="./tarot/img/'+card.defaultOption.model+'/'+cardName+'.png">'
             } else {
-                str += '    <img class="singleCardImg frontcover hide" src="./tarot/img/'+card.defaultOption.model+'/'+cardName+'.png">'
+                str += '    <img class="singleCardImg frontcover hide" data-src="./tarot/img/'+card.defaultOption.model+'/'+cardName+'.png">'
             }
             str += '    <img class="singleCardImg backcover" src="./tarot/img/'+card.defaultOption.model+'/backImage.png">'
             str += '</div>'

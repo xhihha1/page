@@ -221,9 +221,13 @@
                         <div class="navigationIcon"><img src="./tarot/img/icon/home.png"></div>
                         <div class="navigationText">Home</div>
                     </li>
+                    <li id="downloadText">
+                        <div class="navigationIcon"><img src="./tarot/img/icon/downTxt.png"></div>
+                        <div class="navigationText">Text</div>
+                    </li>
                     <li id="downloadImg">
-                        <div class="navigationIcon"><img src="./tarot/img/icon/home.png"></div>
-                        <div class="navigationText">Save</div>
+                        <div class="navigationIcon"><img src="./tarot/img/icon/downImg.png"></div>
+                        <div class="navigationText">Image</div>
                     </li>
                     <!-- <li id="flipAll">flip all</li> -->
                 </ul>
@@ -240,6 +244,9 @@
                     </select>
                     </label>
                 </div>
+                <div>
+                    <label>Version: 20220501</label>
+                </div>
             </div>
             <div class="navigation">
                 <ul>
@@ -253,6 +260,8 @@
     </div>
 </body>
 <script>
+    console.log('%cVersion: 20220501', "color:green")
+    console.log('%cKen.Yek', "color:green")
     $('#home').show()
     var card = new tarotClass()
     // console.log(JSON.stringify(card.defaultOption.cardArray))

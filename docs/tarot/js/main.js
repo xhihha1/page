@@ -127,7 +127,7 @@
   // 選牌牌陣
   tarotClass.prototype.chooseSpreadByIndex = function (spreadIndex) {
     const spreadObject = this.spreadList[spreadIndex]
-    console.log('spreadObject', spreadObject)
+    // console.log('spreadObject', spreadObject)
     if (spreadObject) {
       this.defaultOption.spreadType = spreadObject.type
       this.defaultOption.spreadNumber = spreadObject.num

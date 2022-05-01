@@ -10,5 +10,4 @@
             reversed: false
         }
     }
-    console.log(global.modelSetting)
 })(window)

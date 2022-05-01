@@ -12,11 +12,32 @@
             // $('#spreadPg').show()
             this.downloadImage()
         }.bind(this))
+
+        $('#downloadText').click(function(){
+            this.downloadText()
+        }.bind(this))
         // $('#cutCard').click(function(){
         //     $('.page').hide()
         //     $('#cutPg').show()
         // })
         this.initCanvas()
+    }
+
+    resultPgEvent.prototype.downloadText = function (){
+        var text = ''
+        for (let i=0;i<card.defaultOption.currentPickCard.length;i++) {
+            const idx = card.defaultOption.currentPickCard[i].index
+            const cardName = card.cardList[idx].name
+            const cardLangObj = card.getCardInfo(cardName)
+            text += JSON.stringify(cardLangObj)
+        }
+        var pngData = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text)
+        var a = $("<a>")
+        .attr("href", pngData)
+        .attr("download", "TarotResult")
+        .appendTo("body");
+        a[0].click();
+        a[0].remove();
     }
 
     resultPgEvent.prototype.downloadImage = function (){
