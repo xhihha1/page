@@ -101,6 +101,7 @@
       { type: 'five1_card_spread', num: 5, name: 'five1'},
       { type: 'mental_healing', num: 5, name: 'mentalHealing'},
       { type: 'five_card_cross', num: 5, name: 'fiveCross'},
+      { type: 'five_card_spread2', num: 5, name: 'fiveCross2'},
       { type: 'ellipse_spread', num: 7, name: 'ellipseSpread'},
       { type: 'horseshoe', num: 7, name: 'horseshoe'},
       { type: 'hexagram', num: 7, name: 'hexagram'},
