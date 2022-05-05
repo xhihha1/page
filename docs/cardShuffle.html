@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 50px;
+}
+
+.flip-card {
+  background-color: transparent;
+  width: 300px;
+  height: 300px;
+  perspective: 1000px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.flip-card-front {
+  background-color: #bbb;
+  color: black;
+}
+
+.flip-card-back {
+  background-color: #2980b9;
+  color: white;
+  transform: rotateY(180deg);
+}
+.B{
+position:relative;
+width: 100px;
+  height: 100px;
+perspective: 100px;
+  perspective-origin: center;  
+}
+.A{
+	position:relative;
+  width: 100px;
+  height: 100px;
+  background-color: #FF0000;
+  /*transform:matrix3d(1, 0, 0, 0, 0, 0.5, 0.866025, 0, 0, -0.866025, 0.5, 0, 0, -19.5, 0, 1);*/
+  transform: rotateX(40deg);
+}
+.A1{
+	position:absolute;
+    top:10px;
+  width: 100px;
+  height: 100px;
+  background-color: #FF0000;
+  /*transform:matrix3d(1, 0, 0, 0, 0, 0.5, 0.866025, 0, 0, -0.866025, 0.5, 0, 0, -19.5, 0, 1);*/
+  transform: rotateX(40deg);
+}
+.card{
+  position:absolute;
+  width: 100px;
+  height: 100px;
+  background-color: #FF0000;
+  transform: rotateX(40deg);
+}
+.card:hover{
+background-color: #FF00FF;
+}
+</style>
+</head>
+<body>
+
+<h1>Card Flip with Text</h1>
+<h3>Hover over the image below:</h3>
+
+<div class="flip-card">
+  <div class="flip-card-inner">
+    <div class="flip-card-front">
+      <img src="img_avatar.png" alt="Avatar" style="width:300px;height:300px;">
+    </div>
+    <div class="flip-card-back">
+      <h1>John Doe</h1> 
+      <p>Architect & Engineer</p> 
+      <p>We love that guy</p>
+    </div>
+  </div>
+</div>
+<div class="B" id="BB">
+  <div class="A">AA</div>
+  <div class="A1">AA</div>
+</div>
+<div>AAA</div>
+<script>
+var bb = document.getElementById("BB");
+bb.innerHTML = ''
+let i = 0;
+
+function myFunction() {
+  let i = 0;
+  let str = ''
+  while(i<78){
+  	str += '<div class="card" style="top:'+i*2+'px;z-index:'+(78-i)+';">'+i+'</div>'
+  	i++
+  }
+  bb.innerHTML = str;
+}
+// myFunction()
+ani()
+function ani() {
+var speed = 50;
+	let str = ''
+  if(i<78){
+  	str += '<div class="card" style="top:'+i*5+'px;z-index:'+(78-i)+';">'+i+'</div>'
+  	i++
+    bb.innerHTML += str;
+    setTimeout(ani, speed)
+  } else {
+    let e = false;
+    const highlightedItems = document.querySelectorAll(".card");
+    highlightedItems.forEach(function(userItem) {
+      userItem.style.top = parseInt(userItem.style.top) < 1? '0px' : (parseInt(userItem.style.top) - 2) + 'px'
+      if (parseInt(userItem.style.top) > 0) { e = true; }
+    });
+    if(e) {
+    	setTimeout(ani, speed)
+    }
+  }
+}
+</script>
+
+</body>
+</html>
