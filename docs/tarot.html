@@ -24,6 +24,7 @@
     <script src="./tarot/libs/fabric/fabric.min.js"></script>
     <script src="./tarot/libs/fabric/customClass.js"></script>
     <script src="./tarot/libs/slick/slick.min.js"></script>
+    <script src="./tarot/lang/spread/info.js"></script>
     <script src="./tarot/js/main.js"></script>
     <script src="./tarot/setting/modelSettting.js"></script>
     <script src="./tarot/lang/RiderWaite/tw.js"></script>
@@ -50,6 +51,13 @@
     <div id="main">
         <section id="home" class="page">
             <div class="contain">
+                <div id="openingTextCover" class="openingCover">
+                    <div id="openingText">
+                        <p>
+                            The Tarot embodies symbolical presentations of universal ideas, behind which lie all the implicits of the human mind, and it is in this sense that they contain secret doctrine, which is the realization by the few of truths imbedded in the consciousness of all.
+                        </p>
+                    </div>
+                </div>
                 <div class="resultCard"><img class="singleCardImg" src="./tarot/img/backImage.png"></div>
                 <div class="cardInfo">
                     <ul>
@@ -158,10 +166,19 @@
                 <div id="spreadSelectArea">
                     <select id="spreadSelect">
                     </select>
+                    <i id="spreadInfo"></i>
                 </div>
                 <div id="product-slider" class="kl-product-slider">
                     <div class="white">A</div>
                     <div class="white">B</div>
+                </div>
+                <div id="spreadInfoArea" style="display: none;">
+                    <div class="spreadInfoAreaText">
+                        <p></p>
+                    </div>
+                    <div>
+                        <button id="spreadInfoAreaOK">OK</button>
+                    </div>
                 </div>
             </div>
             <div class="navigation">
