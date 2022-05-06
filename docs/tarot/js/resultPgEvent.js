@@ -64,6 +64,7 @@
     }
     resultPgEvent.prototype.showSelect = function (){
         const card = this.card
+        let sendMsgObj = { card: [], spread: ''}
         const spreadObj = card.getCurrentSpread()
         // let str = ''
         // str += '<div class="resultSpreadName">'+spreadObj.type+'</div>'
@@ -71,6 +72,7 @@
         // $('#spreadArea').html(str)
         $('.resultSpreadName').html(spreadObj.type)
         this.loadJson(spreadObj.name)
+        sendMsgObj.spread = spreadObj.name
         str = ''
         for (let i=0;i<card.defaultOption.currentPickCard.length;i++) {
             const idx = card.defaultOption.currentPickCard[i].index
@@ -111,8 +113,12 @@
             if(cardLangObj.text) { str += '        <div>'+cardLangObj.text+'</div>' }
             str += '    </div>'
             str += '</li>'
+            sendMsgObj.card.push(cardLangObj.title + '('+ reversed +')')
         }
         $('#resultPg .cardInfo > ul').html(str)
+        if(global.callLine){
+            global.callLine.sendMsg(JSON.stringify(sendMsgObj))
+        }
     }
     resultPgEvent.prototype.initCanvas = function () {
         this.__canvas = new fabric.Canvas('c');

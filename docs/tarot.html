@@ -43,6 +43,7 @@
     
     
     <link href="./tarot/css/main.css" rel="stylesheet"> 
+    <script src="./tarot/js/sendLineAPI.js"></script>
 </head>
 
 <body>
@@ -296,5 +297,6 @@
     var pickCardObj = new pickCardPgEvent(card)
     freeDrawSpreadPgEvent()
     var resultObj = new resultPgEvent(card)
+    window.callLine = new lineApi()
 </script>
 </html>
