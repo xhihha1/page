@@ -18,10 +18,13 @@
             $('#product-slider').slick('unslick');
             pickCardObj.createCardList()
         }.bind(this))
-        // $('#cutCard').click(function(){
-        //     $('.page').hide()
-        //     $('#cutPg').show()
-        // })
+        $('#spreadInfo').click(function(){
+            $('#spreadInfoArea').fadeIn("slow")
+            $('#spreadInfoArea .spreadInfoAreaText').html(getSpreadInfo(this.card.spreadList[$('#spreadSelect').val()].type))
+        }.bind(this))
+        $('#spreadInfoAreaOK').click(function(){
+            $('#spreadInfoArea').fadeOut("slow")
+        })
     }
     spreadPgEvent.prototype.setSpreadList = function (){
         const card = this.card

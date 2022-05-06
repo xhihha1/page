@@ -41,6 +41,12 @@
             name: 'fiveCross'
         },
         {
+            type: 'five_card_spread2',
+            num: 5,
+            name: 'fiveCross2',
+            info: '① 問題。<br/>② 內在心境。<br/>③ 外在情勢。<br/>④ 建議與理解。<br/>⑤ 洞見/綜觀全局。'
+        },
+        {
             type: 'ellipse_spread',
             num: 7,
             name: 'ellipseSpread'
@@ -88,5 +94,15 @@
             name: 'other'
         }
     ]
+    global.getSpreadInfo = function(type) {
+        const text = info.find((i) => {
+            return i.type === type
+        })
+        if (text && text.info) {
+            return text.info
+        } else {
+            return ''
+        }
+    }
     // global.language.Voyager.tw.card = majorArcana.concat(minorArcana)
 })(window)
