@@ -2,7 +2,8 @@
     const info = [{
             type: 'one_card_spread',
             num: 1,
-            name: 'one'
+            name: 'one',
+            info: '① 代表問題的解法或目前狀態。'
         },
         {
             type: 'two_card_spread',
@@ -13,7 +14,7 @@
             type: 'three_card_spread',
             num: 3,
             name: 'three',
-            info: '① 代表過去的情況與狀況。<br>② 代表現在的狀態與處境。<br>③ 代表未來的走向與趨勢。'
+            info: '① 代表過去的情況與狀況。<br>② 代表現在的狀態與處境。<br>③ 代表未來的走向與趨勢。<br/>靈魂　　心理　　身體　　—身心靈牌陣<br/>前面　　中間　　後面　　—空間方位牌陣<br/>自己　　關係　　對方　　—愛情關係牌陣<br/>上司　　自己　　屬下　　—職場人際牌陣'
         },
         {
             type: 'four_card_spread',

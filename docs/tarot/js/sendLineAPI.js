@@ -15,9 +15,9 @@
         this.ws = new WebSocket(wsurl, 'echo-protocol');
         this.ws.onopen = function () {
             console.log("WS connected.");
-            setTimeout(function () {
-                this.sendMsg('Welcome to Hi Tarot');
-            }.bind(this), 5000);
+            // setTimeout(function () {
+            //     this.sendMsg('Welcome to Hi Tarot');
+            // }.bind(this), 5000);
 
         }.bind(this);
         this.ws.onclose = function () {

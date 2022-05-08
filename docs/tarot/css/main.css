@@ -323,6 +323,11 @@ ul {
     overflow: hidden;
     color: rgb(200,166,118);
 }
+.spreadInfoAreaText{
+    text-align: left;
+    padding: 10px;
+    overflow: auto;
+}
 .spreadListCard{
     color: white;
     overflow: hidden;
