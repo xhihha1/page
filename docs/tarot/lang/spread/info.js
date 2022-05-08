@@ -29,17 +29,20 @@
         {
             type: 'five1_card_spread',
             num: 5,
-            name: 'five1'
+            name: 'five1',
+            info: '1. What are you avoiding that you need to face?<br/>2. How are you separating yourself from others?<br/>3. How can you get along better with others?<br/>4. What responsibilities do you need to accept and take on?<br/>5. How is guilt affecting your life and your decision making?<br/>'
         },
         {
             type: 'mental_healing',
             num: 5,
-            name: 'mentalHealing'
+            name: 'mentalHealing',
+            info: '1. What am I seeing in others that I can\'t seein myself?<br/>2. What is the source of this projection?<br/>3. What part of this projection can I reclaim?<br/>4. What feelings will I experience when I release this pattern?<br/>5. What could I gain, like a skill or knowledge, by reclaiming this projection?<br/>'
         },
         {
             type: 'five_card_cross',
             num: 5,
-            name: 'fiveCross'
+            name: 'fiveCross',
+            info: '1. Past<br/>2. Present<br/>3. Future<br/>4. Core reason for circumstances<br/>5. Potential situation<br/>'
         },
         {
             type: 'five_card_spread2',
@@ -50,12 +53,14 @@
         {
             type: 'ellipse_spread',
             num: 7,
-            name: 'ellipseSpread'
+            name: 'ellipseSpread',
+            info: '算與他人的緣分<br/>1. 代表的是求問者過去的戀愛經驗。<br/>2. 則是求問者與對方目前的狀況。<br/>3. 是求問者與對方的未來狀況。<br/>4. 象徵的是這副牌建議求問者採取的行動。<br/>5. 是對方的個性、行事的特徵。<br/>6. 為兩人關係可能出現的阻礙。<br/>7. 代表兩人最終的結局。 <br/>'
         },
         {
             type: 'horseshoe',
             num: 7,
-            name: 'horseshoe'
+            name: 'horseshoe',
+            info: '1. Past<br/>2. Present<br/>2. Future<br/>3. Future<br/>4. Attitude towards question<br/>5. Other influences<br/>6. Obstacles<br/>7. Likely outcome<br/>'
         },
         {
             type: 'hexagram',
@@ -66,7 +71,8 @@
         {
             type: 'work_dicision_making',
             num: 9,
-            name: 'workDicisionMaking'
+            name: 'workDicisionMaking',
+            info: '請先設定工作A, B<br/>1. 就個人而言我在尋找什麼類型工作<br/>2. 若要選擇工作A所給的提示<br/>3. 若要選擇工作B所給的提示<br/>4.工作A對我的吸引力<br/>5.6. 工作A的優點、缺點<br/>7. 工作B對我的吸引力<br/>8.9. 工作B的優點、缺點<br/>'
         },
         {
             type: 'celtic_cross_spread',
@@ -77,17 +83,20 @@
         {
             type: 'relationship_spread',
             num: 10,
-            name: 'relationship'
+            name: 'relationship',
+            info: '1. Distant past influences<br/>2. Rcent past influences<br/>3. Current state of the relationship<br/>4. Future influences<br/>5. External influences<br/>6. Beliefs<br/>7.Favorable energy<br/>8.What\'s working against<br/>9.Hopes and/or fears<br/>10. Outcome for the relationship<br/>'
         },
         {
             type: 'zodiac_twelve_spread',
             num: 12,
-            name: 'zodiac12'
+            name: 'zodiac12',
+            info: '牌序	宮序	星宮	對應牌	位置意義<br/>1	第一宮	白羊	4. The Emperor	性格, 外表<br/>2	第二宮	金牛	5. Hierophant	財政, 物質<br/>3	第三宮	雙子	6. The Lovers	溝通, 學習<br/>4	第四宮	巨蟹	7. The Chariot	家庭, 生活的根基<br/>5	第五宮	獅子	8. Strength	娛樂, 愛情生活<br/>6	第六宮	處女	9. Hermit	工作, 健康生活<br/>7	第七宮	天坪	11. Justice	合作, 合伙事宜<br/>8	第八宮	天蠍	13. The Death	死亡, 遺囑, 意願<br/>9	第九宮	射手	14. Temperance	旅行, 運動, 信仰, 哲理<br/>10	第十宮	山羊	15. The Devil	前途, 理想<br/>11	第十一宮	水瓶	17. The Star	友情, 團體, 社會<br/>12	第十二宮	雙魚	18. The Moon	內在自我, 靈性, 秘密<br/>'
         },
         {
             type: 'zodiac_thirteen_spread',
             num: 13,
-            name: 'zodiac13'
+            name: 'zodiac13',
+            info: '求問運勢<br/>1. 個人特性、行事的風格<br/>2. 金錢運<br/>3. 和兄弟姊妹的關係<br/>4. 家庭狀況/和母親的關係<br/>5. 戀愛運/和子女的關係<br/>6. 身體健康的狀況<br/>7. 人際關係/婚姻運<br/>8. 性生活狀況<br/>9. 學業運/海外旅行機運<br/>10. 工作運/和父親的關係<br/>11. 朋友的狀態<br/>12. 意外的事件<br/>13. 整體運勢的走向<br/>'
         },
         {
             type: 'other_spread',
