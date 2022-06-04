@@ -171,11 +171,19 @@
 
             function readImageMarker(marker) {
                 if (marker.idPatt === -1) {
-                    console.log('%c number ' + marker.idMatrix, 'color: blue;')
-                    document.getElementById('t1').style.color = 'blue'
+                    if(marker.idMatrix !== -1) {
+                        console.log('%c number ' + marker.idMatrix, 'color: blue;')
+                        document.getElementById('t1').style.color = 'blue'
+                        document.getElementById('chromaVideo').pause()
+                    } else{
+                        console.log('%c number ' + marker.idMatrix, 'color: blue;')
+                    }
                 } else {
                     console.log('%c pattern ' + marker.idPatt, 'color: red;')
                     document.getElementById('t1').style.color = 'red'
+                    if (document.getElementById('chromaVideo').paused || document.getElementById('chromaVideo').ended) {
+						document.getElementById('chromaVideo').play()
+					}
                 }
             }
         }
