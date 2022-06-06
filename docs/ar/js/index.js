@@ -263,6 +263,7 @@ $(document).ready(function () {
         const tracks = stream.getTracks();
         tracks.forEach(function (track) {
             const constraints = track.getConstraints();
+            console.log('constraints---', constraints, constraints.facingMode)
             if (constraints.facingMode === 'user') {
                 constraints.facingMode = 'environment'
             } else {
