@@ -261,28 +261,36 @@ $(document).ready(function () {
         const videoElem = document.getElementById('vid')
         const stream = videoElem.srcObject;
         const tracks = stream.getTracks();
-        tracks.forEach(function (track) {
-            const constraints = track.getConstraints();
-            if(constraints.video){
-                if(typeof constraints.video === 'boolean' || typeof constraints.video.facingMode === 'undefined') {
-                    constraints.video = { facingMode: 'user' }
-                }
-                if (constraints.video.facingMode === 'user') {
-                    constraints.video.facingMode = 'environment'
-                } else {
-                    constraints.video.facingMode = 'user'
-                }
-                track.applyConstraints(constraints);
-            }
-        })
         // tracks.forEach(function (track) {
-        //     track.stop();
-        // });
-        // videoElem.pause()
-        // videoElem.srcObject = null;
-        // if(constraints.facingMode !== 'environment') {
-
-        // }
+        //     // const constraints = track.getConstraints();
+        //     if(constraints.video){
+        //         if(typeof constraints.video === 'boolean' || typeof constraints.video.facingMode === 'undefined') {
+        //             constraints.video = { facingMode: 'user' }
+        //         }
+        //         if (constraints.video.facingMode === 'user') {
+        //             constraints.video.facingMode = 'environment'
+        //         } else {
+        //             constraints.video.facingMode = 'user'
+        //         }
+        //         track.applyConstraints(constraints);
+        //     }
+        // })
+        tracks.forEach(function (track) {
+            track.stop();
+        });
+        videoElem.pause()
+        videoElem.srcObject = null;
+        if(constraints.video){
+            if(typeof constraints.video === 'boolean' || typeof constraints.video.facingMode === 'undefined') {
+                constraints.video = { facingMode: 'user' }
+            }
+            if (constraints.video.facingMode === 'user') {
+                constraints.video.facingMode = 'environment'
+            } else {
+                constraints.video.facingMode = 'user'
+            }
+            globalMethod.getCameraStream(videoElem);
+        }
     })
     $('#toggleCamera').on('click', function () {
         const videoElem = document.getElementById('vid')
