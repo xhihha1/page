@@ -1,0 +1,67 @@
+html, body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+    background: black;
+    color: #FFFFFF;
+}
+.viewPg, #debugPg{
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+#debugPg{
+    position: relative;
+    width: 0px;
+    height: 0px;
+    overflow: hidden;
+}
+#startPg{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#startBtn{
+    padding: 0;
+    width: 100px;
+    height: 100px;
+    background-image: url(../img/start.png);
+    background-repeat: no-repeat;
+    background-color: transparent;
+    background-size: 90% 90%;
+    background-position: center;
+}
+#startBtn:hover{
+    background-size: 100% 100%;
+}
+#startBtn:active{
+    background-size: 85% 85%;
+}
+#scanPgTop, #playgroundPgTop{
+    position: relative;
+    width: 100%;
+    height: calc(100% - 50px);
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#scanPgBottom, #playgroundPgBottom{
+    position: relative;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    text-align: center;
+}
+#canvas{
+    /* position: absolute;
+    width: 100%;
+    height: 100%; */
+}
