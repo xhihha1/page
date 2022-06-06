@@ -263,18 +263,26 @@ $(document).ready(function () {
         const tracks = stream.getTracks();
         tracks.forEach(function (track) {
             const constraints = track.getConstraints();
-            console.log('constraints---', constraints, constraints.facingMode)
-            if (constraints.facingMode === 'user') {
-                constraints.facingMode = 'environment'
-            } else {
-                constraints.facingMode = 'user'
+            if(constraints.video){
+                if(typeof constraints.video === 'boolean' || typeof constraints.video.facingMode === 'undefined') {
+                    constraints.video = { facingMode: 'user' }
+                }
+                if (constraints.video.facingMode === 'user') {
+                    constraints.video.facingMode = 'environment'
+                } else {
+                    constraints.video.facingMode = 'user'
+                }
+                track.applyConstraints(constraints);
             }
-            track.applyConstraints(constraints);
         })
         // tracks.forEach(function (track) {
         //     track.stop();
         // });
+        // videoElem.pause()
         // videoElem.srcObject = null;
+        // if(constraints.facingMode !== 'environment') {
+
+        // }
     })
     $('#toggleCamera').on('click', function () {
         const videoElem = document.getElementById('vid')
