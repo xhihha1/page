@@ -9,6 +9,7 @@ let constraints = {
     // }
     video: true
 };
+let threeObj
 
 const createVideo = (id, width, height) => {
     let video
@@ -64,7 +65,10 @@ const getFrameFromVideo = (video, canvas) => {
 
     }
 
-
+    if(threeObj){
+        threeObj.renderer.render(threeObj.scene, threeObj.camera);
+    }
+    
 
     requestAnimationFrame(() => getFrameFromVideo(video, canvas));
 };
@@ -136,6 +140,7 @@ function controlARToolkip() {
             if (document.getElementById('chromaVideo').paused || document.getElementById('chromaVideo').ended) {
                 document.getElementById('chromaVideo').play()
             }
+            $('#toPlayground').click()
         }
     }
 }
@@ -311,6 +316,10 @@ $(document).ready(function () {
         $('.viewPg').hide()
         $('#playgroundPg').show()
         $('#debugPg').show()
+        if(threeObj){
+            threeObj.renderer.setSize($('#playgroundPgTop').width(), $('#playgroundPgTop').height());
+            threeObj.renderer.setPixelRatio(window.devicePixelRatio);
+        }
     })
     $('#toScan').on('click', function () {
         $('.viewPg').hide()
@@ -333,8 +342,13 @@ $(document).ready(function () {
     })
     $(window).on('resize', function () {
         globalMethod.resizeCanvas()
+        if(threeObj){
+            threeObj.renderer.setSize($('#playgroundPgTop').width(), $('#playgroundPgTop').height());
+            threeObj.renderer.setPixelRatio(window.devicePixelRatio);
+        }
     })
     init()
+    threeObj = loadThree()
 })
 
 function init() {
