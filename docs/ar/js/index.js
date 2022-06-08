@@ -10,6 +10,7 @@ let constraints = {
     video: true
 };
 let threeObj
+const clock = new THREE.Clock();
 
 const createVideo = (id, width, height) => {
     let video
@@ -66,6 +67,13 @@ const getFrameFromVideo = (video, canvas) => {
     }
 
     if(threeObj){
+        const deltaTime = clock.getDelta();
+        if ( currentVrm ) {
+            currentVrm.update( deltaTime );
+        }
+        if ( currentMixer ) {
+            currentMixer.update( deltaTime );
+        }
         threeObj.renderer.render(threeObj.scene, threeObj.camera);
     }
     
