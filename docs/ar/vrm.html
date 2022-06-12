@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>three-vrm example</title>
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<style>
+		body {
+			margin: 0;
+		}
+
+		canvas {
+			display: block;
+		}
+
+		#motion {
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			color: white;
+		}
+
+		#webacamCanvas {
+			transform: rotateY(180deg);
+		}
+	</style>
+</head>
+
+<body>
+	<div id="vrm"></div>
+	<div id="motion">
+		<div id="loading-indicator">PoseNet model is loading.</div>
+		<canvas id="webacamCanvas" width="480" height="320"></canvas>
+		<video id="video" width="480" height="320" style="display:none;" autoplay playsinline>Video stream not
+			available.</video>
+	</div>
+	<!-- <img src="./img/yoga1.jpg" id="yoga1">
+	<img src="./img/yoga2.jpg" id="yoga2"> -->
+	<script src="./js/thirdParty/three.js"></script>
+	<script src="./js/thirdParty/GLTFLoader.js"></script>
+	<script src="./js/thirdParty/OrbitControls.js"></script>
+	<script src="./js/thirdParty/three-vrm.js"></script>
+	<!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script> -->
+	<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
+	<script src="https://cdn.jsdelivr.net/npm/kalidokit@1.1/dist/kalidokit.umd.js"></script>
+	<script>
+		//===================================
+		// motion capture process
+		let clearTime
+		let countNum = 0;
+		let poseStore = {};
+		const webacamCanvas = document.getElementById("webacamCanvas");
+		const webcamCtx = webacamCanvas.getContext("2d");
+		const video = document.getElementById('video');
+		// display camera movie Canvas detected parts
+		function detectAndDraw(net) {
+			webcamCtx.drawImage(video, 0, 0, 480, 320);
+			console.log('net: ', net)
+			net.estimateSinglePose(video, {
+					flipHorizontal: false
+				})
+				.then(function (pose) {
+					drawKeypoints(pose);
+				});
+			// net.estimatePoses(video, {
+			// 	flipHorizontal: false,
+			// 	decodingMethod: "single-person"
+			// })
+			// .then(function(pose) {
+			// 	// console.log(pose)
+			// 	drawKeypoints(pose);
+			// });
+		}
+
+		function detectAndDrawDetector(detector) {
+			webcamCtx.drawImage(video, 0, 0, 480, 320);
+			// console.log('net: ', net)
+			// net.estimateSinglePose(video, {
+			// 		flipHorizontal: false
+			// 	})
+			// 	.then(function (pose) {
+			// 		drawKeypoints(pose);
+			// 	});
+			const yoga1 = document.getElementById("yoga1");
+			const yoga2 = document.getElementById("yoga2");
+			// detector.estimatePoses(yoga1).then(function (poses) {
+			// 	if (poses.length > 0) {
+			// 		console.log('poses: ', poses)
+			// 		// clearInterval(clearTime)
+			// 		drawKeypoints3D(poses[0])
+			// 	}
+			// });
+			detector.estimatePoses(video).then(function (poses) {
+				if (poses.length > 0) {
+					// console.log('poses: ', poses)
+					// clearInterval(clearTime)
+					drawKeypoints3D(poses[0])
+					const riggedPose = Kalidokit.Pose.solve(poses[0].keypoints3D, poses[0].keypoints, {
+						runtime: "tfjs", // `mediapipe` or `tfjs`
+						video: yoga1,
+						// imageSize: {
+						// 	height: 0,
+						// 	width: 0
+						// },
+						enableLegs: true,
+					});
+					// console.log('riggedPose: ', riggedPose)
+					rigRotation("Hips", riggedPose.Hips.rotation, 0.7);
+					// rigPosition(
+					// 	"Hips", {
+					// 		x: riggedPose.Hips.position.x, // Reverse direction
+					// 		y: riggedPose.Hips.position.y + 1, // Add a bit of height
+					// 		z: -riggedPose.Hips.position.z, // Reverse direction
+					// 	},
+					// 	1,
+					// 	0.07
+					// );
+					rigRotation("Chest", riggedPose.Spine, 0.25, 0.3);
+					rigRotation("Spine", riggedPose.Spine, 0.45, 0.3);
+
+					rigRotation("RightUpperArm", riggedPose.RightUpperArm, 1, 0.3);
+					rigRotation("RightLowerArm", riggedPose.RightLowerArm, 1, 0.3);
+					rigRotation("LeftUpperArm", riggedPose.LeftUpperArm, 1, 0.3);
+					rigRotation("LeftLowerArm", riggedPose.LeftLowerArm, 1, 0.3);
+
+					rigRotation("LeftUpperLeg", riggedPose.LeftUpperLeg, 1, 0.3);
+					rigRotation("LeftLowerLeg", riggedPose.LeftLowerLeg, 1, 0.3);
+					rigRotation("RightUpperLeg", riggedPose.RightUpperLeg, 1, 0.3);
+					rigRotation("RightLowerLeg", riggedPose.RightLowerLeg, 1, 0.3);
+				}
+			});
+		}
+		// draw detected parts by PoseNet
+		function drawKeypoints3D(pose) {
+			// if(countNum > 0) {
+			// 	return 0
+			// } else {
+			// 	countNum = 1
+			// }
+			pose.keypoints3D.forEach(keypoint => {
+				if (keypoint.score > 0.4) {
+					let x = keypoint.x
+					let y = keypoint.y * -1
+					let z = keypoint.z * -1
+					if (poseStore[keypoint.name]) {
+						poseStore[keypoint.name] = {
+							x: x,
+							y: y,
+							z: z
+						};
+						scene.children.forEach((node) => {
+							if (node.name === keypoint.name) {
+								node.position.set(x, y, z)
+							}
+						})
+					} else {
+						poseStore[keypoint.name] = {
+							x: x,
+							y: y,
+							z: z
+						};
+						const geometry = new THREE.SphereGeometry(
+							0.02,
+							32,
+							16,
+							0,
+							Math.PI * 2,
+							0,
+							Math.PI
+						);
+						const material = new THREE.MeshStandardMaterial({
+							color: '#FF0000',
+							transparent: false,
+							opacity: 0.5
+						});
+						const sphere = new THREE.Mesh(geometry, material);
+						sphere.position.set(x, y, z)
+						sphere.name = keypoint.name
+						scene.add(sphere);
+					}
+				}
+			})
+			renderer.render(scene, camera);
+		}
+
+		function drawKeypoints(pose) {
+			// console.log('pose: ', pose)
+			pose.keypoints.forEach(keypoint => {
+				if (keypoint.score > 0.4) {
+
+					poseStore[keypoint.part] = {
+						x: 480 / 2 - keypoint.position.x,
+						y: 320 / 2 - keypoint.position.y
+					};
+
+					webcamCtx.beginPath();
+					webcamCtx.fillStyle = "rgb(255, 255, 0)"; // 黄色
+					webcamCtx.arc(
+						keypoint.position.x,
+						keypoint.position.y,
+						5,
+						(10 * Math.PI) / 180,
+						(80 * Math.PI) / 180,
+						true
+					);
+					webcamCtx.fill();
+					webcamCtx.fillText(
+						keypoint.part,
+						keypoint.position.x,
+						keypoint.position.y + 10
+					);
+				}
+			});
+		}
+		poseDetection.createDetector(
+			poseDetection.SupportedModels.BlazePose, {
+				runtime: 'tfjs',
+				// modelType: 'lite'
+				modelType: 'lite'
+			}
+		).then(function (detector) {
+			const yoga1 = document.getElementById("yoga1");
+			const yoga2 = document.getElementById("yoga2");
+			detector.estimatePoses(yoga2).then(function (poses) {
+				if (poses.length > 0) {
+					console.log('poses: ', poses)
+					// clearInterval(clearTime)
+					drawKeypoints3D(poses[0])
+					const riggedPose = Kalidokit.Pose.solve(poses[0].keypoints3D, poses[0].keypoints, {
+						runtime: "tfjs", // `mediapipe` or `tfjs`
+						video: yoga1,
+						// imageSize: {
+						// 	height: 0,
+						// 	width: 0
+						// },
+						enableLegs: true,
+					});
+					console.log('riggedPose: ', riggedPose)
+					rigRotation("Hips", riggedPose.Hips.rotation, 0.7);
+					// rigPosition(
+					// 	"Hips", {
+					// 		x: riggedPose.Hips.position.x, // Reverse direction
+					// 		y: riggedPose.Hips.position.y + 1, // Add a bit of height
+					// 		z: -riggedPose.Hips.position.z, // Reverse direction
+					// 	},
+					// 	1,
+					// 	0.07
+					// );
+
+					rigRotation("Chest", riggedPose.Spine, 0.25, 0.3);
+					rigRotation("Spine", riggedPose.Spine, 0.45, 0.3);
+
+					rigRotation("RightUpperArm", riggedPose.RightUpperArm, 1, 0.3);
+					rigRotation("RightLowerArm", riggedPose.RightLowerArm, 1, 0.3);
+					rigRotation("LeftUpperArm", riggedPose.LeftUpperArm, 1, 0.3);
+					rigRotation("LeftLowerArm", riggedPose.LeftLowerArm, 1, 0.3);
+
+					rigRotation("LeftUpperLeg", riggedPose.LeftUpperLeg, 1, 0.3);
+					rigRotation("LeftLowerLeg", riggedPose.LeftLowerLeg, 1, 0.3);
+					rigRotation("RightUpperLeg", riggedPose.RightUpperLeg, 1, 0.3);
+					rigRotation("RightLowerLeg", riggedPose.RightLowerLeg, 1, 0.3);
+				}
+			});
+		});
+
+		// get camera movie
+		navigator.mediaDevices.getUserMedia({
+				audio: false,
+				video: true
+			})
+			.then(function (mediaStream) {
+				// set video tag srcObject
+				video.srcObject = mediaStream;
+				video.onloadedmetadata = function (e) {
+					video.play();
+				};
+				// return posenet.load();
+				// const model = poseDetection.SupportedModels.BlazePose;
+				// const detectorConfig = {
+				// 	runtime: 'mediapipe', // or 'tfjs'
+				// 	modelType: 'full'
+				// };
+				// detector = await poseDetection.createDetector(model, detectorConfig);
+				return poseDetection.createDetector(
+					poseDetection.SupportedModels.BlazePose, {
+						runtime: 'tfjs',
+						// modelType: 'lite'
+						modelType: 'lite'
+					}
+				);
+			})
+			.then(function (detector) {
+				// .then(function (net) {
+				console.log('detector: ', detector)
+				// var loadingIndicator = document.getElementById("loading-indicator");
+				// loadingIndicator.style.display = 'none';
+				// setInterval(function () { detectAndDraw(net); }, 100);
+				// poses = await detector.estimatePoses(image);
+				// const poses = await detector.estimatePoses(video);
+
+				clearTime = setInterval(function () {
+					detectAndDrawDetector(detector)
+				}, 200);
+			});
+		//===================================
+
+		// renderer
+		const renderer = new THREE.WebGLRenderer();
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		renderer.setPixelRatio(window.devicePixelRatio);
+		document.getElementById('vrm').appendChild(renderer.domElement);
+
+		// camera
+		const camera = new THREE.PerspectiveCamera(30.0, window.innerWidth / window.innerHeight, 0.1, 20.0);
+		camera.position.set(0.0, 1.0, 5.0);
+
+		// camera controls
+		const controls = new THREE.OrbitControls(camera, renderer.domElement);
+		controls.screenSpacePanning = true;
+		controls.target.set(0.0, 1.0, 0.0);
+		controls.update();
+
+		// scene
+		const scene = new THREE.Scene();
+
+		// light
+		const light = new THREE.DirectionalLight(0xffffff);
+		light.position.set(1.0, 1.0, 1.0).normalize();
+		scene.add(light);
+
+		// gltf and vrm
+		let currentVrm = undefined;
+		const loader = new THREE.GLTFLoader();
+		loader.crossOrigin = 'anonymous';
+		loader.load(
+
+			"./img/KenV.vrm",
+
+			(gltf) => {
+
+				console.log(gltf)
+
+				THREE.VRM.from(gltf).then((vrm) => {
+
+					scene.add(vrm.scene);
+					var box1 = new THREE.Box3().setFromObject(vrm.scene);
+					// console.log('boundingBox', box1)
+					var width = Math.abs(box1.max.x - box1.min.x)
+					var depth = Math.abs(box1.max.y - box1.min.y)
+					var height = Math.abs(box1.max.z - box1.min.z)
+					console.log('-----------boundingBox:', box1, width, depth, height)
+					currentVrm = vrm;
+
+					vrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.Hips).rotation.y = Math.PI;
+
+					console.log(vrm);
+
+				});
+
+			},
+
+			(progress) => {
+				document.getElementById('loading-indicator').innerHTML = ((100.0 * (progress.loaded / progress.total)) +
+					'%');
+				console.log('Loading model...', 100.0 * (progress.loaded / progress.total), '%')
+			},
+
+			(error) => console.error(error)
+
+		);
+
+		// helpers
+		const gridHelper = new THREE.GridHelper(10, 10);
+		scene.add(gridHelper);
+
+		const axesHelper = new THREE.AxesHelper(5);
+		scene.add(axesHelper);
+
+		// animate
+		const clock = new THREE.Clock();
+
+		let angleStore = {};
+
+		// X axis
+		function getAngleFromX(pos2, pos1) {
+			// console.log(pos1)
+			// return Math.atan2(pos2.y - pos1.y, pos2.x - pos1.x);
+			return Math.atan2(pos2.z - pos1.z, pos2.y - pos1.y);
+			// return Math.atan2(pos2.z - pos1.z, pos2.x - pos1.x);
+		}
+
+		function getAngleX(pos2, pos1) {
+			return Math.atan2(pos2.z - pos1.z, pos2.y - pos1.y);
+		}
+
+		function getAngleY(pos2, pos1) {
+			return Math.atan2(pos2.x - pos1.x, pos2.z - pos1.z);
+		}
+
+		function getAngleZ(pos2, pos1) {
+			return Math.atan2(pos2.y - pos1.y, pos2.x - pos1.x);
+		}
+
+		function animate() {
+
+			requestAnimationFrame(animate);
+
+			const deltaTime = clock.getDelta();
+
+			if (currentVrm) {
+				// currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.Spine).rotation.x = Math.PI / 2;
+				// currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.Spine).rotation.y = Math.PI / 2;
+				// currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.Spine).rotation.z = Math.PI / 2;
+				// currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.Chest).rotation.x = angleX;
+				if (poseStore) {
+
+					// if (poseStore['left_shoulder'] && poseStore['right_shoulder']) {
+					// 	let angleX = getAngleX(poseStore['right_shoulder'], poseStore['left_shoulder']);
+					// 	let angleY = getAngleY(poseStore['right_shoulder'], poseStore['left_shoulder']);
+					// 	let angleZ = getAngleZ(poseStore['right_shoulder'], poseStore['left_shoulder']);
+					// 	if (angleX !== null) {
+					// 		angleStore.ChestX = angleX;
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.Chest).rotation.x = Math.PI / 2 +
+					// 			angleX;
+					// 	}
+					// 	if (angleY !== null) {
+					// 		angleStore.ChestY = angleY;
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.Spine).rotation.y = Math.PI / 2 +
+					// 			angleY;
+					// 	}
+					// 	// if (angleZ !== null) {
+					// 	// 	angleStore.ChestZ = angleZ;
+					// 	// 	currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.Chest).rotation.z = Math.PI / 2 - angleZ;
+					// 	// }
+					// }
+					// if (poseStore['left_shoulder'] && poseStore['left_hip']) {
+					// 	let angleX = getAngleX(poseStore['left_hip'], poseStore['left_shoulder']);
+					// 	let angleY = getAngleY(poseStore['left_hip'], poseStore['left_shoulder']);
+					// 	let angleZ = getAngleZ(poseStore['left_hip'], poseStore['left_shoulder']);
+					// 	// if (angleX !== null) {
+					// 	// 	angleStore.ChestX = angleX;
+					// 	// 	currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.Spine).rotation.x = Math.PI / 2 + angleX;
+					// 	// }
+					// 	// if (angleY !== null) {
+					// 	// 	angleStore.ChestY = angleY;
+					// 	// 	currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.Chest).rotation.y = angleY;
+					// 	// }
+					// 	if (angleZ !== null) {
+					// 		angleStore.ChestZ = angleZ;
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.Spine).rotation.z = Math.PI / 2 +
+					// 			angleZ;
+					// 	}
+					// }
+					// if (poseStore['left_eye'] && poseStore['right_eye']) {
+					// 	let angleX = getAngleX(poseStore['right_eye'], poseStore['left_eye']);
+					// 	let angleY = getAngleY(poseStore['right_eye'], poseStore['left_eye']);
+					// 	let angleZ = getAngleZ(poseStore['right_eye'], poseStore['left_eye']);
+					// 	if (angleX !== null) {
+					// 		angleStore.NeckX = angleX;
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.Neck).rotation.x = angleX;
+					// 	}
+					// 	if (angleY !== null) {
+					// 		angleStore.NeckY = angleY;
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.Neck).rotation.y = angleY;
+					// 	}
+					// 	if (angleZ !== null) {
+					// 		angleStore.NeckZ = angleZ;
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.Neck).rotation.z = angleZ;
+					// 	}
+					// }
+					// if (poseStore['right_shoulder'] && poseStore['right_elbow']) {
+					// 	// console.log('LeftUpperArm')
+					// 	// arms
+					// 	let angleX = getAngleX(poseStore['right_elbow'], poseStore['right_shoulder']);
+					// 	let angleY = getAngleY(poseStore['right_elbow'], poseStore['right_shoulder']);
+					// 	let angleZ = getAngleZ(poseStore['right_elbow'], poseStore['right_shoulder']);
+					// 	if (angleX !== null) {
+					// 		angleStore.RightUpperArmX = angleX;
+					// 		// angleX = angleX - (angleStore.SpineX || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.RightUpperArm).rotation.x = angleX;
+					// 	}
+					// 	if (angleY !== null) {
+					// 		angleStore.RightUpperArmY = angleY;
+					// 		// angleY = angleY - (angleStore.SpineY || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.RightUpperArm).rotation.y = angleY;
+					// 	}
+					// 	if (angleZ !== null) {
+					// 		angleStore.RightUpperArmZ = angleZ;
+					// 		// angleZ = angleZ - (angleStore.SpineZ || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.RightUpperArm).rotation.z = angleZ;
+					// 	}
+					// }
+					// if (poseStore['right_wrist'] && poseStore['right_elbow']) {
+					// 	// console.log('LeftLowerArm')
+					// 	// arms
+					// 	let angleX = getAngleX(poseStore['right_wrist'], poseStore['right_elbow']);
+					// 	let angleY = getAngleY(poseStore['right_wrist'], poseStore['right_elbow']);
+					// 	let angleZ = getAngleZ(poseStore['right_wrist'], poseStore['right_elbow']);
+					// 	if (angleX !== null) {
+					// 		angleStore.RightLowerArmX = angleX;
+					// 		angleX = angleX - (angleStore.RightUpperArmX || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.RightLowerArm).rotation.x = angleX;
+					// 	}
+					// 	if (angleY !== null) {
+					// 		angleStore.RightLowerArmY = angleY;
+					// 		angleY = angleY - (angleStore.RightUpperArmY || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.RightLowerArm).rotation.y = angleY;
+					// 	}
+					// 	if (angleZ !== null) {
+					// 		angleStore.RightLowerArmZ = angleZ;
+					// 		angleZ = angleZ - (angleStore.RightUpperArmZ || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.RightLowerArm).rotation.z = angleZ;
+					// 	}
+					// }
+					// if (poseStore['left_shoulder'] && poseStore['left_elbow']) {
+					// 	// arms
+					// 	let angleX = getAngleX(poseStore['left_elbow'], poseStore['left_shoulder']);
+					// 	let angleY = getAngleY(poseStore['left_elbow'], poseStore['left_shoulder']);
+					// 	let angleZ = getAngleZ(poseStore['left_elbow'], poseStore['left_shoulder']);
+					// 	if (angleX !== null) {
+					// 		angleStore.LeftUpperArmX = angleX;
+					// 		// angleX = angleX - (angleStore.SpineX || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.LeftUpperArm).rotation.x = angleX;
+					// 	}
+					// 	if (angleY !== null) {
+					// 		angleStore.LeftUpperArmY = angleY;
+					// 		// angleY = angleY - (angleStore.SpineY || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.LeftUpperArm).rotation.y = angleY;
+					// 	}
+					// 	if (angleZ !== null) {
+					// 		angleStore.LeftUpperArmZ = angleZ;
+					// 		// angleZ = angleZ - (angleStore.SpineZ || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.LeftUpperArm).rotation.z = angleZ;
+					// 	}
+					// }
+					// if (poseStore['left_wrist'] && poseStore['left_elbow']) {
+					// 	// console.log('RightLowerArm')
+					// 	// arms
+					// 	let angleX = getAngleX(poseStore['left_wrist'], poseStore['left_elbow']);
+					// 	let angleY = getAngleY(poseStore['left_wrist'], poseStore['left_elbow']);
+					// 	let angleZ = getAngleZ(poseStore['left_wrist'], poseStore['left_elbow']);
+					// 	if (angleX !== null) {
+					// 		angleStore.LeftLowerArmX = angleX;
+					// 		angleX = angleX - (angleStore.LeftUpperArmX || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.LeftLowerArm).rotation.x = angleX;
+					// 	}
+					// 	if (angleY !== null) {
+					// 		angleStore.LeftLowerArmY = angleY;
+					// 		angleY = angleY - (angleStore.LeftUpperArmY || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.LeftLowerArm).rotation.y = angleY;
+					// 	}
+					// 	if (angleZ !== null) {
+					// 		angleStore.LeftLowerArmZ = angleZ;
+					// 		angleZ = angleZ - (angleStore.LeftUpperArmZ || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.LeftLowerArm).rotation.z = angleZ;
+					// 	}
+					// }
+
+					// if (poseStore['right_hip'] && poseStore['right_knee']) {
+					// 	// console.log('LeftUpperArm')
+					// 	// arms
+					// 	let angleX = getAngleX(poseStore['right_knee'], poseStore['right_hip']);
+					// 	let angleY = getAngleY(poseStore['right_knee'], poseStore['right_hip']);
+					// 	let angleZ = getAngleZ(poseStore['right_knee'], poseStore['right_hip']);
+					// 	if (angleX !== null) {
+					// 		angleStore.RightUpperLegX = angleX;
+					// 		// angleX = angleX - (angleStore.SpineX || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.RightUpperLeg).rotation.x = angleX;
+					// 	}
+					// 	if (angleY !== null) {
+					// 		angleStore.RightUpperLegY = angleY;
+					// 		// angleY = angleY - (angleStore.SpineY || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.RightUpperLeg).rotation.y = angleY;
+					// 	}
+					// 	if (angleZ !== null) {
+					// 		angleStore.RightUpperLegZ = angleZ;
+					// 		// angleZ = angleZ - (angleStore.SpineZ || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.RightUpperLeg).rotation.z = angleZ;
+					// 	}
+					// }
+					// if (poseStore['right_knee'] && poseStore['right_ankle']) {
+					// 	// console.log('LeftUpperArm')
+					// 	// arms
+					// 	let angleX = getAngleX(poseStore['right_ankle'], poseStore['right_knee']);
+					// 	let angleY = getAngleY(poseStore['right_ankle'], poseStore['right_knee']);
+					// 	let angleZ = getAngleZ(poseStore['right_ankle'], poseStore['right_knee']);
+					// 	if (angleX !== null) {
+					// 		angleStore.RightLowerLegX = angleX;
+					// 		// angleX = angleX - (angleStore.LeftUpperLegX || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.RightLowerLeg).rotation.x = angleX;
+					// 	}
+					// 	if (angleY !== null) {
+					// 		angleStore.RightLowerLegY = angleY;
+					// 		// angleY = angleY - (angleStore.LeftUpperLegY || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.RightLowerLeg).rotation.y = angleY;
+					// 	}
+					// 	if (angleZ !== null) {
+					// 		angleStore.RightLowerLegZ = angleZ;
+					// 		// angleZ = angleZ - (angleStore.LeftUpperLegZ || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.RightLowerLeg).rotation.z = angleZ;
+					// 	}
+					// // }
+					// if (poseStore['left_hip'] && poseStore['left_knee']) {
+					// 	// console.log('LeftUpperArm')
+					// 	// arms
+					// 	let angleX = getAngleX(poseStore['left_knee'], poseStore['left_hip']);
+					// 	let angleY = getAngleY(poseStore['left_knee'], poseStore['left_hip']);
+					// 	let angleZ = getAngleZ(poseStore['left_knee'], poseStore['left_hip']);
+					// 	if (angleX !== null) {
+					// 		angleStore.LeftUpperLegX = angleX;
+					// 		// angleX = angleX - (angleStore.SpineX || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.LeftUpperLeg).rotation.x = angleX;
+					// 	}
+					// 	if (angleY !== null) {
+					// 		angleStore.LeftUpperLegY = angleY;
+					// 		// angleY = angleY - (angleStore.SpineY || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.LeftUpperLeg).rotation.y = angleY;
+					// 	}
+					// 	if (angleZ !== null) {
+					// 		angleStore.LeftUpperLegZ = angleZ;
+					// 		// angleZ = angleZ - (angleStore.SpineZ || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.LeftUpperLeg).rotation.z = angleZ;
+					// 	}
+					// }
+					// if (poseStore['left_ankle'] && poseStore['left_knee']) {
+					// 	// console.log('LeftUpperArm')
+					// 	// arms
+					// 	let angleX = getAngleX(poseStore['left_knee'], poseStore['left_ankle']);
+					// 	let angleY = getAngleY(poseStore['left_knee'], poseStore['left_ankle']);
+					// 	let angleZ = getAngleZ(poseStore['left_knee'], poseStore['left_ankle']);
+					// 	if (angleX !== null) {
+					// 		angleStore.LeftLowerLegX = angleX;
+					// 		angleX = angleX - (angleStore.LeftUpperLegX || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.LeftLowerLeg).rotation.x = angleX;
+					// 	}
+					// 	if (angleY !== null) {
+					// 		angleStore.LeftLowerLegY = angleY;
+					// 		angleY = angleY - (angleStore.LeftUpperLegY || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.LeftLowerLeg).rotation.y = angleY;
+					// 	}
+					// 	if (angleZ !== null) {
+					// 		angleStore.LeftLowerLegZ = angleZ;
+					// 		angleZ = angleZ - (angleStore.LeftUpperLegZ || 0);
+					// 		currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName.LeftLowerLeg).rotation.z = angleZ;
+					// 	}
+					// }
+				}
+
+				// update vrm
+				currentVrm.update(deltaTime);
+
+			}
+
+			renderer.render(scene, camera);
+
+		}
+
+		animate();
+
+
+
+		// -----------------------------------
+		// Animate Rotation Helper function
+		const rigRotation = (name, rotation = {
+			x: 0,
+			y: 0,
+			z: 0
+		}, dampener = 1, lerpAmount = 0.3) => {
+			if (!currentVrm) {
+				return;
+			}
+			const Part = currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName[name]);
+			if (!Part) {
+				return;
+			}
+
+			let euler = new THREE.Euler(
+				rotation.x * dampener,
+				rotation.y * dampener,
+				rotation.z * dampener,
+				rotation.rotationOrder || "XYZ"
+			);
+			let quaternion = new THREE.Quaternion().setFromEuler(euler);
+			Part.quaternion.slerp(quaternion, lerpAmount); // interpolate
+		};
+		// Animate Position Helper Function
+		const rigPosition = (name, position = {
+			x: 0,
+			y: 0,
+			z: 0
+		}, dampener = 1, lerpAmount = 0.3) => {
+			if (!currentVrm) {
+				return;
+			}
+			const Part = currentVrm.humanoid.getBoneNode(THREE.VRMSchema.HumanoidBoneName[name]);
+			if (!Part) {
+				return;
+			}
+			let vector = new THREE.Vector3(position.x * dampener, position.y * dampener, position.z * dampener);
+			Part.position.lerp(vector, lerpAmount); // interpolate
+		};
+	</script>
+</body>
+
+</html>
