@@ -52,11 +52,11 @@ const getFrameFromVideo = (video, canvas) => {
     const minRate = Math.min(wRate, hRate)
     // console.log('minRate', minRate, video.videoWidth, video.videoHeight, video.width, video.height, canvas.width, canvas.height)
     ctx.drawImage(video, 0, 0, video.videoWidth * minRate, video.videoHeight * minRate);
-    if (processor.video) {
-        if (!processor.video.paused && !processor.video.ended) {
-            processor.computeFrameCtx(canvas, ctx)
-        }
-    }
+    // if (processor.video) {
+    //     if (!processor.video.paused && !processor.video.ended) {
+    //         processor.computeFrameCtx(canvas, ctx)
+    //     }
+    // }
     ctx.restore();
     document.getElementById('v1').src = canvas.toDataURL()
     if (ar1 && ar1.process) {
@@ -337,17 +337,17 @@ $(document).ready(function () {
             globalMethod.resizeCanvas()
         }, 1000)
     })
-    $('#stopChromaKey').on('click', function () {
-        const chromaKeyVideo = document.getElementById('chromaVideo')
-        if (!chromaKeyVideo.paused && !chromaKeyVideo.ended) {
-            chromaKeyVideo.pause()
-            if (chromaKeyVideo.webkitExitFullscreen) {
-                chromaKeyVideo.webkitExitFullscreen();
-            }
-        } else {
-            chromaKeyVideo.play()
-        }
-    })
+    // $('#stopChromaKey').on('click', function () {
+    //     const chromaKeyVideo = document.getElementById('chromaVideo')
+    //     if (!chromaKeyVideo.paused && !chromaKeyVideo.ended) {
+    //         chromaKeyVideo.pause()
+    //         if (chromaKeyVideo.webkitExitFullscreen) {
+    //             chromaKeyVideo.webkitExitFullscreen();
+    //         }
+    //     } else {
+    //         chromaKeyVideo.play()
+    //     }
+    // })
     $(window).on('resize', function () {
         globalMethod.resizeCanvas()
         if(threeObj){
@@ -374,5 +374,5 @@ function init() {
     // app.appendChild(canvas);
     controlARToolkip()
     deviceList()
-    processor.doLoad()
+    // processor.doLoad()
 };
