@@ -1,5 +1,6 @@
-https://xhihha1.github.io/page/
-https://xhihha1.github.io/page/tarot.html
+https://xhihha1.github.io/page/  
+https://xhihha1.github.io/page/tarot.html  
+https://xhihha1.github.io/page/paradise/  
 
 ## Welcome to GitHub Pages
 
