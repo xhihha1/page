@@ -1,0 +1,22 @@
+{
+ "name": "樂園 PARADISE",
+ "short_name": "樂園",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "background_color": "#c9c2b0",
+ "theme_color": "#c9c2b0",
+ "lang": "zh-Hant",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  }
+ ]
+}
