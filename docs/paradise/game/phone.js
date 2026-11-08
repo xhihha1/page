@@ -9,7 +9,7 @@
   var eng = new Engine($("game"), { vw: 10, vh: 9, labels: $("labels"), onMap: onMap });
   eng.held = null;                    // this phone knows its own held direction first-hand
   var world = null, ws = null, me = null, retry = 800, bannerT = 0, toastT = 0, held = null, boardBack = null;
-  var uiStack = [], options = null, character = null;
+  var uiStack = [], options = null, character = null, version = null;
 
   // ---- helpers -------------------------------------------------------------
   function api(method, url, body) {
@@ -556,6 +556,9 @@
   // ---- connection ----------------------------------------------------------
   function handle(m) {
     if (m.t === "init") {
+      // the Pi restarted with a new version: this page still holds the old maps and scripts
+      if (m.ver && version && m.ver !== version) { location.reload(); return; }
+      if (m.ver) version = m.ver;
       me = m.me; eng.me = m.me; eng.enterMap(m.map, m.players); $("offline").hidden = true;
     } else if (m.t === "map") { closeAll(); eng.enterMap(m.map, m.players); }
     else if (m.t === "u") eng.update(m);
