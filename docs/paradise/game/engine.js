@@ -50,7 +50,8 @@ var Engine = (function () {
     // people and signs last: on night maps they stay readable, and lit stages never cover the performers
     m.objects.forEach(function (o) {
       c.save(); c.translate(o.x * TS, o.y * TS);
-      if (o.k === "sign") Art.paintSign(c);
+      if (o.k === "sign") Art.paintSign(c, o.num);
+      else if (o.k === "shaft" && Art.paintShaft) Art.paintShaft(c);
       else if (o.k === "board") Art.paintBoard(c);
       c.restore();
       if (o.k === "npc") {

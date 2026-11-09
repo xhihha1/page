@@ -405,7 +405,7 @@ var Art = (function () {
     angel: { top: C.white, leg: C.white, shoe: "#d8d8e8", skirt: C.white, wings: true, paint: function (c) { R(c, 4, 12, 8, 1, C.gold); } }
   };
 
-  function drawBody(c, o, dir, frame) {
+  function drawBody(c, o, dir, frame, SK) {
     var step = frame === 1, side = dir === "l" || dir === "r";
     if (o.wings) { R(c, 1, 8, 3, 5, "#e0e0f0"); R(c, 12, 8, 3, 5, "#e0e0f0"); }
     var l1 = step ? 15 : 14, l2 = step ? 14 : 15;
@@ -415,18 +415,18 @@ var Art = (function () {
     } else {
       R(c, 4, 9, 8, 4, o.top);
       R(c, 4, 13, 8, 1, o.leg);
-      if (side) { R(c, 6, 14, 3, 2, o.legShort ? SKIN : o.leg); R(c, step ? 4 : 8, 15, 3, 1, o.shoe); }
-      else { R(c, 5, 14, 2, 2, o.legShort ? SKIN : o.leg); R(c, 9, 14, 2, 2, o.legShort ? SKIN : o.leg); R(c, 5, l1, 2, 1, o.shoe); R(c, 9, l2, 2, 1, o.shoe); }
+      if (side) { R(c, 6, 14, 3, 2, o.legShort ? SK : o.leg); R(c, step ? 4 : 8, 15, 3, 1, o.shoe); }
+      else { R(c, 5, 14, 2, 2, o.legShort ? SK : o.leg); R(c, 9, 14, 2, 2, o.legShort ? SK : o.leg); R(c, 5, l1, 2, 1, o.shoe); R(c, 9, l2, 2, 1, o.shoe); }
     }
-    if (!side) { R(c, 3, 9, 1, 4, o.top === C.white ? SKIN : o.top); R(c, 12, 9, 1, 4, o.top === C.white ? SKIN : o.top); R(c, 3, 13, 1, 1, SKIN); R(c, 12, 13, 1, 1, SKIN); }
-    else { R(c, 7, 10, 2, 3, o.top === SKIN ? SKIN2 : o.top); R(c, 7, 13, 2, 1, SKIN); }
+    if (!side) { R(c, 3, 9, 1, 4, o.top === C.white ? SK : o.top); R(c, 12, 9, 1, 4, o.top === C.white ? SK : o.top); R(c, 3, 13, 1, 1, SK); R(c, 12, 13, 1, 1, SK); }
+    else { R(c, 7, 10, 2, 3, o.top === SK ? SK2 : o.top); R(c, 7, 13, 2, 1, SK); }
     o.paint(c, dir);
   }
 
   function drawHead(c, look, dir) {
-    var hair = look.hair, H = HAIRC, side = dir === "l" || dir === "r";
+    var hair = look.hair, H = look.hairColor || HAIRC, SK = look.skin || SKIN, side = dir === "l" || dir === "r";
     // long styles sit behind the head
-    if (hair === "bald") { if (dir === "u") { R(c, 4, 1, 8, 8, SKIN); return; } R(c, 4, 1, 8, 8, SKIN); R(c, 6, 5, 1, 2, C.dark); R(c, 9, 5, 1, 2, C.dark); R(c, 7, 8, 2, 1, SKIN2); return; }
+    if (hair === "bald") { if (dir === "u") { R(c, 4, 1, 8, 8, SK); return; } R(c, 4, 1, 8, 8, SK); R(c, 6, 5, 1, 2, C.dark); R(c, 9, 5, 1, 2, C.dark); R(c, 7, 8, 2, 1, SKIN2); return; }
     if (hair === "long" || hair === "longcurl") { R(c, 3, 3, 10, 9, H); if (hair === "longcurl") dots(c, H, [2, 6, 2, 9, 13, 6, 13, 9, 3, 12, 12, 12]); }
     if (dir === "u") {
       R(c, 4, 1, 8, 8, H); R(c, 3, 3, 10, 5, H);
@@ -434,7 +434,7 @@ var Art = (function () {
       if (hair === "curl") dots(c, H, [3, 8, 12, 8, 6, 9, 9, 9]);
       return;
     }
-    R(c, 4, 2, 8, 7, SKIN);
+    R(c, 4, 2, 8, 7, SK);
     if (side) {
       R(c, 9, 5, 1, 2, C.dark); R(c, 4, 1, 8, 3, H); R(c, 3, 2, 3, 6, H);
       if (hair === "cover") R(c, 7, 3, 4, 3, H);
@@ -470,7 +470,10 @@ var Art = (function () {
     if (look.head === "crown") { R(c, 3, -2, 10, 3, C.gold); dots(c, C.red, [5, -1, 8, -1, 11, -1]); R(c, 2, 1, 12, 1, C.gold); if (dir !== "u") { R(c, 5, 8, 6, 3, "#202020"); } }
     if (look.head === "party") { for (var i = 0; i < 6; i++) R(c, 7 - (i >> 1), -4 + i, 2 + (i >> 1) * 2, 1, i % 2 ? C.gold : C.blue); R(c, 7, -5, 2, 1, C.red); }
     if (look.outfit === "angel") { R(c, 5, -2, 6, 1, C.gold); }
+    if (look.beard && dir !== "u") { R(c, side ? 8 : 5, 8, side ? 4 : 6, 2, look.beard); R(c, side ? 9 : 6, 10, side ? 2 : 4, 3, look.beard); }
+    if (HEADS[look.head]) HEADS[look.head](c, look, dir, side);
   }
+  var HEADS = {};            // more headwear, added by art_world.js
 
   function paintChar(c, look, dir, frame) {
     if (look.pose && frame === 1) {          // dancers raise their arms, the singer lifts the microphone
@@ -486,7 +489,7 @@ var Art = (function () {
     var d = dir === "r" ? "l" : dir;
     if (d === "l") { c.translate(16, 0); c.scale(-1, 1); }       // side art faces right; mirrored once for left
     var o = OUTFIT[look.outfit] || OUTFIT.aloha;
-    c.save(); c.translate(0, frame === 1 ? 0 : 0); drawBody(c, o, d, frame); c.restore();
+    c.save(); c.translate(0, frame === 1 ? 0 : 0); drawBody(c, o, d, frame, look.skin || SKIN); c.restore();
     drawHead(c, look, d); drawExtras(c, look, d);
     c.restore();
   }
@@ -539,7 +542,7 @@ var Art = (function () {
 
   return {
     TS: TS, GLOW_STAMP: GLOW_STAMP, CELL_W: CELL_W + 8, CELL_H: CELL_H, OX: OX + 4, OY: OY, GLOW: GLOW, NPC: NPC, GREENS: GREENS,
-    S: S, OUTFIT: OUTFIT, dots: dots, roofBand: roofBand, windows: windows, doorway: doorway, SKIN: SKIN, SKIN2: SKIN2, HAIRC: HAIRC,
+    S: S, OUTFIT: OUTFIT, HEADS: HEADS, T: T, dots: dots, roofBand: roofBand, windows: windows, doorway: doorway, SKIN: SKIN, SKIN2: SKIN2, HAIRC: HAIRC,
     mk: mk, R: R, C: C, paintTile: paintTile, stamp: stamp, sprite: sprite, paintSign: paintSign, paintBoard: paintBoard
   };
 })();

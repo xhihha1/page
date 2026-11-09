@@ -456,6 +456,9 @@
     muzha: ["panda_house", 6, 4], shoushan: ["zoo_gate", 8, 4], shimen: ["shimen_dam", 9, 4], daxi: ["daxi1", 4, 5],
     cihu: ["cihu_tomb", 12, 7], cabin: ["cabin", 8, 6]
   };
+  A.LANDMARK = LANDMARK;                       // art_world.js adds the newer regions
+  A.lattice = lattice; A.swallowRoof = swallowRoof; A.pavilionRoof = pavilionRoof; A.hall = hall; A.steps = steps;
+  A.lanterns = lanterns; A.dragonPillar = dragonPillar; A.balustrade = balustrade;
   var oldStamp = A.stamp;
   A.stamp = function (c, name, w, h, frame) {
     if (name.indexOf("mini_") === 0 && LANDMARK[name.slice(5)]) {

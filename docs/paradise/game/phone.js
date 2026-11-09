@@ -184,6 +184,9 @@
       if (o.k === "sign" || o.k === "npc") say(o.title, o.text);
       else if (o.k === "board") openBoard(o.region);
       else if (o.k === "elevator") elevator(o);
+      else if (o.k === "telescope") telescope(o);
+      else if (o.k === "dress") dressRoom();
+      else if (o.k === "baptism") baptism();
       else if (o.k === "bed") send({ t: "lie" });
       else if (o.k === "shaft") openShaft(o.course, o.title);
       return;
@@ -200,6 +203,35 @@
   function elevator(o) {
     var floors = Object.keys(o.floors);
     menu("電梯", floors.map(function (f) { return { label: f, fn: function () { closeAll(); send({ t: "elevator", floor: f }); } }; }));
+  }
+
+  function telescope(o) {
+    menu("望遠鏡：要去哪裡？", Object.keys(o.floors).map(function (f) {
+      return { label: f, fn: function () { closeAll(); send({ t: "elevator", floor: f }); } };
+    }).concat([{ label: "只是看看", fn: closeAll }]));
+  }
+
+  function dressRoom() {
+    menu("更衣室", [
+      { label: "換上禮服", hint: "男生西裝、女生白紗，跟著你的人一起換", fn: function () { closeAll(); send({ t: "dress", outfit: "wedding" }); } },
+      { label: "換回自己的衣服", fn: function () { closeAll(); send({ t: "dress", outfit: "none" }); } }
+    ]);
+  }
+
+  function today() { var d = new Date(), p = function (n) { return (n < 10 ? "0" : "") + n; }; return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()); }
+  function baptism() {
+    ask("要受浸嗎？", "受浸", "再想想", function () {
+      var s = sheet('<h2>受浸</h2><div class="card"><p class="small">受浸的日期會寫在召會的留言板上。</p>' +
+        '<label class="small">受浸日期<input class="field" id="b-date" type="date"></label>' +
+        '<p class="err" id="b-err"></p><div class="row"><button class="btn ok" id="b-ok">受浸</button><button class="btn" id="b-no">取消</button></div></div>');
+      $("b-date").value = today();
+      s.querySelector("#b-no").onclick = closeSheet;
+      s.querySelector("#b-ok").onclick = function () {
+        api("POST", "/api/v1/game/baptism", { date: $("b-date").value }).then(function (d) {
+          closeSheet(); say("受浸", d.text + "\n\n弟兄姊妹一起唱：「阿們！」");
+        }).catch(function (e) { $("b-err").textContent = e.message; });
+      };
+    }, function () {});
   }
 
   // ---- menus ---------------------------------------------------------------
@@ -314,13 +346,13 @@
         render: function (box) {
           var r = ov.regions[sel], people = r.people.map(function (p) { return p.n; }).join("、");
           box.innerHTML = '<div class="win full"><h3>樂園全景圖</h3><div class="pano"><canvas id="pano" width="' + 50 * S + '" height="' + 50 * S + '"></canvas><ul class="items"></ul></div>' +
-            '<div class="pano-info">' + esc(r.name) + "（" + esc(r.sub) + "）" + (r.id === ov.where ? " 你在這裡" : "") + "<br>" + (r.visited ? "去過" : "還沒去過") + "・留言 " + r.messages + (people ? "・" + esc(people) : "") + "</div></div>";
+            '<div class="pano-info">' + (r.no ? r.no + " 號登機口・" : "") + esc(r.name) + "（" + esc(r.sub) + "）" + (r.id === ov.where ? " 你在這裡" : "") + "<br>" + (r.visited ? "去過" : "還沒去過") + "・留言 " + r.messages + (people ? "・" + esc(people) : "") + "</div></div>";
           var cv = box.querySelector("#pano"), k = Math.min(box.clientWidth * .5, box.clientHeight * .68);
           cv.style.width = cv.style.height = Math.floor(k) + "px";
           paint(cv);
           var ul = box.querySelector(".items");
           ov.regions.forEach(function (x, i) {
-            var li = document.createElement("li"); li.textContent = x.name; if (i === sel) li.className = "sel";
+            var li = document.createElement("li"); li.textContent = (x.no ? x.no + ". " : "✈ ") + x.name; if (i === sel) li.className = "sel";
             li.onclick = function () { if (sel === i) view.key("a"); else { sel = i; renderUi(); } };
             ul.appendChild(li);
           });

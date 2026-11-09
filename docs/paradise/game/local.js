@@ -7,6 +7,7 @@
   var DIRS = { u: [0, -1], d: [0, 1], l: [-1, 0], r: [1, 0] };
   var TURN_S = 0.09, KEEP_PACE_S = 0.1;
   var VEHICLE_NAMES = { bike: "單車", moto: "機車", car: "汽車", boat: "船" };
+  var WEDDING = { m: "suit", f: "gown" };
 
   function GameError(text) { var e = new Error(text); e.game = true; return e; }
 
@@ -28,7 +29,7 @@
   R.player = function (save) {
     var p = { id: "me", name: save.name, look: save.look, map: save.map, x: save.x, y: save.y, d: save.d || "d",
               vehicle: save.vehicle || "none", held: null, next_at: 0, moved_at: -1, ms: 0, warp_at: null,
-              pending_warp: null, bump_at: 0, bed: null, up: null, online: true };
+              pending_warp: null, bump_at: 0, bed: null, up: null, online: true, costume: null };
     this.p = p;
     this.settle(p);
     return p;
@@ -44,8 +45,9 @@
   };
 
   R.record = function () {
-    var p = this.p;
-    return { id: p.id, n: p.name, look: p.look, map: p.map, x: p.x, y: p.y, d: p.d, v: p.vehicle, ms: p.ms, hid: false,
+    var p = this.p, look = p.look;
+    if (p.costume) { look = {}; for (var k in p.look) look[k] = p.look[k]; look.outfit = p.costume; }
+    return { id: p.id, n: p.name, look: look, map: p.map, x: p.x, y: p.y, d: p.d, v: p.vehicle, ms: p.ms, hid: false,
              lead: null, on: true, lie: p.bed !== null, w: !!p.held };
   };
 
@@ -131,6 +133,7 @@
   R.warp = function (to, x, y, d) {
     var p = this.p, target = this.maps[to];
     p.map = to; p.x = x; p.y = y; p.d = d; p.ms = 0;
+    if (p.costume && target.region !== this.w.costume_region) p.costume = null;
     this.touch(); this.moved = true;
     if (target.region) this.visits.push(target.region);
     if (p.vehicle !== "none" && target.vehicles.indexOf(p.vehicle) < 0) p.vehicle = "none";
@@ -169,9 +172,27 @@
 
   R.useElevator = function (floor) {
     var p = this.p, obj = this.objectAt(this.maps[p.map], p.x + DIRS[p.d][0], p.y + DIRS[p.d][1]);
-    if (!obj || obj.k !== "elevator" || !obj.floors[floor]) throw GameError("這裡沒有電梯");
+    if (!obj || (obj.k !== "elevator" && obj.k !== "telescope") || !obj.floors[floor]) throw GameError("這裡沒有電梯");
     var f = obj.floors[floor];
     this.warp(f.to, f.x, f.y, f.d);
+  };
+
+  R.facing = function (kind) {
+    var p = this.p, obj = this.objectAt(this.maps[p.map], p.x + DIRS[p.d][0], p.y + DIRS[p.d][1]);
+    return obj && obj.k === kind ? obj : null;
+  };
+
+  R.dress = function (outfit) {                // World.dress for one player (no one can follow in the static edition)
+    var p = this.p;
+    if (!this.facing("dress")) throw GameError("這裡沒有更衣室");
+    if (outfit !== "wedding" && outfit !== "none") throw GameError("沒有這套衣服");
+    p.costume = outfit === "none" ? null : (WEDDING[p.look.sex] || "suit");
+    this.touch();
+  };
+
+  R.checkBaptism = function () {
+    if (!this.facing("baptism")) throw GameError("要站在受浸池邊才能受浸");
+    return this.p;
   };
 
   // one message from the phone, as service.handle does it
@@ -182,6 +203,7 @@
       else if (msg.t === "lie") this.lieDown();
       else if (msg.t === "getup") this.getUp();
       else if (msg.t === "elevator") this.useElevator(String(msg.floor));
+      else if (msg.t === "dress") this.dress(String(msg.outfit));
       else if (msg.t !== "ui") throw GameError("單機版沒有這個功能");
     } catch (e) {
       if (!e.game) throw e;
@@ -269,7 +291,7 @@
       s.messages.forEach(function (x) { counts[x.region] = (counts[x.region] || 0) + 1; });
       return {
         regions: w.regions.map(function (r) {
-          return { id: r.id, name: r.name, sub: r.sub, isle: r.isle, messages: counts[r.id] || 0, visited: s.visits.indexOf(r.id) >= 0, people: [] };
+          return { id: r.id, name: r.name, sub: r.sub, isle: r.isle, no: r.no, messages: counts[r.id] || 0, visited: s.visits.indexOf(r.id) >= 0, people: [] };
         }),
         where: here, at: p ? { map: p.map, x: p.x, y: p.y } : null, sea: [], party: [],
         me: p ? { lead: null, followers: 0, v: p.vehicle } : null
@@ -290,6 +312,16 @@
       s.messages.push({ id: id, region: region, name: s.character ? s.character.name : "旅人", body: text, visited_on: visited, at: Date.now() });
       this.store();
       return { id: id };
+    }
+    if (path === "baptism") {
+      var day = String(body.date || "").trim();
+      if (!DATE_RE.test(day)) throw new Error("請選受浸的日期");
+      if (!this.rules || !this.rules.p) throw new Error("請先建立角色");
+      var who = this.rules.checkBaptism();
+      var bid = s.next++;
+      s.messages.push({ id: bid, region: "church", name: who.name, body: who.name + " 在 " + day + " 受浸，歸入主的名裡。阿們！", visited_on: day, at: Date.now() });
+      this.store();
+      return { id: bid, text: "長老：「" + who.name + "，奉主耶穌的名，為你施浸。」" };
     }
     if ((m = path.match(/^messages\/(\d+)$/))) {
       var before = s.messages.length;
