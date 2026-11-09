@@ -445,6 +445,28 @@
     R(c, w / 2 - 14, h - 34, 28, 34, C.dark); R(c, w / 2 - 12, h - 32, 24, 30, "#f8d880"); R(c, 0, h - 8, w, 8, "#a8a8a0");
   };
 
+  // 淡水漁人碼頭 (11/9 fix): the lovers' bridge is drawn over real water and a walkable deck, not on a blue box
+  S.lovers_bridge = function (c, w, h) {
+    var deck = 48;                                        // the deck covers the last three tile rows
+    R(c, 0, deck, w, h - deck, "#d8d4c8");
+    for (var x = 0; x < w; x += 8) R(c, x, deck + 2, 1, h - deck - 4, "#c0bcb0");
+    R(c, 0, deck, w, 3, C.white); R(c, 0, h - 3, w, 3, C.white); R(c, 0, deck + 3, w, 1, "#a8a8a0");
+    for (x = 0; x < w; x += 12) { R(c, x, deck - 4, 2, 4, C.white); R(c, x, h - 7, 2, 4, C.white); }
+    c.fillStyle = C.white;                                // the arch springs from the deck at both ends
+    for (x = 4; x < w - 4; x++) {
+      var y = Math.round(deck - Math.sin((x - 4) / (w - 8) * Math.PI) * (deck - 6));
+      c.fillRect(x, y, 1, 4);
+      if (x % 14 === 0) { c.fillStyle = "#c8ccd0"; c.fillRect(x, y + 4, 1, deck - y - 4); c.fillStyle = C.white; }
+    }
+    R(c, w / 2 - 2, 2, 4, 4, RED);
+  };
+  function fishboat(c, w, h, hull) {
+    R(c, 2, h - 9, w - 4, 6, hull); R(c, 4, h - 3, w - 8, 2, "#284868"); R(c, 2, h - 10, w - 4, 1, C.white);
+    R(c, 8, h - 15, 9, 6, C.white); R(c, 10, h - 13, 5, 2, C.glass); R(c, w - 9, h - 24, 1, 15, C.dark); R(c, w - 9, h - 24, 6, 3, RED);
+  }
+  S.fishboat = function (c, w, h) { fishboat(c, w, h, "#3878b8"); };
+  S.fishboat2 = function (c, w, h) { fishboat(c, w, h, "#c84030"); };
+
   // overworld minis for the new regions
   var L = A.LANDMARK;
   L.palace = ["npm", 14, 8]; L.astro = ["astro_hall", 12, 8]; L.yilan = ["onsen", 10, 7]; L.qingqing = ["chapel", 8, 7];

@@ -69,7 +69,8 @@ var Engine = (function () {
     var around = [[0, 1], [0, -1], [1, 0], [-1, 0]];
     for (var i = 0; i < 4; i++) {
       var row = m.rows[y + around[i][1]], ch = row && row.charAt(x + around[i][0]);
-      if (ch && world.classes[ch] !== "solid" && world.classes[ch] !== "water" && ch !== "d" && ch !== "P") return world.tiles[ch];
+      // never a door, portal or gate: under see-through art (the overworld minis) it showed as a second gate
+      if (ch && world.classes[ch] !== "solid" && world.classes[ch] !== "water" && "dP^h".indexOf(ch) < 0) return world.tiles[ch];
     }
     return fallback;
   }
@@ -233,7 +234,7 @@ var Engine = (function () {
   /* The whole overworld as a small picture for the panorama. */
   Eng.prototype.miniMap = function (scale) {
     var m = this.world.maps.overworld, cv = Art.mk(m.w * scale, m.h * scale), c = cv.getContext("2d"), C = Art.C;
-    var col = { W: C.sea, s: C.sand, ".": C.grass, ",": C.grass, '"': C.grass2, T: C.leaf, "=": C.road, "+": C.wood, "^": C.gold, X: C.cream };
+    var col = { W: C.sea, s: C.sand, ".": C.grass, ",": C.grass, '"': C.grass2, T: C.leaf, Y: C.leaf, 5: "#b85a30", "=": C.road, "+": C.wood, "^": C.gold, X: C.cream };
     for (var y = 0; y < m.h; y++) for (var x = 0; x < m.w; x++) { c.fillStyle = col[m.rows[y].charAt(x)] || C.grass; c.fillRect(x * scale, y * scale, scale, scale); }
     return cv;
   };

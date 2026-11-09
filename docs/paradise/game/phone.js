@@ -325,51 +325,142 @@
   function load(k) { try { return localStorage.getItem("game." + k); } catch (e) { return null; } }
 
   // ---- panorama ------------------------------------------------------------
+  /* Left: a window on the world map that follows the region picked in the list on the right. SELECT widens the map to
+     the whole window: the arrows (or a finger, in both modes) move around it and the region nearest the middle is picked;
+     SELECT or B goes back to the list. A opens the picked region's message board. */
   function panorama() {
     api("GET", "/api/v1/game/overview").then(function (ov) {
-      var sel = 0, S = 3, here = ov.regions.findIndex ? ov.regions.findIndex(function (r) { return r.id === ov.where; }) : -1;
-      if (here >= 0) sel = here;
-      var base = eng.miniMap(S), t = 0, timer = 0;
-      function paint(cv) {
-        var c = cv.getContext("2d");
-        c.drawImage(base, 0, 0);
-        ov.regions.forEach(function (r, i) {
-          var x = r.isle[0] * S - 3, y = r.isle[1] * S - 3;
-          c.fillStyle = "#181820"; c.fillRect(x - 1, y - 1, 8, 8);
-          c.fillStyle = i === sel ? "#f8f070" : (r.visited ? "#f8f8f0" : "#909098"); c.fillRect(x, y, 6, 6);
-          if (r.people.length) { c.fillStyle = "#30a0f0"; c.fillRect(x + 4, y - 3, 4, 4); }
+      var regs = ov.regions, sel = 0, here = -1, wide = false, t = 0, timer = 0, hold = null, holdT = 0;
+      regs.forEach(function (r, i) { if (r.id === ov.where) sel = here = i; });
+      var m = world.maps.overworld, cam = { x: 0, y: 0 }, T = 4, cv = null, base = null, baseT = 0, drag = null;
+      var islands = {}, names = [];
+      regs.forEach(function (r) {
+        var g = islands[r.sub];
+        if (!g) { g = islands[r.sub] = { name: r.sub, a: r.isle[0], b: r.isle[0], y: r.isle[1] - 6 }; names.push(g); }
+        g.a = Math.min(g.a, r.isle[0]); g.b = Math.max(g.b, r.isle[0]);
+      });
+      function spot(r) { return { x: r.isle[0] + .5, y: r.isle[1] - 2.5 }; }
+      function clamp() {
+        cam.x = Math.max(0, Math.min(m.w - cv.width / T, cam.x));
+        cam.y = Math.max(0, Math.min(m.h - cv.height / T, cam.y));
+      }
+      function follow() { var p = spot(regs[sel]); cam.x = p.x - cv.width / T / 2; cam.y = p.y - cv.height / T / 2; clamp(); }
+      function nearest(x, y, within) {
+        var best = -1, bd = within ? within * within : 1e9;
+        regs.forEach(function (r, i) { var p = spot(r), d = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y); if (d < bd) { bd = d; best = i; } });
+        return best;
+      }
+      function pickMiddle() { var i = nearest(cam.x + cv.width / T / 2, cam.y + cv.height / T / 2); if (i >= 0) sel = i; }
+      function paint() {
+        if (!cv) return;
+        var c = cv.getContext("2d"), fs = Math.max(9, Math.round(T * 1.4)), s = Math.max(7, Math.round(T * 2.2));
+        if (baseT !== T) { base = eng.miniMap(T); baseT = T; }
+        c.imageSmoothingEnabled = false;
+        c.fillStyle = Art.C.sea; c.fillRect(0, 0, cv.width, cv.height);
+        c.drawImage(base, Math.round(-cam.x * T), Math.round(-cam.y * T));
+        c.font = fs + 'px "Cubic 11", monospace'; c.textAlign = "center"; c.textBaseline = "middle";
+        names.forEach(function (g) {
+          var x = Math.round(((g.a + g.b) / 2 + .5 - cam.x) * T), y = Math.round((g.y - cam.y) * T), w = Math.round(c.measureText(g.name).width + 8);
+          c.fillStyle = "rgba(24,24,32,.8)"; c.fillRect(x - (w >> 1), y - (fs >> 1) - 2, w, fs + 4);
+          c.fillStyle = "#f8f8e8"; c.fillText(g.name, x, y);
         });
-        if (ov.where === "overworld" && ov.at && t % 2) { c.fillStyle = "#e02020"; c.fillRect(ov.at.x * S - 1, ov.at.y * S - 1, 5, 5); }
-        else if (here >= 0 && t % 2) { var h = ov.regions[here]; c.fillStyle = "#e02020"; c.fillRect(h.isle[0] * S - 2, h.isle[1] * S - 2, 5, 5); }
+        regs.forEach(function (r, i) {
+          var p = spot(r), x = Math.round((p.x - cam.x) * T - s / 2), y = Math.round((p.y - cam.y) * T - s / 2);
+          if (x < -s * 2 || y < -s * 2 || x > cv.width + s || y > cv.height + s) return;
+          var on = i === sel, b = on ? Math.max(2, T >> 2) : 1;
+          c.fillStyle = "#181820"; c.fillRect(x - b, y - b, s + b * 2, s + b * 2);
+          c.fillStyle = on ? "#f8f070" : (r.visited ? "#f8f8f0" : "#a0a0a8"); c.fillRect(x, y, s, s);
+          c.fillStyle = "#181820"; c.fillText(r.no ? String(r.no) : "機", x + s / 2, y + s / 2 + 1);
+          if (r.people.length) { c.fillStyle = "#30a0f0"; c.fillRect(x + s - 2, y - 4, 6, 6); }
+          if (i === here && t % 2) { c.strokeStyle = "#e02020"; c.lineWidth = 2; c.strokeRect(x - b - 2, y - b - 2, s + b * 2 + 4, s + b * 2 + 4); }
+        });
+        if (ov.where === "overworld" && ov.at && t % 2) { c.fillStyle = "#e02020"; c.fillRect(Math.round((ov.at.x - cam.x) * T), Math.round((ov.at.y - cam.y) * T), T, T); }
+      }
+      function info() {
+        var el = $("pano-info"), r = regs[sel], people = r.people.map(function (p) { return p.n; }).join("、");
+        if (!el) return;
+        el.innerHTML = (r.no ? r.no + " 號登機口・" : "") + esc(r.name) + "（" + esc(r.sub) + "）" + (i_am_here(r) ? " 你在這裡" : "") + "<br>" +
+          (r.visited ? "去過" : "還沒去過") + "・留言 " + r.messages + (people ? "・" + esc(people) : "");
+        var ul = $("pano-list");
+        if (!ul) return;
+        Array.prototype.forEach.call(ul.children, function (li, i) { li.className = i === sel ? "sel" : ""; });
+        var cur = ul.children[sel]; if (cur && cur.scrollIntoView) cur.scrollIntoView({ block: "nearest" });
+      }
+      function i_am_here(r) { return r.id === ov.where; }
+      function stopHold() { clearInterval(holdT); hold = null; }
+      function pan(d) {
+        var k = 2;
+        cam.x += d === "l" ? -k : d === "r" ? k : 0; cam.y += d === "u" ? -k : d === "d" ? k : 0;
+        clamp(); pickMiddle(); paint(); info();
+      }
+      function setWide(on) { stopHold(); wide = on; renderUi(); }
+      function bindDrag() {
+        function at(e) { var b = cv.getBoundingClientRect(); return { x: (e.clientX - b.left) * cv.width / b.width, y: (e.clientY - b.top) * cv.height / b.height }; }
+        cv.addEventListener("pointerdown", function (e) {
+          e.preventDefault(); try { cv.setPointerCapture(e.pointerId); } catch (x) {}
+          var p = at(e); drag = { x: p.x, y: p.y, cx: cam.x, cy: cam.y, moved: false };
+        });
+        cv.addEventListener("pointermove", function (e) {
+          if (!drag) return;
+          var p = at(e);
+          if (Math.abs(p.x - drag.x) + Math.abs(p.y - drag.y) > T) drag.moved = true;
+          if (!drag.moved) return;
+          cam.x = drag.cx - (p.x - drag.x) / T; cam.y = drag.cy - (p.y - drag.y) / T;
+          clamp(); if (wide) { pickMiddle(); info(); } paint();
+        });
+        function end(e) {
+          if (!drag) return;
+          var d = drag; drag = null;
+          if (d.moved || e.type !== "pointerup") return;
+          var i = nearest(cam.x + d.x / T, cam.y + d.y / T, 2.5);           // a tap on a marker picks it; again opens its board
+          if (i < 0) return;
+          if (i === sel) { openBoard(regs[i].id); return; }
+          sel = i; if (wide) { follow(); } paint(); info();
+        }
+        ["pointerup", "pointercancel"].forEach(function (n) { cv.addEventListener(n, end); });
       }
       var view = {
         render: function (box) {
-          var r = ov.regions[sel], people = r.people.map(function (p) { return p.n; }).join("、");
-          box.innerHTML = '<div class="win full"><h3>樂園全景圖</h3><div class="pano"><canvas id="pano" width="' + 50 * S + '" height="' + 50 * S + '"></canvas><ul class="items"></ul></div>' +
-            '<div class="pano-info">' + (r.no ? r.no + " 號登機口・" : "") + esc(r.name) + "（" + esc(r.sub) + "）" + (r.id === ov.where ? " 你在這裡" : "") + "<br>" + (r.visited ? "去過" : "還沒去過") + "・留言 " + r.messages + (people ? "・" + esc(people) : "") + "</div></div>";
-          var cv = box.querySelector("#pano"), k = Math.min(box.clientWidth * .5, box.clientHeight * .68);
-          cv.style.width = cv.style.height = Math.floor(k) + "px";
-          paint(cv);
-          var ul = box.querySelector(".items");
-          ov.regions.forEach(function (x, i) {
-            var li = document.createElement("li"); li.textContent = (x.no ? x.no + ". " : "✈ ") + x.name; if (i === sel) li.className = "sel";
-            li.onclick = function () { if (sel === i) view.key("a"); else { sel = i; renderUi(); } };
+          stopHold();
+          box.innerHTML = '<div class="win full"><h3>樂園全景圖<small>' + (wide ? "方向鍵移動・SELECT 回列表" : "SELECT 看全圖") + "</small></h3>" +
+            '<div class="pano' + (wide ? " wide" : "") + '"><div class="pano-map"><canvas id="pano"></canvas></div><ul class="items" id="pano-list"></ul></div>' +
+            '<div class="pano-info" id="pano-info"></div></div>';
+          var ul = $("pano-list");
+          regs.forEach(function (x, i) {
+            var li = document.createElement("li"); li.textContent = (x.no ? x.no + ". " : "✈ ") + x.name;
+            li.onclick = function () { if (sel === i) view.key("a"); else { sel = i; follow(); paint(); info(); } };
             ul.appendChild(li);
           });
-          var cur = ul.querySelector(".sel"); if (cur && cur.scrollIntoView) cur.scrollIntoView({ block: "nearest" });
-          clearInterval(timer); timer = setInterval(function () { t++; var v = $("pano"); if (v) paint(v); else clearInterval(timer); }, 400);
+          var pane = box.querySelector(".pano-map"), dpr = Math.min(window.devicePixelRatio || 1, 3);
+          cv = $("pano");
+          cv.width = Math.max(1, Math.round(pane.clientWidth * dpr)); cv.height = Math.max(1, Math.round(pane.clientHeight * dpr));
+          cv.style.width = pane.clientWidth + "px"; cv.style.height = pane.clientHeight + "px";
+          T = Math.max(3, Math.floor(cv.height / m.h));                     // the whole height of the world fits
+          bindDrag();
+          if (wide) { clamp(); pickMiddle(); } else follow();
+          paint(); info();
+          clearInterval(timer); timer = setInterval(function () { t++; if ($("pano") === cv) paint(); else clearInterval(timer); }, 400);
         },
         key: function (k) {
-          var n = ov.regions.length;
-          if (k === "u" || k === "l") { sel = (sel + n - 1) % n; renderUi(); }
-          else if (k === "d" || k === "r") { sel = (sel + 1) % n; renderUi(); }
-          else if (k === "a") openBoard(ov.regions[sel].id);
-          else if (k === "b") { clearInterval(timer); pop(); }
-        }
+          var n = regs.length;
+          if (wide) {
+            if (DIRS_UI[k]) { if (hold !== k) { stopHold(); hold = k; pan(k); holdT = setInterval(function () { pan(k); }, 90); } }
+            else if (k === "a") openBoard(regs[sel].id);
+            else if (k === "b" || k === "select") { setWide(false); }
+            return;
+          }
+          if (k === "u" || k === "l") { sel = (sel + n - 1) % n; follow(); paint(); info(); }
+          else if (k === "d" || k === "r") { sel = (sel + 1) % n; follow(); paint(); info(); }
+          else if (k === "a") openBoard(regs[sel].id);
+          else if (k === "select") setWide(true);
+          else if (k === "b") { clearInterval(timer); stopHold(); pop(); }
+        },
+        keyUp: function (k) { if (k === hold) stopHold(); }
       };
       push(view);
     }).catch(function (e) { toast(e.message); });
   }
+  var DIRS_UI = { u: 1, d: 1, l: 1, r: 1 };
 
   // ---- message boards ------------------------------------------------------
   function regionName(id) { var r = world.regions.filter(function (x) { return x.id === id; })[0]; return r ? r.name : id; }
