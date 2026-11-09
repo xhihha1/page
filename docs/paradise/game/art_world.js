@@ -467,6 +467,29 @@
   S.fishboat = function (c, w, h) { fishboat(c, w, h, "#3878b8"); };
   S.fishboat2 = function (c, w, h) { fishboat(c, w, h, "#c84030"); };
 
+  // 板橋大遠百 (11/9 fix): a store front instead of a dark box, the entrance drawn as its own lit stamp
+  S.mega = function (c, w, h) {
+    var wall = "#e8e0d0", wall2 = "#c8c0b0", glass = "#5878a8", lit = "#f8e080";
+    R(c, 0, 10, w, h - 10, wall); R(c, 0, 6, w, 6, wall2); R(c, 4, 0, w - 8, 8, wall2);
+    for (var x = 0; x < w; x += 16) R(c, x, 12, 2, h - 44, wall2);                       // stone piers
+    R(c, 10, 20, w - 20, 22, RED); R(c, 10, 20, w - 20, 2, RED2); R(c, 10, 40, w - 20, 2, RED2);
+    R(c, 16, 25, 30, 12, GOLD); R(c, 52, 25, 60, 12, C.white);                             // the store's name board
+    for (var i = 0; i < 6; i++) R(c, 56 + i * 9, 28, 5, 6, RED);
+    for (var y = 50; y < h - 44; y += 18) for (x = 6; x < w - 8; x += 16) { R(c, x, y, 10, 12, glass); R(c, x + 1, y + 1, 8, 4, lit); }
+    R(c, 0, h - 44, w, 4, C.dark);                                                         // canopy over the shop windows
+    R(c, 0, h - 40, w, 40, wall2);
+    R(c, 4, h - 36, 36, 30, glass); R(c, w - 40, h - 36, 36, 30, glass);                   // display windows
+    R(c, 8, h - 32, 10, 12, "#f88878"); R(c, 22, h - 28, 12, 18, "#88c8f0"); R(c, w - 34, h - 30, 12, 20, "#f8d070"); R(c, w - 18, h - 26, 10, 14, "#a8e088");
+    R(c, 0, h - 4, w, 4, "#a8a098");
+  };
+  S.mega_door = function (c, w, h) {                     // two tiles wide: an awning, a lit EXIT/ENTER frame, sliding doors
+    R(c, 0, 0, w, 6, RED); for (var x = 0; x < w; x += 6) R(c, x, 4, 3, 2, C.white);
+    R(c, 1, 6, w - 2, h - 6, "#383840"); R(c, 3, 8, w - 6, h - 8, "#f8f0c0");
+    R(c, 4, 9, w / 2 - 5, h - 9, "#a8d8f8"); R(c, w / 2 + 1, 9, w / 2 - 5, h - 9, "#a8d8f8");
+    R(c, w / 2 - 1, 8, 2, h - 8, "#383840"); R(c, 6, 12, 3, 10, C.white); R(c, w / 2 + 3, 12, 3, 10, C.white);
+  };
+  A.GLOW_STAMP.mega_door = 1;
+
   // overworld minis for the new regions
   var L = A.LANDMARK;
   L.palace = ["npm", 14, 8]; L.astro = ["astro_hall", 12, 8]; L.yilan = ["onsen", 10, 7]; L.qingqing = ["chapel", 8, 7];
