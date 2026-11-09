@@ -337,7 +337,7 @@
       regs.forEach(function (r) {
         var g = islands[r.sub];
         if (!g) { g = islands[r.sub] = { name: r.sub, a: r.isle[0], b: r.isle[0], y: r.isle[1] - 6 }; names.push(g); }
-        g.a = Math.min(g.a, r.isle[0]); g.b = Math.max(g.b, r.isle[0]);
+        g.a = Math.min(g.a, r.isle[0]); g.b = Math.max(g.b, r.isle[0]); g.y = Math.min(g.y, r.isle[1] - 6);
       });
       function spot(r) { return { x: r.isle[0] + .5, y: r.isle[1] - 2.5 }; }
       function clamp() {
