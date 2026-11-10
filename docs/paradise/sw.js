@@ -1,5 +1,5 @@
 /* 樂園 offline cache. The version changes with every build, so a new build replaces the old cache. */
-var CACHE = "paradise-c16c0378df", FILES = ["./", "world.json?v=c16c0378df", "game/game.css?v=c16c0378df", "game/art.js?v=c16c0378df", "game/art_more.js?v=c16c0378df", "game/art_world.js?v=c16c0378df", "game/art_landmark.js?v=c16c0378df", "game/engine.js?v=c16c0378df", "game/shaft.js?v=c16c0378df", "game/local.js?v=c16c0378df", "game/phone.js?v=c16c0378df", "fonts/Cubic_11.woff2", "manifest.webmanifest", "icon-192.png", "icon-512.png"];
+var CACHE = "paradise-15d0b735fa", FILES = ["./", "world.json?v=15d0b735fa", "game/game.css?v=15d0b735fa", "game/art.js?v=15d0b735fa", "game/art_more.js?v=15d0b735fa", "game/art_world.js?v=15d0b735fa", "game/art_landmark.js?v=15d0b735fa", "game/engine.js?v=15d0b735fa", "game/shaft.js?v=15d0b735fa", "game/local.js?v=15d0b735fa", "game/phone.js?v=15d0b735fa", "fonts/Cubic_11.woff2", "manifest.webmanifest", "icon-192.png", "icon-512.png"];
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(FILES); }).then(function () { return self.skipWaiting(); }));
 });

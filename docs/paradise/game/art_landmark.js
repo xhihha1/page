@@ -359,6 +359,182 @@
     R(c, 0, h - 4, w, 4, "#a8a8b0"); R(c, 0, h - 4, w, 1, "#d0d0d8");
   });
 
+  // ---- 大巨蛋 ---------------------------------------------------------------------------------
+  S.bigdome = inked(function (c, w, h) {           // a low silver ellipse in stepped rings, on a ring of glass
+    var cx = w / 2, base = h - 30, rx = w / 2 - 12, ry = base - 10, y, x;
+    // facade: white piers and glass
+    R(c, 18, base, w - 36, h - base, WH[1]); R(c, 18, base, w - 36, 2, WH[0]); R(c, 18, h - 3, w - 36, 3, WH[3]);
+    for (x = 26; x < w - 30; x += 16) { R(c, x + 5, base + 6, 10, h - base - 12, "#4a6278"); R(c, x + 6, base + 7, 3, h - base - 14, "#8ab0c8"); column(c, x, base + 4, 4, h - base - 7, WH); }
+    R(c, cx - 22, base + 4, 44, h - base - 7, "#283848"); R(c, cx - 26, base + 2, 52, 4, WH[0]); R(c, cx - 1, base + 6, 2, h - base - 9, "#5878a0");
+    R(c, 10, base - 6, w - 20, 7, "#384858"); for (x = 12; x < w - 12; x += 6) R(c, x, base - 5, 3, 4, "#6888a8");
+    // the dome, row by row
+    for (y = 0; y < ry; y++) {
+      var t = 1 - y / ry, hw = Math.round(rx * Math.sqrt(1 - t * t)), yy = base - 6 - ry + y;
+      if (hw < 1) continue;
+      var ring = y % 12 === 11;
+      R(c, cx - hw, yy, hw * 2, 1, ring ? "#9ca0b0" : "#c8ccd8");
+      R(c, cx - hw, yy, Math.round(hw * .55), 1, ring ? "#b8bcc8" : "#e4e8f0");
+      R(c, cx + Math.round(hw * .5), yy, hw - Math.round(hw * .5), 1, ring ? "#7c8090" : "#a8acbc");
+      [-.8, -.5, -.2, .2, .5, .8].forEach(function (s) { px(c, Math.round(cx + hw * s), yy, "#9498a8"); });
+    }
+    disc(c, cx - 50, base - 6 - ry + 22, 6, "#f8f8fc");                 // a glint of sun
+    R(c, cx - 20, base - 8 - ry, 40, 4, "#a8acbc");                       // the flat crown
+  });
+
+  // ---- 國立臺灣博物館 ---------------------------------------------------------------------------
+  S.ntm_front = inked(function (c, w, h) {         // Doric portico, pediment and a dome over two long wings
+    var cx = w / 2, IV = ["#fffcf0", "#f0e8d4", "#cfc4a8", "#9a8e74"];
+    R(c, 0, h - 18, w, 18, STONE[1]); R(c, 0, h - 18, w, 2, STONE[0]); R(c, 0, h - 2, w, 2, STONE[3]);
+    stairs(c, cx - 40, h - 18, 80, 18, WH);
+    [[4, 92], [w - 96, 92]].forEach(function (s) {
+      var x = s[0], ww = s[1];
+      R(c, x, 52, ww, h - 70, IV[1]); R(c, x, 52, 3, h - 70, IV[0]); R(c, x + ww - 3, 52, 3, h - 70, IV[2]);
+      R(c, x - 2, 46, ww + 4, 6, IV[0]); R(c, x - 2, 51, ww + 4, 1, IV[3]); rail(c, x, 38, ww, IV);
+      for (var wx = x + 8; wx < x + ww - 10; wx += 16) {
+        R(c, wx, 60, 9, 22, IV[3]); R(c, wx + 1, 63, 7, 18, "#486078"); disc(c, wx + 4, 63, 3, "#486078"); R(c, wx + 1, 64, 2, 6, "#90b0c8");
+        R(c, wx, 92, 9, 18, IV[3]); R(c, wx + 1, 93, 7, 16, "#486078");
+      }
+      R(c, x, 86, ww, 2, IV[2]);
+    });
+    // the dome on its drum
+    R(c, cx - 30, 26, 60, 20, IV[1]); R(c, cx - 30, 26, 6, 20, IV[0]); R(c, cx + 24, 26, 6, 20, IV[2]);
+    for (var d = cx - 24; d < cx + 22; d += 8) { R(c, d, 30, 4, 12, "#486078"); disc(c, d + 2, 30, 2, "#486078"); }
+    for (var y = 0; y < 22; y++) {
+      var t = 1 - y / 22, hw = Math.round(34 * Math.sqrt(1 - t * t));
+      R(c, cx - hw, 4 + y, hw * 2, 1, "#a8c0b8"); R(c, cx - hw, 4 + y, Math.round(hw * .6), 1, "#c8dcd4"); R(c, cx + Math.round(hw * .45), 4 + y, hw - Math.round(hw * .45), 1, "#789890");
+      if (y % 6 === 5) R(c, cx - hw, 4 + y, hw * 2, 1, "#789890");
+    }
+    R(c, cx - 4, 0, 8, 6, IV[1]); R(c, cx - 1, -1, 2, 2, GOLD[1]);
+    // portico: six columns under a pediment
+    R(c, cx - 50, 62, 100, h - 80, "#a89878");
+    for (var i = 0; i < 6; i++) column(c, cx - 46 + i * 18, 66, 8, h - 84, IV);
+    R(c, cx - 2, 90, 4, h - 108, "#4a3a28");
+    R(c, cx - 54, 56, 108, 8, IV[0]); R(c, cx - 54, 63, 108, 1, IV[3]); for (var g = cx - 52; g < cx + 52; g += 6) R(c, g, 58, 3, 3, IV[2]);
+    for (var p = 0; p < 16; p++) R(c, cx - 56 + Math.round(p * 3.5), 56 - p, 112 - Math.round(p * 3.5) * 2, 1, p === 15 ? IV[3] : IV[0]);
+    for (p = 2; p < 14; p++) R(c, cx - 50 + Math.round(p * 3.5), 56 - p, 100 - Math.round(p * 3.5) * 2, 1, IV[1]);
+    disc(c, cx, 49, 3, IV[2]);
+  });
+
+  // ---- 西門紅樓 ---------------------------------------------------------------------------------
+  function bricks(c, x, y, w, h, B) {
+    R(c, x, y, w, h, B[1]);
+    for (var j = 0; j < h; j += 4) { R(c, x, y + j + 3, w, 1, B[2]); for (var i = (j / 4) % 2 ? 2 : 6; i < w; i += 8) px(c, x + i, y + j, B[2]); }
+  }
+  S.ximen_red = inked(function (c, w, h) {
+    var B = ["#e07850", "#b84830", "#883020", "#5a1c10"], WT = WH;
+    // the cross-shaped hall behind
+    bricks(c, 82, 40, w - 86, h - 44, B); R(c, 82, 40, w - 86, 3, WT[1]); R(c, 82, 70, w - 86, 3, WT[1]);
+    for (var x = 90; x < w - 10; x += 14) { R(c, x, 48, 8, 14, WT[1]); R(c, x + 1, 51, 6, 10, "#486078"); disc(c, x + 4, 51, 3, "#486078"); }
+    roof(c, 80, 26, w - 82, 14, 8, ["#8890a0", "#606878", "#485060", "#303848"], 2);
+    // the octagon: a lit face, the front, a shaded face
+    var L0 = 10, F0 = 28, F1 = 66, R1 = 84, top = 32;
+    bricks(c, L0, top, F0 - L0, h - top - 4, ["#f09068", "#d06040", "#a03828", "#6a2010"]);
+    bricks(c, F0, top, F1 - F0, h - top - 4, B);
+    bricks(c, F1, top, R1 - F1, h - top - 4, ["#a04028", "#882818", "#681810", "#401008"]);
+    [top, top + 26, h - 10].forEach(function (y) { R(c, L0, y, R1 - L0, 3, WT[1]); R(c, F1, y, R1 - F1, 3, WT[2]); });
+    [[F0 + 6, top + 8], [F0 + 24, top + 8], [F0 + 6, top + 36], [F0 + 24, top + 36]].forEach(function (p) {
+      R(c, p[0] - 1, p[1] - 2, 10, 18, WT[1]); R(c, p[0], p[1], 8, 15, "#486078"); disc(c, p[0] + 4, p[1], 4, WT[1]); disc(c, p[0] + 4, p[1] + 1, 3, "#486078"); R(c, p[0] + 1, p[1] + 2, 2, 6, "#90b0c8");
+    });
+    R(c, L0 + 5, top + 10, 8, 12, "#486078"); R(c, F1 + 5, top + 10, 8, 12, "#2a3848");
+    R(c, F0 + 12, h - 30, 14, 20, WT[1]); R(c, F0 + 14, h - 28, 10, 18, "#3a2418");
+    // the octagonal roof and its lantern
+    octRoof(c, (L0 + R1) / 2, 16, 14, 40, 16, ["#8890a0", "#606878", "#485060", "#303848"], 3);
+    R(c, 39, 6, 16, 10, WT[1]); R(c, 39, 6, 4, 10, WT[0]); R(c, 51, 6, 4, 10, WT[2]); R(c, 43, 9, 8, 5, "#486078");
+    octRoof(c, 47, 0, 2, 11, 7, ["#8890a0", "#606878", "#485060", "#303848"], 1);
+  });
+
+  // ---- 天文館 -----------------------------------------------------------------------------------
+  S.astro_hall = inked(function (c, w, h) {        // a white sphere on a long curved hall, an observatory dome beside it
+    var cx = w / 2, base = h - 44;
+    R(c, 10, base, w - 20, 44, WH[1]); R(c, 10, base, w - 20, 3, WH[0]); R(c, w - 22, base, 12, 44, WH[2]); R(c, 10, h - 3, w - 20, 3, WH[3]);
+    R(c, 14, base + 10, w - 28, 10, "#3a5a88"); for (var g = 16; g < w - 16; g += 8) R(c, g, base + 11, 4, 3, "#90b8e0");
+    R(c, cx - 16, h - 24, 32, 24, "#283848"); R(c, cx - 20, h - 27, 40, 4, WH[0]); R(c, cx - 1, h - 22, 2, 22, "#5878a0");
+    // big sphere
+    var r = 42, cy = base - 22;
+    for (var y = -r; y <= r; y++) {
+      if (cy + y > base) break;
+      var hw = Math.round(Math.sqrt(r * r - y * y)), yy = cy + y;
+      R(c, cx - hw, yy, hw * 2, 1, "#d8dce8");
+      R(c, cx - hw, yy, Math.round(hw * (y < 0 ? .9 : .6)), 1, "#f0f2f8");
+      R(c, cx + Math.round(hw * .45), yy, hw - Math.round(hw * .45), 1, "#a8aec0");
+      [-.66, -.33, 0, .33, .66].forEach(function (s) { px(c, Math.round(cx + hw * s), yy, "#b8bccc"); });
+      if ((y + r) % 10 === 9) R(c, cx - hw, yy, hw * 2, 1, "#b8bccc");
+    }
+    disc(c, cx - 16, cy - 20, 5, "#ffffff");
+    // observatory dome with its slit
+    var ox = 38, oy = base;
+    for (var j = 0; j < 18; j++) { var ow = Math.round(Math.sqrt(324 - (17 - j) * (17 - j))); R(c, ox - ow, oy - 18 + j, ow * 2, 1, j % 6 === 5 ? WH[2] : WH[1]); R(c, ox - ow, oy - 18 + j, Math.round(ow * .6), 1, WH[0]); }
+    R(c, ox - 2, oy - 18, 4, 16, "#283848");
+    R(c, ox - 20, oy - 2, 40, 3, WH[2]);
+  });
+
+  // ---- 東海路思義教堂 ---------------------------------------------------------------------------
+  S.luce = inked(function (c, w, h) {              // four curved shells of yellow diamond tiles, a skylight slit on top
+    var cx = w / 2, top = 2, bot = h - 12;
+    R(c, 0, h - 12, w, 12, "#88c060"); R(c, 0, h - 12, w, 2, "#a8d878");
+    for (var y = top; y < bot; y++) {
+      var k = (y - top) / (bot - top), hw = Math.round(6 + (w / 2 - 14) * Math.pow(k, 2.1));
+      for (var x = cx - hw; x < cx + hw; x++) {
+        var left = x < cx, dia = ((x + y) % 7 === 0) || ((x - y + 700) % 7 === 0);
+        px(c, x, y, dia ? (left ? "#b89018" : "#8a6a10") : left ? (k < .5 ? "#f8d850" : "#e8c040") : (k < .5 ? "#d8b030" : "#c09820"));
+      }
+      if (hw > 8) { px(c, cx - hw, y, "#fff0a0"); px(c, cx + hw - 1, y, "#705008"); }
+    }
+    R(c, cx - 1, top, 2, bot - top - 26, "#d8f0f8");
+    R(c, cx - 9, bot - 26, 18, 26, "#4a3020"); R(c, cx - 7, bot - 24, 14, 24, "#6a4428"); R(c, cx - 1, bot - 24, 2, 24, "#4a3020");
+    R(c, 12, bot - 4, w - 24, 4, STONE[1]);
+  });
+
+  // ---- 赤崁樓 -----------------------------------------------------------------------------------
+  S.chihkan = inked(function (c, w, h) {           // 海神廟 and 文昌閣 on a high brick terrace with arches
+    var B = ["#e07850", "#b84830", "#883020", "#5a1c10"], ROOF = ["#f09060", "#c85a30", "#904020", "#582010"];
+    bricks(c, 0, h - 40, w, 40, B); R(c, 0, h - 40, w, 3, B[0]);
+    [20, w - 44].forEach(function (x) { R(c, x, h - 26, 24, 26, "#2a1810"); disc(c, x + 12, h - 26, 12, "#2a1810"); R(c, x, h - 29, 24, 1, B[0]); });
+    stairs(c, w / 2 - 18, h - 40, 36, 40, STONE);
+    rail(c, 0, h - 48, w / 2 - 22, WH); rail(c, w / 2 + 20, h - 48, w / 2 - 20, WH);
+    [[6, 84, 0], [w - 92, 86, 1]].forEach(function (p) {
+      var x = p[0], ww = p[1], tall = p[2];
+      R(c, x + 6, 44, ww - 12, h - 92, REDP[1]);
+      for (var q = x + 8; q < x + ww - 8; q += 14) column(c, q, 46, 4, h - 94, REDP);
+      R(c, x + ww / 2 - 9, 56, 18, h - 104, "#5a1c10"); R(c, x + ww / 2 - 7, 58, 14, h - 106, "#8a3420"); R(c, x + ww / 2, 58, 1, h - 106, GOLD[2]);
+      A.swallowRoof(c, x, 30, ww, 14, ROOF[1], ROOF[2], ROOF[3], false);
+      R(c, x + 16, 20, ww - 32, 10, REDP[1]); for (var l = x + 20; l < x + ww - 20; l += 8) R(c, l, 22, 4, 6, "#5a1c10");
+      A.swallowRoof(c, x + 10, 8 - tall * 4, ww - 20, 12 + tall * 2, ROOF[1], ROOF[2], ROOF[3], true);
+    });
+  });
+
+  // ---- 美麗華摩天輪 ------------------------------------------------------------------------------
+  S.ferris = inked(function (c, w, h, f) {
+    var cx = w / 2, cy = h / 2 - 8, r = Math.min(w, h) / 2 - 18, a = (f || 0) * .13, i, t;
+    for (t = 0; t < h - cy; t++) { R(c, Math.round(cx - 3 - t * .45), cy + t, 4, 1, "#c8ccd8"); R(c, Math.round(cx - 1 + t * .45), cy + t, 4, 1, "#9ca0b0"); }
+    R(c, cx - 34, h - 6, 68, 6, STONE[1]); R(c, cx - 34, h - 6, 68, 1, STONE[0]);
+    for (i = 0; i < 16; i++) {
+      var d = i / 16 * 6.283 + a;
+      for (t = 4; t < r; t += 2) px(c, Math.round(cx + Math.cos(d) * t), Math.round(cy + Math.sin(d) * t), "#d0d4e0");
+    }
+    for (i = 0; i < 240; i++) {
+      var b = i / 240 * 6.283, x = Math.round(cx + Math.cos(b) * r), y = Math.round(cy + Math.sin(b) * r);
+      R(c, x - 1, y - 1, 3, 3, Math.cos(b - 2.3) > 0 ? "#f05868" : "#c02838");
+    }
+    var cols = ["#f05868", "#f0c030", "#3c78d8", "#40b070", "#f8f8f8"];
+    for (i = 0; i < 16; i++) {
+      var e = i / 16 * 6.283 + a, gx = Math.round(cx + Math.cos(e) * r), gy = Math.round(cy + Math.sin(e) * r);
+      R(c, gx - 4, gy + 1, 8, 8, cols[i % 5]); R(c, gx - 3, gy + 2, 6, 3, "#c8e8f8"); R(c, gx, gy - 1, 1, 2, "#606878");
+    }
+    disc(c, cx, cy, 6, "#f0c030"); disc(c, cx, cy, 3, "#b88818");
+  });
+
+  S.mall = inked(function (c, w, h) {              // 美麗華百樂園: the mall under the wheel
+    R(c, 0, 10, w, h - 10, "#e8e0d8"); R(c, 0, 10, 3, h - 10, "#f8f4f0"); R(c, w - 4, 10, 4, h - 10, "#c0b8b0");
+    R(c, 0, 4, w, 12, "#d03040"); R(c, 0, 4, w, 2, "#f06070"); R(c, 0, 15, w, 2, "#901828");
+    for (var l = 8; l < w - 8; l += 7) R(c, l, 8, 4, 5, "#f8f0e0");
+    for (var y = 24; y < h - 34; y += 18) for (var x = 8; x < w - 12; x += 14) {
+      R(c, x, y, 10, 12, "#a09890"); R(c, x + 1, y + 1, 8, 10, "#5878a0"); R(c, x + 1, y + 1, 3, 4, "#a8c8e8");
+    }
+    R(c, 0, h - 30, w, 30, "#88b0d0"); for (var g = 4; g < w; g += 12) R(c, g, h - 28, 1, 28, "#5878a0");
+    R(c, 0, h - 32, w, 3, "#d03040"); R(c, w / 2 - 14, h - 26, 28, 26, "#283848"); R(c, w / 2 - 1, h - 24, 2, 24, "#5878a0");
+  });
+
   A.GLOW_STAMP.music_tower = 1;
 
   // overworld minis
