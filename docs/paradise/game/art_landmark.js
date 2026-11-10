@@ -1325,6 +1325,67 @@
     A.swallowRoof(c, 10, 4, w - 20, 10, GREYT[1], GREYT[2], REDP[2], true);
   });
 
+  // ---- 東海大學 (11/10 擴充) ---------------------------------------------------------------------
+  var TANG = ["#9098a0", "#5e666e", "#454c54", "#2c3238"], CLAY = ["#c8907a", "#a86a54", "#80503e", "#583428"];
+  S.bell_tower = inked(function (c, w, h) {        // 畢律斯鐘樓: a tall brick tower, an open belfry, a low tiled cap
+    var cx = w / 2;
+    bricks(c, 10, 28, w - 20, h - 28, ["#b8a8a0", "#98887c", "#786a60", "#504640"]);
+    R(c, 10, 28, 2, h - 28, PLASTER[0]); R(c, w - 12, 28, 2, h - 28, PLASTER[2]);
+    for (var y = 44; y < h - 10; y += 22) R(c, cx - 3, y, 6, 10, "#384048");
+    R(c, 8, 12, w - 16, 18, PLASTER[1]); R(c, 12, 14, w - 24, 14, "#283038");
+    R(c, cx - 5, 15, 10, 9, "#b88a30"); R(c, cx - 6, 23, 12, 2, "#8a6420"); px(c, cx - 3, 16, "#e8c070");
+    R(c, 8, 28, w - 16, 2, PLASTER[2]);
+    roof(c, 4, 4, w - 8, 9, 10, TANG, 2); R(c, cx - 1, 0, 2, 4, TANG[3]);
+    R(c, 6, h - 4, w - 12, 4, STONE[1]);
+  });
+
+  function tangCollege(c, w, h, sign) {             // 文學院、理學院: low Tang-style halls, grey tiles over brick and white walls
+    var cx = w / 2;
+    R(c, 2, h - 6, w - 4, 6, STONE[1]); R(c, 2, h - 6, w - 4, 1, STONE[0]);
+    bricks(c, 6, 46, w - 12, h - 52, CLAY);
+    R(c, 6, 28, w - 12, 18, PLASTER[0]); R(c, w - 10, 28, 4, 18, PLASTER[2]);
+    for (var x = 12; x < w - 18; x += 18) if (Math.abs(x + 6 - cx) > 18) { R(c, x, 31, 12, 12, WOOD[2]); R(c, x + 1, 32, 10, 10, "#c8a878"); R(c, x + 6, 32, 1, 10, WOOD[2]); R(c, x + 1, 37, 10, 1, WOOD[2]); }
+    for (var p = 8; p < w - 8; p += 18) R(c, p, 28, 3, h - 34, WOOD[2]);
+    R(c, cx - 14, 34, 28, h - 40, WOOD[3]); R(c, cx - 12, 36, 24, h - 42, "#a88050"); R(c, cx - 1, 36, 2, h - 42, WOOD[3]);
+    stairs(c, cx - 12, h - 6, 24, 6, STONE);
+    roof(c, 0, 10, w, 19, 14, TANG, 5);
+    R(c, cx - 16, 20, 32, 7, "#f4ecd8"); for (var k = cx - 13; k < cx + 13; k += 6) R(c, k, 21, 4, 5, sign);
+  }
+  S.arts_college = inked(function (c, w, h) { tangCollege(c, w, h, "#283040"); });
+  S.science_college = inked(function (c, w, h) { tangCollege(c, w, h, "#2a5a8a"); });
+
+  S.dairy_barn = inked(function (c, w, h) {        // 東海牧場: the red barn and its milk shop
+    var cx = w / 2;
+    R(c, 6, 26, w - 12, h - 26, "#c83830"); for (var x = 8; x < w - 6; x += 4) R(c, x, 26, 1, h - 26, "#a82820");
+    R(c, 6, 26, 2, h - 26, PLASTER[0]); R(c, w - 8, 26, 2, h - 26, PLASTER[0]);
+    for (var y = 0; y < 22; y++) { var hw = Math.round(6 + y * (w / 2 - 4) / 21); R(c, cx - hw, 4 + y, hw * 2, 1, y % 4 === 3 ? "#585868" : "#707080"); }
+    for (var g = 0; g < 14; g++) R(c, cx - g, 12 + g, g * 2, 1, "#c83830");
+    R(c, cx - 6, 16, 12, 8, PLASTER[0]); R(c, cx - 4, 18, 8, 4, "#5878a0");
+    R(c, cx - 12, h - 24, 24, 24, PLASTER[0]); R(c, cx - 10, h - 22, 20, 22, "#7a4a28"); R(c, cx - 10, h - 22, 20, 1, PLASTER[0]);
+    for (var d = 0; d < 20; d++) { px(c, cx - 10 + d, h - 22 + d, PLASTER[0]); px(c, cx + 9 - d, h - 22 + d, PLASTER[0]); }
+    R(c, 10, 32, 14, 10, "#f8f8f8"); R(c, 14, 30, 6, 3, "#f8f8f8"); R(c, 12, 35, 10, 4, "#4888d0");                // milk bottle
+  });
+
+  // a black-and-white dairy cow for the farm
+  var oldAnimal = A.animal, cows = {};
+  A.animal = function (kind, frame) {
+    if (kind !== "holstein") return oldAnimal(kind, frame);
+    var key = frame % 2;
+    if (!cows[key]) {
+      var cv = A.mk(16, 16), c = cv.getContext("2d");
+      R(c, 3, 5, 11, 7, "#f8f8f8"); R(c, 5, 5, 4, 4, "#202020"); R(c, 10, 8, 3, 4, "#202020");
+      R(c, 0, 4, 4, 5, "#f8f8f8"); R(c, 0, 4, 2, 2, "#202020"); R(c, 0, 7, 3, 2, "#f0a8a8"); R(c, 0, 2, 1, 2, "#c8c0b0"); R(c, 3, 2, 1, 2, "#c8c0b0");
+      R(c, 4, 12, 2, 4, "#202020"); R(c, 11, 12, 2, 4 - key, "#202020"); R(c, 7, 12, 3, 2, "#f0a8a8"); R(c, 14, 6, 1, 4, "#202020");
+      cows[key] = cv;
+    }
+    return cows[key];
+  };
+
+  // the Little Prince: a green coat, a yellow scarf, golden hair
+  A.OUTFIT.prince = { top: "#3a9a58", leg: "#3a9a58", shoe: "#5a3818", paint: function (c, d) { if (d !== "u") { R(c, 5, 9, 6, 2, "#f0c030"); R(c, d === "l" ? 11 : 2, 9, 3, 5, "#f0c030"); } else R(c, 6, 9, 4, 1, "#f0c030"); } };
+  A.NPC.prince = { sex: "m", hair: "cover", hairColor: "#f0d050", head: "none", outfit: "prince" };
+  A.NPC.student = { sex: "f", hair: "bun", head: "none", outfit: "uniform" };
+
   A.GLOW_STAMP.music_tower = 1;
 
   // overworld minis
