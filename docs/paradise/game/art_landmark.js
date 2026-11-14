@@ -1386,9 +1386,258 @@
   A.NPC.prince = { sex: "m", hair: "cover", hairColor: "#f0d050", head: "none", outfit: "prince" };
   A.NPC.student = { sex: "f", hair: "bun", head: "none", outfit: "uniform" };
 
+  // ======== 11/14: the trip to Miaoli, Nantou and Hsinchu =====================================
+  var GOLDW = ["#f8e8a0", "#e8c048", "#c09828", "#7a5a10"];           // woven gold: the ingot, the rooster
+  function weave(c, x, y, w, h) {                       // a basket weave of gold strips
+    for (var j = 0; j < h; j++) for (var i = 0; i < w; i++) {
+      var on = ((i >> 2) + (j >> 2)) % 2 ? (j % 4 === 0) : (i % 4 === 0);
+      px(c, x + i, y + j, on ? GOLDW[2] : (j < h / 3 ? GOLDW[0] : GOLDW[1]));
+    }
+  }
+
+  // ---- 竹山紫南宮 ---------------------------------------------------------------------------------
+  S.zinan_temple = inked(function (c, w, h) {      // the main hall: orange tiles, dragons and three gods on the ridge
+    templeFront(c, w, h, ["#f8a860", "#e07030", "#a84818", "#6a2808"]);
+    var cx = w / 2;
+    [[cx - 14, "#2a7a40"], [cx, "#c82820"], [cx + 14, "#2858a8"]].forEach(function (g) {     // 福祿壽 on the roof
+      R(c, g[0] - 3, 30, 7, 9, g[1]); R(c, g[0] - 2, 26, 5, 5, "#f0c8a0"); R(c, g[0] - 3, 24, 7, 3, GOLD[1]);
+    });
+  });
+
+  S.incense_burner = inked(function (c, w, h) {    // a big bronze burner under its own little roof
+    var B = ["#a89878", "#7a6a50", "#5a4c38", "#3a3024"], cx = w / 2;
+    R(c, cx - 8, h - 6, 16, 6, STONE[1]);
+    R(c, cx - 10, h - 22, 20, 16, B[1]); R(c, cx - 10, h - 22, 3, 16, B[0]); R(c, cx + 7, h - 22, 3, 16, B[2]);
+    R(c, cx - 12, h - 24, 24, 3, B[2]); R(c, cx - 5, h - 18, 10, 6, B[3]); px(c, cx, h - 15, GOLD[1]);
+    R(c, cx - 2, 14, 4, h - 38, B[1]); [cx - 9, cx + 7].forEach(function (x) { R(c, x, 14, 2, h - 38, B[2]); });
+    octRoof(c, cx, 2, 1, 14, 12, B, 2);
+    for (var k = 0; k < 3; k++) R(c, cx - 4 + k * 4, h - 30 - k, 1, 6, "#e8eef4");
+  });
+
+  S.gold_ingot = inked(function (c, w, h) {        // 金元寶: a woven gold ingot holding a golden ball
+    var cx = w / 2;
+    R(c, 6, h - 10, w - 12, 10, "#384048"); R(c, 6, h - 10, w - 12, 2, "#586068");
+    disc(c, cx, 26, 16, GOLDW[1]); disc(c, cx - 4, 21, 7, GOLDW[0]); disc(c, cx - 6, 18, 3, "#fffce8");
+    for (var y = 0; y < 30; y++) {
+      var lip = y < 8 ? Math.round((8 - y) * 1.6) : 0, hw = Math.round(w / 2 - 2 - lip * 0 - Math.max(0, y - 12) * .5);
+      if (y < 8) { R(c, 0 + (8 - y) * 0, 24 + y, 14 - y, 1, GOLDW[1]); R(c, w - 14 + y, 24 + y, 14 - y, 1, GOLDW[1]); }
+      weave(c, cx - hw + 6, 30 + y, hw * 2 - 12, 1);
+    }
+    for (var k = 0; k < 4; k++) R(c, cx - 16 + k * 9, 40, 5, 6, "#c82820");                       // red lettering
+  });
+
+  S.golden_rooster = inked(function (c, w, h) {    // 金雞: a giant gold rooster on a yellow plinth; people crawl through the hole
+    var cx = w / 2, by = h - 34;
+    R(c, 4, by, w - 8, 34, "#f0c838"); R(c, 4, by, w - 8, 3, "#f8e070"); R(c, w - 8, by, 4, 34, "#c89820");
+    disc(c, cx, h - 10, 9, "#383028"); R(c, cx - 9, h - 10, 18, 10, "#383028");
+    for (var k = 0; k < 3; k++) R(c, 8, by + 8 + k * 7, 4, 5, "#c82820");
+    for (k = 0; k < 3; k++) R(c, w - 14, by + 8 + k * 7, 4, 5, "#c82820");
+    // the bird
+    for (var y = 0; y < 26; y++) { var hw = Math.round(24 * Math.sqrt(1 - Math.pow((y - 13) / 14, 2))); weave(c, cx - hw - 3, by - 28 + y, hw * 2, 1); }
+    for (y = 0; y < 14; y++) R(c, 4 + Math.round(y * .3), by - 32 + y, 8 - Math.round(y * .4), 1, GOLDW[1]);              // tail
+    for (y = 0; y < 18; y++) R(c, cx + 6, by - 40 + y, 12, 1, y < 4 ? GOLDW[0] : GOLDW[1]);                                 // neck and head
+    R(c, cx + 18, by - 36, 6, 3, "#e89020"); px(c, cx + 13, by - 37, "#202020");
+    R(c, cx + 7, by - 46, 10, 6, "#d83030"); R(c, cx + 9, by - 48, 3, 3, "#d83030"); R(c, cx + 13, by - 48, 3, 3, "#d83030");   // comb
+    R(c, cx + 14, by - 32, 4, 6, "#d83030");                                                                               // wattle
+    R(c, cx - 16, by - 2, 32, 3, GOLDW[2]);
+  });
+
+  S.big_coin = inked(function (c, w, h) {          // 紫南通寶: a giant coin set on a woven ingot
+    var cx = w / 2;
+    weave(c, 6, h - 22, w - 12, 18); R(c, 2, h - 26, 10, 6, GOLDW[1]); R(c, w - 12, h - 26, 10, 6, GOLDW[1]);
+    R(c, 10, h - 12, w - 20, 4, "#c82820");
+    disc(c, cx, 26, 24, "#7a6a28"); disc(c, cx, 26, 22, "#a89838"); disc(c, cx - 6, 20, 8, "#b8a848");
+    R(c, cx - 6, 20, 12, 12, "#384030"); R(c, cx - 7, 19, 14, 1, "#5a5020");
+    [[cx - 2, 7], [cx - 2, 40], [cx - 17, 23], [cx + 13, 23]].forEach(function (p) { R(c, p[0], p[1], 5, 6, GOLD[0]); });
+  });
+
+  S.jinji_hall = inked(function (c, w, h) {        // 金雞迎客館: three striped domes with open lattice spires
+    var cx = w / 2, ST = ["#f0e4c4", "#c8b490", "#a08868"];
+    function dome(x0, x1, top) {
+      var mid = (x0 + x1) / 2, hw = (x1 - x0) / 2;
+      for (var y = top; y < h - 4; y++) { var k = (y - top) / (h - 4 - top), ww = Math.round(hw * Math.sqrt(Math.min(1, k * 1.6))); R(c, mid - ww, y, ww * 2, 1, (y >> 2) % 2 ? ST[1] : ST[0]); R(c, mid + ww - 3, y, 3, 1, ST[2]); }
+      for (var s = 0; s < 12; s++) { R(c, mid - 6 + Math.round(s / 2), top - 12 + s, 1, 1, "#6a6a78"); R(c, mid + 6 - Math.round(s / 2), top - 12 + s, 1, 1, "#6a6a78"); R(c, mid - 6, top - 12, 12, 1, "#6a6a78"); }
+    }
+    dome(2, 44, 20); dome(w - 44, w - 2, 20); dome(cx - 16, cx + 16, 36);
+    R(c, cx - 22, h - 22, 44, 22, "#383840"); R(c, cx - 24, h - 30, 48, 8, "#2a2418");
+    for (var k = cx - 18; k < cx + 18; k += 9) R(c, k, h - 28, 6, 5, GOLD[1]);
+  });
+
+  // 土地公 and 土地婆
+  A.HEADS.tudi = function (c, look, dir) {           // a dark scholar's hat with flaps and a gold front
+    R(c, 3, -3, 10, 5, "#2a2a38"); R(c, 1, 0, 2, 3, "#2a2a38"); R(c, 13, 0, 2, 3, "#2a2a38");
+    if (dir === "d") { R(c, 7, -2, 2, 2, GOLD[1]); R(c, 4, 1, 8, 1, GOLD[2]); }
+  };
+  A.OUTFIT.tudirobe = { top: "#c83828", leg: "#c83828", shoe: "#2a2018", skirt: "#d8a830", paint: function (c, d) { R(c, 4, 12, 8, 1, GOLD[1]); if (d === "d") { R(c, 5, 10, 6, 3, GOLD[1]); R(c, 6, 9, 4, 1, GOLD[0]); } } };
+  A.OUTFIT.tudipo = { top: "#2a7a50", leg: "#2a7a50", shoe: "#2a2018", skirt: "#2a7a50", paint: function (c, d) { R(c, 4, 12, 8, 1, GOLD[1]); if (d === "d") R(c, 7, 9, 2, 4, GOLD[1]); } };
+  A.NPC.tudigong = { sex: "m", hair: "side", hairColor: "#f0f0f0", beard: "#f8f8f8", head: "tudi", outfit: "tudirobe" };
+  A.NPC.tudipo = { sex: "f", hair: "bun", hairColor: "#e8e8e8", head: "none", outfit: "tudipo" };
+
+  // ---- 山思雲想露營區 ------------------------------------------------------------------------------
+  S.cloud_view = inked(function (c, w, h) {        // mountains over a sea of clouds, at sunset
+    R(c, 0, 0, w, h, "#f0b088"); R(c, 0, 0, w, 12, "#c8a0c8"); R(c, 0, 12, w, 8, "#e8a0a0");
+    for (var x = 0; x < w; x++) {
+      var t1 = Math.round(22 + Math.sin(x / 23) * 6 + Math.sin(x / 7) * 2), t2 = Math.round(30 + Math.sin(x / 15 + 2) * 4);
+      R(c, x, t1, 1, h - t1, "#8a88a8"); R(c, x, t2, 1, h - t2, "#6a7890");
+    }
+    for (var k = 0; k < w; k += 18) { disc(c, k + 8, 38, 6, "#f8f0f0"); disc(c, k + 16, 40, 5, "#f0e8ec"); }
+    R(c, 0, 40, w, h - 40, "#f0e8ec"); R(c, 0, h - 4, w, 4, GREEN[1]);
+    disc(c, w - 60, 18, 6, "#f8e080");
+  });
+
+  S.airstream = inked(function (c, w, h) {         // a polished aluminium camper with an awning
+    var M = ["#f4f6fa", "#c8ccd4", "#9ca0ac", "#6a6e78"];
+    for (var y = 6; y < h - 8; y++) { var r = y < 14 ? 14 - y : 0, x0 = 18 + Math.round(r * r / 14), x1 = w - 2 - Math.round(r * r / 12); R(c, x0, y, x1 - x0, 1, y < 12 ? M[0] : y > h - 14 ? M[2] : M[1]); }
+    for (var s = 22; s < w - 4; s += 6) R(c, s, 8, 1, h - 18, M[2]);
+    R(c, 26, 14, 10, 8, "#2a3848"); R(c, 40, 14, 14, 8, "#2a3848"); R(c, 27, 15, 3, 2, "#88a8c8");
+    R(c, 20, 16, 5, h - 26, M[3]); R(c, 21, 17, 3, h - 28, "#4a5060");
+    disc(c, 44, h - 6, 4, "#202020"); disc(c, 44, h - 6, 1, "#a0a0a0");
+    for (var a = 0; a < 18; a++) R(c, a, 8 + Math.round(a * .2), 1, 3, a % 4 < 2 ? "#f8f8f8" : "#d0d8e0");
+    R(c, 1, 12, 1, h - 20, "#787880");
+  });
+
+  S.bell_tent = inked(function (c, w, h, f) {       // 神殿帳: a white star tent on one tall pole, warm light inside
+    var cx = w / 2;
+    for (var y = 0; y < h - 6; y++) { var hw = Math.round(2 + (w / 2 - 2) * Math.pow(y / (h - 7), 1.6)); R(c, cx - hw, y, hw * 2, 1, "#f8f4ea"); R(c, cx + Math.round(hw * .4), y, hw - Math.round(hw * .4), 1, "#d8d0c0"); }
+    R(c, cx - 12, h - 26, 24, 20, f ? "#f8d888" : "#f0c870"); R(c, cx - 1, 0, 2, h - 6, "#a89070");
+    R(c, cx - 10, h - 14, 20, 3, WOOD[1]); R(c, cx - 8, h - 11, 2, 5, WOOD[2]); R(c, cx + 6, h - 11, 2, 5, WOOD[2]);
+    R(c, 0, h - 7, 4, 1, "#a89070"); R(c, w - 4, h - 7, 4, 1, "#a89070");
+  });
+
+  S.campfire = inked(function (c, w, h, f) {       // a ring of stones, crossed logs and a flickering fire
+    var cx = w / 2;
+    for (var a = 0; a < 10; a++) { var ang = a / 10 * 6.283; R(c, Math.round(cx + Math.cos(ang) * 12) - 2, Math.round(h - 10 + Math.sin(ang) * 6) - 1, 4, 3, a % 2 ? STONE[1] : STONE[2]); }
+    for (var k = 0; k < 10; k++) { px(c, cx - 8 + k, h - 12 + Math.round(k * .4), WOOD[2]); px(c, cx + 8 - k, h - 12 + Math.round(k * .4), WOOD[2]); }
+    var fl = f ? [[0, 14, 6], [-4, 10, 4], [4, 9, 4]] : [[0, 16, 5], [-5, 9, 4], [4, 11, 4]];
+    fl.forEach(function (p) { for (var y = 0; y < p[1]; y++) { var hw = Math.max(1, Math.round(p[2] * (1 - y / p[1]))); R(c, cx + p[0] - hw, h - 12 - y, hw * 2, 1, y < p[1] / 3 ? "#f86818" : y < p[1] * 2 / 3 ? "#f8a020" : "#f8e070"); } });
+  });
+  A.GLOW_STAMP.campfire = 1;
+
+  // ---- 苗栗 大湖 ---------------------------------------------------------------------------------
+  S.strawberry_row = inked(function (c, w, h, f) {  // a raised bed under black film, leaves and ripe berries
+    R(c, 0, 4, w, h - 4, "#303038"); R(c, 0, 4, w, 1, "#585868");
+    for (var x = 2; x < w - 2; x += 5) { R(c, x, 2, 4, 5, "#3a9a40"); px(c, x + 1, 2, "#68c060"); if ((x * 7) % 3 !== 0) { R(c, x + 1, 8, 3, 3, "#e02838"); px(c, x + 2, 8, "#40a040"); } }
+  });
+
+  S.strawberry_winery = inked(function (c, w, h) {  // 大湖酒莊・草莓文化館: Mediterranean white walls, an orange roof, a giant strawberry
+    var cx = w / 2, ROOF = ["#f0a070", "#d06838", "#a04820", "#683010"];
+    R(c, 4, 32, w - 8, h - 32, "#fbf6ee"); R(c, w - 10, 32, 6, h - 32, "#d8d0c4");
+    for (var x = 12; x < w - 16; x += 20) if (Math.abs(x + 6 - cx) > 20) arched(c, x, 44, 12, 22, "#e8dcc8");
+    R(c, cx - 18, h - 34, 36, 34, "#88b0d0"); for (var g = cx - 16; g < cx + 18; g += 8) R(c, g, h - 34, 1, 34, "#5878a0");
+    disc(c, cx - 8, h - 14, 4, "#a83030"); disc(c, cx + 6, h - 14, 4, "#a83030");                                // wine barrels seen through the glass
+    roof(c, 0, 18, w, 15, 10, ROOF, 3);
+    for (var y = 0; y < 16; y++) { var hw = Math.round(9 * Math.sin((y + 2) / 18 * Math.PI)); R(c, cx - hw, 2 + y, hw * 2, 1, "#e02838"); }
+    R(c, cx - 6, 0, 12, 3, "#3a9a40"); dots(c, "#f8e070", [cx - 4, 6, cx + 2, 8, cx - 2, 11, cx + 4, 13, cx - 5, 12]);
+  });
+
+  S.big_strawberry = inked(function (c, w, h) {
+    var cx = w / 2;
+    for (var y = 0; y < h - 6; y++) { var hw = Math.round((w / 2 - 2) * Math.sin((y + 3) / (h - 2) * Math.PI)); R(c, cx - hw, 4 + y, hw * 2, 1, "#e02838"); R(c, cx - hw, 4 + y, Math.round(hw * .5), 1, "#f05060"); }
+    R(c, cx - 8, 2, 16, 4, "#3a9a40"); R(c, cx - 1, 0, 2, 3, "#2a7a30");
+    dots(c, "#f8e070", [cx - 6, 10, cx + 2, 12, cx - 2, 16, cx + 6, 18, cx - 7, 20, cx + 1, 22]);
+  });
+
+  S.ginger_row = inked(function (c, w, h) {          // 薑麻: tall reedy ginger leaves in a row
+    R(c, 0, h - 4, w, 4, "#8a6a48");
+    for (var x = 1; x < w - 1; x += 3) { R(c, x, 2 + (x % 2), 1, h - 6, "#3a8a40"); px(c, x + 1, 3 + (x % 3), "#68b858"); px(c, x - 1, 6, "#2a6a30"); }
+  });
+
+  S.steam_bath = inked(function (c, w, h, f) {     // 蒸足浴: a stool under an orange towel, the steamer beside it
+    R(c, 2, 6, 12, 9, "#f0a048"); R(c, 2, 6, 12, 2, "#f8c070"); R(c, 3, 14, 10, 2, "#c87828");
+    R(c, 12, 10, 4, 5, "#f0f0f0"); R(c, 12, 10, 4, 1, "#4888d0");
+    R(c, 6 + (f ? 1 : 0), 1, 1, 4, "#e8eef4"); R(c, 9 - (f ? 1 : 0), 0, 1, 4, "#e8eef4");
+  });
+
+  // ---- 苗栗 三義木雕 -------------------------------------------------------------------------------
+  S.wood_museum = inked(function (c, w, h) {        // 三義木雕博物館: brick and glass behind a wooden lattice screen
+    var cx = w / 2;
+    bricks(c, 4, 30, w - 8, h - 30, ["#c89070", "#a87050", "#805038", "#583020"]);
+    R(c, 20, 36, w - 40, h - 52, "#5878a0"); for (var x = 22; x < w - 20; x += 6) R(c, x, 36, 3, h - 52, WOOD[1]);
+    R(c, cx - 16, h - 30, 32, 30, "#283848"); R(c, cx - 18, h - 33, 36, 4, WOOD[2]);
+    R(c, 0, 22, w, 9, WOOD[1]); R(c, 0, 22, w, 2, WOOD[0]); R(c, 0, 30, w, 1, WOOD[3]);
+    R(c, cx - 30, 8, 60, 14, WOOD[2]); R(c, cx - 28, 10, 56, 10, "#f0dcb0"); for (var k = cx - 24; k < cx + 24; k += 8) R(c, k, 12, 5, 6, WOOD[3]);
+    // a big carved figure out front
+    disc(c, 22, h - 22, 9, WOOD[0]); disc(c, 22, h - 32, 6, WOOD[0]); R(c, 14, h - 14, 16, 14, WOOD[1]); dots(c, WOOD[3], [20, h - 33, 24, h - 33, 21, h - 30]);
+  });
+
+  S.woodshop = inked(function (c, w, h) {           // a carving shop: a carved signboard, statues out front
+    R(c, 2, 8, w - 4, h - 8, WOOD[0]); for (var x = 4; x < w - 2; x += 4) R(c, x, 8, 1, h - 8, WOOD[1]);
+    roof(c, 0, 0, w, 9, 4, SLATE, 1);
+    R(c, 8, 12, w - 16, 10, WOOD[3]); R(c, 10, 14, w - 20, 6, "#f0c870"); for (var k = 12; k < w - 12; k += 6) R(c, k, 15, 3, 4, WOOD[3]);
+    R(c, 6, 28, w - 12, 22, "#3a2818"); for (var s = 0; s < 3; s++) { R(c, 10 + s * 16, 34, 8, 14, WOOD[0]); disc(c, 14 + s * 16, 33, 4, WOOD[0]); }
+    R(c, 4, h - 22, 10, 22, WOOD[1]); disc(c, 9, h - 24, 5, WOOD[1]); R(c, w - 14, h - 22, 10, 22, WOOD[1]); disc(c, w - 9, h - 24, 5, WOOD[1]);
+  });
+
+  S.carving_buddha = inked(function (c, w, h) {     // a laughing Buddha in camphor wood
+    var cx = w / 2, P = WOOD;
+    R(c, 2, h - 6, w - 4, 6, STONE[1]);
+    disc(c, cx, h - 18, 12, P[0]); disc(c, cx, h - 16, 8, P[1]); disc(c, cx + 2, h - 18, 3, P[0]);
+    disc(c, cx, 14, 9, P[0]); R(c, cx - 6, 14, 3, 1, P[3]); R(c, cx + 3, 14, 3, 1, P[3]); R(c, cx - 4, 18, 8, 2, P[3]);
+    disc(c, cx - 10, 10, 3, P[0]); disc(c, cx + 10, 10, 3, P[0]);
+  });
+
+  S.carving_eagle = inked(function (c, w, h) {      // a carved eagle spreading its wings on a stump
+    var cx = w / 2, P = WOOD;
+    R(c, cx - 6, h - 16, 12, 16, P[1]); R(c, cx - 8, h - 4, 16, 4, P[2]);
+    for (var y = 0; y < 14; y++) { R(c, 1 + y, 10 + y, cx - 2 - y, 1, y % 3 ? P[0] : P[1]); R(c, cx + 1, 10 + y, cx - 2 - y, 1, y % 3 ? P[0] : P[1]); }
+    R(c, cx - 4, 16, 8, 18, P[1]); disc(c, cx, 12, 5, P[0]); R(c, cx + 4, 12, 4, 2, GOLD[2]); px(c, cx + 1, 11, P[3]);
+  });
+
+  // ---- 新竹 新埔 -----------------------------------------------------------------------------------
+  S.sanheyuan = inked(function (c, w, h) {          // a red-brick courtyard farmhouse with red lanterns
+    var cx = w / 2, ROOF = ["#8890a0", "#606878", "#485060", "#303848"];
+    [[0, 52], [w - 52, 52]].forEach(function (p) { bricks(c, p[0] + 2, 40, p[1] - 4, h - 40, BRICK); roof(c, p[0], 30, p[1], 11, 5, ROOF, 1); sash(c, p[0] + 18, 52, 16, 14, WOOD[2]); });
+    bricks(c, 46, 22, w - 92, h - 22, BRICK);
+    R(c, cx - 12, h - 34, 24, 34, WOOD[3]); R(c, cx - 10, h - 32, 20, 32, "#a06838"); R(c, cx - 1, h - 32, 2, 32, WOOD[3]);
+    R(c, cx - 14, h - 40, 28, 5, "#c82820"); for (var k = cx - 11; k < cx + 11; k += 6) R(c, k, h - 39, 3, 3, GOLD[1]);
+    sash(c, 58, 36, 16, 16, WOOD[2]); sash(c, w - 74, 36, 16, 16, WOOD[2]);
+    roof(c, 40, 8, w - 80, 15, 10, ROOF, 2);
+    [cx - 22, cx + 18].forEach(function (x) { R(c, x + 1, 26, 1, 3, "#202020"); disc(c, x + 2, 32, 4, "#e03028"); R(c, x, 36, 4, 1, GOLD[1]); });
+  });
+
+  S.persimmon_rack = inked(function (c, w, h) {     // bamboo trays of flattened persimmons drying in the 九降風
+    for (var y = 2; y < h; y += 16) {
+      R(c, 0, y + 10, w, 2, "#a8a8a0"); R(c, 2, y + 12, 2, 4, "#888880"); R(c, w - 4, y + 12, 2, 4, "#888880");
+      for (var x = 2; x < w - 8; x += 9) { disc(c, x + 4, y + 5, 4, "#e88820"); disc(c, x + 3, y + 4, 2, "#f8b048"); px(c, x + 4, y + 5, "#c06010"); }
+    }
+  });
+
+  S.persimmon_tree = inked(function (c, w, h) {
+    var cx = w / 2;
+    R(c, cx - 2, h - 12, 4, 12, C.trunk);
+    disc(c, cx, 12, 13, "#3a8a3c"); disc(c, cx - 5, 9, 6, "#4aa048"); disc(c, cx + 6, 15, 6, "#2e7030");
+    [[cx - 7, 8], [cx + 4, 6], [cx - 2, 16], [cx + 8, 14], [cx - 9, 17], [cx + 1, 21]].forEach(function (p) { disc(c, p[0], p[1], 2, "#f08820"); px(c, p[0], p[1] - 2, "#2a5a20"); });
+  });
+
+  S.persimmon_mural = inked(function (c, w, h) {    // a brick wall with the persimmon girl carrying two baskets
+    bricks(c, 0, 0, w, h, BRICK);
+    var cx = w / 2;
+    disc(c, cx, 14, 11, "#c03028"); disc(c, cx, 15, 8, "#f0e4d8"); R(c, cx - 8, 6, 16, 5, "#202020");
+    dots(c, "#202020", [cx - 3, 15, cx + 3, 15]); R(c, cx - 2, 19, 4, 1, "#a04030");
+    R(c, cx - 5, 24, 10, 9, "#c84838"); R(c, cx - 4, 33, 3, 6, "#3858a8"); R(c, cx + 1, 33, 3, 6, "#3858a8");
+    R(c, cx - 16, 26, 32, 2, WOOD[1]);
+    [cx - 18, cx + 10].forEach(function (x) { R(c, x, 30, 8, 7, "#e8b8a8"); dots(c, "#e88820", [x + 2, 31, x + 5, 31, x + 3, 33]); });
+  });
+
+  S.butterfly_wall = inked(function (c, w, h) {     // 人面蝴蝶: a pebbled retaining wall, two butterflies with human faces reaching out
+    R(c, 0, 0, w, h, "#a8a498"); for (var y = 2; y < h - 12; y += 5) for (var x = (y % 10) ? 2 : 5; x < w; x += 7) R(c, x, y, 4, 3, "#c8c4b8");
+    R(c, 0, h - 12, w, 12, "#989488"); R(c, 0, h - 12, w, 1, "#c8c4b8");
+    for (var k = 0; k < w; k += 3) px(c, k, h - 6 + Math.round(Math.sin(k / 8) * 3), "#4890e0");                        // the blue mosaic stream
+    function fly(x, wing, spot, face) {
+      for (var j = 0; j < 18; j++) { var hw = Math.round(12 * Math.sin((j + 1) / 19 * Math.PI)); R(c, x - hw, 6 + j, hw, 1, wing); }
+      dots(c, spot, [x - 8, 10, x - 5, 14, x - 9, 17, x - 4, 20, x - 7, 22]);
+      disc(c, x + 3, 12, 4, face); dots(c, "#202020", [x + 2, 11, x + 4, 11]); R(c, x + 2, 14, 3, 1, "#c04040");
+      R(c, x + 3, 16, 2, 8, "#d88080"); R(c, x + 5, 18, 8, 2, "#f0b0a0"); dots(c, "#f0b0a0", [x + 13, 17, x + 13, 20, x + 14, 18]);
+    }
+    fly(26, "#2a8a50", "#d83838", "#f0c8b0");
+    fly(w - 40, "#4880d8", "#f0a040", "#e8d0c8");
+    [[60, 8], [96, 14], [w - 12, 6], [12, 26]].forEach(function (p) { disc(c, p[0], p[1], 2, "#f05050"); px(c, p[0], p[1], "#f8e070"); });
+  });
+
   A.GLOW_STAMP.music_tower = 1;
 
   // overworld minis
   var L = A.LANDMARK;
   L.kaohsiung = ["music_tower", 6, 8];
+  L.zinan = ["golden_rooster", 4, 5]; L.camp = ["bell_tent", 4, 4]; L.dahu = ["big_strawberry", 2, 2]; L.sanyi = ["wood_museum", 12, 7]; L.xinpu = ["sanheyuan", 12, 6];
 })(Art);
