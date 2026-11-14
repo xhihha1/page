@@ -167,6 +167,45 @@
     });
     addEventListener("keyup", function (e) { if (keys[e.key]) dirUp(keys[e.key]); });
   })();
+  // tap the screen: walk there by the shortest way; tap what is right in front of you to talk, read or board
+  (function bindTap() {
+    var scr = $("screen"), cv = $("game"), down = null;
+    scr.addEventListener("pointerdown", function (e) { down = { x: e.clientX, y: e.clientY }; });
+    scr.addEventListener("pointerup", function (e) {
+      var d = down; down = null;
+      if (!d || Math.abs(e.clientX - d.x) + Math.abs(e.clientY - d.y) > 12) return;
+      if (ui() || !$("sheet").hidden || !world || !eng.map) return;
+      var r = myRec(), m = curMap();
+      if (!r || !m) return;
+      if (r.lead) { toast("跟著隊長走就好。選單可以離隊。"); return; }
+      var b = cv.getBoundingClientRect();
+      var t = eng.tileAt((e.clientX - b.left) * cv.width / b.width, (e.clientY - b.top) * cv.height / b.height);
+      if (t.x < 0 || t.y < 0 || t.x >= m.w || t.y >= m.h) return;
+      var a = ahead();
+      if (t.x === r.x && t.y === r.y) { interact(); return; }
+      if (a && t.x === a.x && t.y === a.y) {
+        var thing = m.objects.some(function (o) { return o.x === t.x && o.y === t.y; }) || tileClass(t.x, t.y) === "water" ||
+          Object.keys(eng.actors).some(function (id) { var q = eng.actors[id]; return id !== eng.me && !q.hid && q.tx === t.x && q.ty === t.y; });
+        if (thing) { interact(); return; }
+      }
+      held = null; eng.held = undefined;              // let the screen glide on the server's "walking" flag
+      eng.target = { x: t.x, y: t.y, until: performance.now() + 8000 };
+      send({ t: "goto", x: t.x, y: t.y });
+    });
+  })();
+
+  // script errors on a real phone go to the Pi's log (a few per page), so a frozen screen can be traced
+  var reported = 0;
+  function report(e) {
+    if (reported >= 5 || !e) return;
+    reported++;
+    var msg = e.message || (e.reason && e.reason.message) || String(e), stack = (e.error && e.error.stack) || e.stack || "";
+    send({ t: "clienterr", m: (msg + " | " + String(stack).split("\n").slice(0, 3).join(" | ")).slice(0, 300) });
+  }
+  eng.onError = report;
+  addEventListener("error", function (e) { report(e.error || e); });
+  addEventListener("unhandledrejection", function (e) { report(e.reason); });
+
   document.addEventListener("gesturestart", function (e) { e.preventDefault(); });
   document.addEventListener("contextmenu", function (e) { e.preventDefault(); });
 

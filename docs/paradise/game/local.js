@@ -29,7 +29,7 @@
   R.player = function (save) {
     var p = { id: "me", name: save.name, look: save.look, map: save.map, x: save.x, y: save.y, d: save.d || "d",
               vehicle: save.vehicle || "none", held: null, next_at: 0, moved_at: -1, ms: 0, warp_at: null,
-              pending_warp: null, bump_at: 0, bed: null, up: null, online: true, costume: null };
+              pending_warp: null, bump_at: 0, bed: null, up: null, online: true, costume: null, route: [], face: null };
     this.p = p;
     this.settle(p);
     return p;
@@ -38,17 +38,32 @@
   R.settle = function (p) {           // _settle: a saved spot that is gone or inside a wall moves to the region entry
     var m = this.maps[p.map];
     var onWater = m && p.vehicle === "boat" && this.tileClass(m, p.x, p.y) === "water";
-    if (m && (this.walkable(m, p.x, p.y) || onWater)) return;
+    if (m && (onWater || (this.walkable(m, p.x, p.y) && !this.cutOff(m, p.x, p.y)))) return;
     var entry = this.w.spawn;
     if (m) this.w.regions.forEach(function (r) { if (r.id === m.region) entry = r.entry; });
     p.map = entry[0]; p.x = entry[1]; p.y = entry[2]; p.d = entry[3]; p.vehicle = "none";
+  };
+
+  R.cutOff = function (m, x, y) {    // _cut_off: no warp reachable on foot from here, a pocket left by a map change
+    if (!Object.keys(m.warps).length) return false;
+    var seen = {}, queue = [[x, y]], self = this;
+    seen[x + "," + y] = true;
+    while (queue.length) {
+      var c = queue.pop();
+      if (m.warps[c[0] + "," + c[1]]) return false;
+      ["u", "d", "l", "r"].forEach(function (d) {
+        var nx = c[0] + DIRS[d][0], ny = c[1] + DIRS[d][1], k = nx + "," + ny;
+        if (!seen[k] && (self.walkable(m, nx, ny) || m.warps[k])) { seen[k] = true; queue.push([nx, ny]); }
+      });
+    }
+    return true;
   };
 
   R.record = function () {
     var p = this.p, look = p.look;
     if (p.costume) { look = {}; for (var k in p.look) look[k] = p.look[k]; look.outfit = p.costume; }
     return { id: p.id, n: p.name, look: look, map: p.map, x: p.x, y: p.y, d: p.d, v: p.vehicle, ms: p.ms, hid: false,
-             lead: null, on: true, lie: p.bed !== null, w: !!p.held };
+             lead: null, on: true, lie: p.bed !== null, w: !!(p.held || p.route.length) };
   };
 
   R.touch = function () { this.changed = true; };
@@ -59,6 +74,7 @@
     if (d !== null && !DIRS[d]) return;
     if (!!p.held !== !!d) this.touch();
     p.held = d;
+    if (d !== null) { p.route = []; p.face = null; }
     if (d === null || p.warp_at !== null) return;
     if (p.bed) { this.getUp(); p.held = null; p.next_at = now + 0.2; return; }
     var idle = now >= p.next_at && now - p.next_at > 0.06;
@@ -71,13 +87,15 @@
       var w = p.pending_warp; p.warp_at = null; p.pending_warp = null;
       this.warp(w.to, w.x, w.y, w.d);
       p.next_at = now + 0.15;
-    } else if (p.held && p.warp_at === null && now >= p.next_at) this.step(p.held, now);
+    } else if ((p.held || p.route.length) && p.warp_at === null && now >= p.next_at) {
+      if (p.held) this.step(p.held, now); else this.walkRoute(now);
+    }
   };
 
   R.nextDue = function () {
     var p = this.p;
     if (p.warp_at !== null) return p.warp_at;
-    return p.held ? p.next_at : null;
+    return (p.held || p.route.length) ? p.next_at : null;
   };
 
   R.passable = function (x, y) {
@@ -107,7 +125,62 @@
     var start = (now - p.next_at >= 0 && now - p.next_at < KEEP_PACE_S) ? p.next_at : now;
     p.next_at = start + ms / 1000; p.moved_at = now;
     var w = m.warps[nx + "," + ny];
-    if (w) { p.warp_at = p.next_at; p.pending_warp = w; }
+    if (w) { p.warp_at = p.next_at; p.pending_warp = w; p.route = []; p.face = null; }
+  };
+
+  // ---- tap to walk (goto, _route, _walk_route) ----
+  function facing(a, b, fallback) {
+    var dx = b[0] - a[0], dy = b[1] - a[1];
+    if (Math.abs(dx) >= Math.abs(dy) && dx) return dx > 0 ? "r" : "l";
+    if (dy) return dy > 0 ? "d" : "u";
+    return fallback;
+  }
+
+  R.goto = function (x, y, now) {
+    var p = this.p, m = this.maps[p.map];
+    if (p.bed) this.getUp();
+    p.route = []; p.face = null; p.held = null;
+    if (x < 0 || y < 0 || x >= m.w || y >= m.h || (x === p.x && y === p.y)) return;
+    var open = this.passable(x, y), goals = {};
+    if (open) goals[x + "," + y] = true;
+    else ["u", "d", "l", "r"].forEach(function (d) { goals[(x + DIRS[d][0]) + "," + (y + DIRS[d][1])] = true; });
+    if (goals[p.x + "," + p.y]) { p.d = facing([p.x, p.y], [x, y], p.d); this.touch(); return; }
+    var path = this.route(m, goals);
+    if (!path) throw GameError("走不過去");
+    p.route = path.map(function (s) { return s[0]; });
+    if (!open) p.face = facing(path[path.length - 1][1], [x, y], p.d);
+  };
+
+  R.route = function (m, goals) {
+    var p = this.p, start = p.x + "," + p.y, back = {}, seen = {}, queue = [[p.x, p.y]], self = this;
+    seen[start] = true;
+    while (queue.length) {
+      var next = [];
+      for (var i = 0; i < queue.length; i++) {
+        var c = queue[i];
+        var ds = ["u", "d", "l", "r"];
+        for (var j = 0; j < 4; j++) {
+          var d = ds[j], nx = c[0] + DIRS[d][0], ny = c[1] + DIRS[d][1], k = nx + "," + ny;
+          if (seen[k] || !self.passable(nx, ny)) continue;
+          seen[k] = true; back[k] = [c, d];
+          if (goals[k]) {
+            var path = [], n = [nx, ny];
+            while (n[0] + "," + n[1] !== start) { var b = back[n[0] + "," + n[1]]; path.push([b[1], n]); n = b[0]; }
+            return path.reverse();
+          }
+          if (!m.warps[k]) next.push([nx, ny]);
+        }
+      }
+      queue = next;
+    }
+    return null;
+  };
+
+  R.walkRoute = function (now) {
+    var p = this.p, d = p.route.shift(), before = p.map + "," + p.x + "," + p.y;
+    this.step(d, now);
+    if (p.map + "," + p.x + "," + p.y === before) { p.route = []; p.face = null; }
+    else if (!p.route.length && p.face) { p.d = p.face; p.face = null; this.touch(); }
   };
 
   R.advance = function (nx, ny, ms) { var p = this.p; p.x = nx; p.y = ny; p.ms = ms; this.touch(); };
@@ -132,6 +205,7 @@
 
   R.warp = function (to, x, y, d) {
     var p = this.p, target = this.maps[to];
+    p.route = []; p.face = null;
     p.map = to; p.x = x; p.y = y; p.d = d; p.ms = 0;
     if (p.costume && target.region !== this.w.costume_region) p.costume = null;
     this.touch(); this.moved = true;
@@ -141,6 +215,7 @@
 
   R.setVehicle = function (v, now) {
     var p = this.p;
+    p.route = []; p.face = null;
     if (p.warp_at !== null) return;
     var m = this.maps[p.map], ax = p.x + DIRS[p.d][0], ay = p.y + DIRS[p.d][1];
     if (v === "none") {
@@ -199,6 +274,8 @@
   R.handle = function (msg, now) {
     try {
       if (msg.t === "in") { this.setInput(msg.d === undefined ? null : msg.d, now); this.tick(now); }
+      else if (msg.t === "goto") { if (typeof msg.x === "number" && typeof msg.y === "number") { this.goto(msg.x, msg.y, now); this.tick(now); } }
+      else if (msg.t === "clienterr") {}
       else if (msg.t === "vehicle") this.setVehicle(String(msg.v), now);
       else if (msg.t === "lie") this.lieDown();
       else if (msg.t === "getup") this.getUp();

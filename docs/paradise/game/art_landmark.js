@@ -20,19 +20,33 @@
     for (var y = -r; y <= r; y++) { var hw = Math.round(Math.sqrt(r * r - y * y)); R(c, cx - hw, cy + y, hw * 2, 1, col); }
   }
 
-  /* Paint on a spare canvas, then ring every shape with a 1px ink line, the way handheld sprites are drawn. */
+  /* Paint on a spare canvas, then ring every shape with a 1px ink line, the way handheld sprites are drawn.
+     Two scratch canvases are shared by every building: iPhone Safari caps total canvas memory and frees
+     canvases late, so making new ones for each of hundreds of stamps could run it out and stop the game. */
+  var scratchA = null, scratchB = null, busy = false;
+  function scratch(cv, w, h) {
+    if (!cv) cv = A.mk(w, h);
+    if (cv.width < w || cv.height < h) { cv.width = Math.max(cv.width, w); cv.height = Math.max(cv.height, h); }
+    var x = cv.getContext("2d"); x.clearRect(0, 0, w, h);
+    return cv;
+  }
   function inked(fn) {
     return function (c, w, h, f) {
-      var cv = A.mk(w, h), x = cv.getContext("2d");
-      fn(x, w, h, f || 0);
-      var a = x.getImageData(0, 0, w, h).data, ink = A.mk(w, h), k = ink.getContext("2d");
-      k.fillStyle = INK;
-      for (var y = 0; y < h; y++) for (var i = 0; i < w; i++) {
-        var p = (y * w + i) * 4 + 3;
-        if (a[p]) continue;
-        if ((i > 0 && a[p - 4]) || (i < w - 1 && a[p + 4]) || (y > 0 && a[p - w * 4]) || (y < h - 1 && a[p + w * 4])) k.fillRect(i, y, 1, 1);
-      }
-      c.drawImage(ink, 0, 0); c.drawImage(cv, 0, 0);
+      var own = busy, cv, ink;
+      if (own) { cv = A.mk(w, h); ink = A.mk(w, h); }       // never happens today, but stay correct if one stamp draws another
+      else { busy = true; cv = scratchA = scratch(scratchA, w, h); ink = scratchB = scratch(scratchB, w, h); }
+      try {
+        var x = cv.getContext("2d");
+        fn(x, w, h, f || 0);
+        var a = x.getImageData(0, 0, w, h).data, k = ink.getContext("2d");
+        k.fillStyle = INK;
+        for (var y = 0; y < h; y++) for (var i = 0; i < w; i++) {
+          var p = (y * w + i) * 4 + 3;
+          if (a[p]) continue;
+          if ((i > 0 && a[p - 4]) || (i < w - 1 && a[p + 4]) || (y > 0 && a[p - w * 4]) || (y < h - 1 && a[p + w * 4])) k.fillRect(i, y, 1, 1);
+        }
+        c.drawImage(ink, 0, 0, w, h, 0, 0, w, h); c.drawImage(cv, 0, 0, w, h, 0, 0, w, h);
+      } finally { if (!own) busy = false; }
     };
   }
 

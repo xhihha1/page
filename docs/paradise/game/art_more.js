@@ -459,14 +459,18 @@
   A.LANDMARK = LANDMARK;                       // art_world.js adds the newer regions
   A.lattice = lattice; A.swallowRoof = swallowRoof; A.pavilionRoof = pavilionRoof; A.hall = hall; A.steps = steps;
   A.lanterns = lanterns; A.dragonPillar = dragonPillar; A.balustrade = balustrade;
-  var oldStamp = A.stamp;
+  var oldStamp = A.stamp, miniCv = null;
   A.stamp = function (c, name, w, h, frame) {
     if (name.indexOf("mini_") === 0 && LANDMARK[name.slice(5)]) {
-      var l = LANDMARK[name.slice(5)], cv = A.mk(l[1] * 16, l[2] * 16);
-      oldStamp(cv.getContext("2d"), l[0], l[1] * 16, l[2] * 16, 0);
-      var k = Math.min(w / cv.width, h / cv.height), dw = Math.round(cv.width * k), dh = Math.round(cv.height * k);
+      var l = LANDMARK[name.slice(5)], lw = l[1] * 16, lh = l[2] * 16;
+      if (!miniCv) miniCv = A.mk(lw, lh);                    // one shared canvas: see the note on canvas memory in art_landmark.js
+      if (miniCv.width < lw || miniCv.height < lh) { miniCv.width = Math.max(miniCv.width, lw); miniCv.height = Math.max(miniCv.height, lh); }
+      var cv = miniCv;
+      cv.getContext("2d").clearRect(0, 0, lw, lh);
+      oldStamp(cv.getContext("2d"), l[0], lw, lh, 0);
+      var k = Math.min(w / lw, h / lh), dw = Math.round(lw * k), dh = Math.round(lh * k);
       c.imageSmoothingEnabled = false;
-      c.drawImage(cv, Math.round((w - dw) / 2), h - dh, dw, dh);
+      c.drawImage(cv, 0, 0, lw, lh, Math.round((w - dw) / 2), h - dh, dw, dh);
       return;
     }
     oldStamp(c, name, w, h, frame);

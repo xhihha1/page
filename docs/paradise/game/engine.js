@@ -16,7 +16,12 @@ var Engine = (function () {
     this.tagSelf = !!opts.tagSelf;
     this.tags = {};
     var self = this;
-    this.loop = function (t) { self.frame(t); requestAnimationFrame(self.loop); };
+    this.onError = opts.onError || null;
+    // schedule the next frame first: one bad frame must never freeze the screen for good
+    this.loop = function (t) {
+      requestAnimationFrame(self.loop);
+      try { self.frame(t); } catch (e) { if (self.onError) self.onError(e); }
+    };
   }
 
   Eng.prototype.start = function () { requestAnimationFrame(this.loop); };
@@ -77,6 +82,9 @@ var Engine = (function () {
 
   Eng.prototype.setWorld = function (w) { this.world = w; };
 
+  /* Which tile a point on the canvas (in canvas pixels) falls on, using the camera of the last frame. */
+  Eng.prototype.tileAt = function (px, py) { return { x: Math.floor((px + this.camX) / TS), y: Math.floor((py + this.camY) / TS) }; };
+
   Eng.prototype.enterMap = function (id, players) {
     var changed = id !== this.map;
     this.map = id; this.actors = {};
@@ -85,7 +93,12 @@ var Engine = (function () {
     players.forEach(function (p) { self.apply(p, true); });
     if (changed) {
       this.fadeAt = performance.now();
-      Object.keys(this.layers).forEach(function (k) { if (k.indexOf(id + ":") !== 0) delete self.layers[k]; });
+      Object.keys(this.layers).forEach(function (k) {
+        if (k.indexOf(id + ":") === 0) return;
+        self.layers[k].width = self.layers[k].height = 0;     // iPhone Safari only frees canvas memory this way
+        delete self.layers[k];
+      });
+      this.target = null;
       this.onMap(this.world.maps[id]);
       this.mapLayer(id, 0); this.mapLayer(id, 1);           // both animation frames now, under the fade, not mid-walk
     }
@@ -186,6 +199,14 @@ var Engine = (function () {
       c.drawImage(spr, sx, sy);
       if (self.labels && (self.tagSelf || it.id !== self.me)) self.tag(it, sx + Art.OX + 8, sy + Art.OY - 6);
     });
+
+    var tg = this.target;
+    if (tg && meA && (now > tg.until || (meA.tx === tg.x && meA.ty === tg.y && !meA.ms))) this.target = tg = null;
+    if (tg && Math.floor(now / 200) % 2) {                // where a tap sent you
+      var tx = tg.x * TS - cx, ty = tg.y * TS - cy;
+      c.fillStyle = "#f8f8f0"; c.fillRect(tx + 1, ty + 1, 4, 2); c.fillRect(tx + 1, ty + 1, 2, 4); c.fillRect(tx + 11, ty + 1, 4, 2); c.fillRect(tx + 13, ty + 1, 2, 4);
+      c.fillRect(tx + 1, ty + 13, 4, 2); c.fillRect(tx + 1, ty + 11, 2, 4); c.fillRect(tx + 11, ty + 13, 4, 2); c.fillRect(tx + 13, ty + 11, 2, 4);
+    }
 
     if (m.fx === "fireworks") this.fireworks(now);
     else if (m.fx === "stage") this.stageLights(now);
