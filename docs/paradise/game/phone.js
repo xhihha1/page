@@ -426,6 +426,14 @@
         var cur = ul.children[sel]; if (cur && cur.scrollIntoView) cur.scrollIntoView({ block: "nearest" });
       }
       function i_am_here(r) { return r.id === ov.where; }
+      function spotMenu(r) {             // a chosen spot: read its board, or go straight there if you have been before
+        var here = i_am_here(r);
+        menu((r.no ? r.no + ". " : "") + r.name, [
+          { label: "看留言板", hint: "留言 " + r.messages, fn: function () { pop(); openBoard(r.id); } },
+          { label: "前往這裡", off: !r.visited || here, hint: here ? "你就在這裡" : r.visited ? "直接到入口，跟著你的人一起去" : "還沒去過，要先自己走一趟",
+            fn: function () { clearInterval(timer); stopHold(); closeAll(); send({ t: "travel", region: r.id }); } }
+        ]);
+      }
       function stopHold() { clearInterval(holdT); hold = null; }
       function pan(d) {
         var k = 2;
@@ -453,7 +461,7 @@
           if (d.moved || e.type !== "pointerup") return;
           var i = nearest(cam.x + d.x / T, cam.y + d.y / T, 2.5);           // a tap on a marker picks it; again opens its board
           if (i < 0) return;
-          if (i === sel) { openBoard(regs[i].id); return; }
+          if (i === sel) { spotMenu(regs[i]); return; }
           sel = i; if (wide) { follow(); } paint(); info();
         }
         ["pointerup", "pointercancel"].forEach(function (n) { cv.addEventListener(n, end); });
@@ -484,13 +492,13 @@
           var n = regs.length;
           if (wide) {
             if (DIRS_UI[k]) { if (hold !== k) { stopHold(); hold = k; pan(k); holdT = setInterval(function () { pan(k); }, 90); } }
-            else if (k === "a") openBoard(regs[sel].id);
+            else if (k === "a") spotMenu(regs[sel]);
             else if (k === "b" || k === "select") { setWide(false); }
             return;
           }
           if (k === "u" || k === "l") { sel = (sel + n - 1) % n; follow(); paint(); info(); }
           else if (k === "d" || k === "r") { sel = (sel + 1) % n; follow(); paint(); info(); }
-          else if (k === "a") openBoard(regs[sel].id);
+          else if (k === "a") spotMenu(regs[sel]);
           else if (k === "select") setWide(true);
           else if (k === "b") { clearInterval(timer); stopHold(); pop(); }
         },

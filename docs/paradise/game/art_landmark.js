@@ -1648,10 +1648,68 @@
     [[60, 8], [96, 14], [w - 12, 6], [12, 26]].forEach(function (p) { disc(c, p[0], p[1], 2, "#f05050"); px(c, p[0], p[1], "#f8e070"); });
   });
 
+  // ======== 11/15: the camp's standee, and 府城四大月老 ===============================================
+  S.camp_sign = inked(function (c, w, h) {          // a wooden standee at the camp gate reading 山思雲想
+    R(c, 6, h - 14, 3, 14, WOOD[2]); R(c, w - 9, h - 14, 3, 14, WOOD[2]);
+    R(c, 2, 4, w - 4, h - 18, WOOD[1]); R(c, 2, 4, w - 4, 2, WOOD[0]); R(c, 2, h - 16, w - 4, 2, WOOD[3]);
+    for (var y = 9; y < h - 18; y += 7) R(c, w / 2 - 3, y, 6, 5, "#f8f0d8");      // the four characters, top to bottom
+    R(c, 4, 0, w - 8, 5, GREEN[1]); dots(c, GREEN[0], [6, 1, 12, 2, 20, 1, 26, 2]);
+  });
+
+  function yueFront(c, w, h, P, wall) {            // a small temple front: steps, red doors with guardians, swallowtail roof
+    var cx = w / 2;
+    R(c, 2, h - 8, w - 4, 8, STONE[1]); R(c, 2, h - 8, w - 4, 1, STONE[0]); stairs(c, cx - 10, h - 8, 20, 8, STONE);
+    R(c, 6, 40, w - 12, h - 48, wall);
+    A.hall(c, cx - 22, 46, 44, h - 54, REDP[2], REDP[1], true);
+    A.lanterns(c, cx - 26, 40, 2, 46);
+    A.swallowRoof(c, 4, 24, w - 8, 16, P[1], P[2], P[3], true);
+    plaque(c, cx - 14, 41, 28, 6);
+    for (var k = 0; k < 3; k++) R(c, cx - 30 + k * 4, 34 - k, 2, 4, "#e83838");       // a few red threads tied on the eave
+  }
+  S.wumiao_front = inked(function (c, w, h) {       // 祀典武廟: the famous long red wall, the gate set into it
+    var cx = w / 2, RW = ["#e06048", "#c03828", "#902818", "#601810"];
+    R(c, 0, 30, w, h - 30, RW[1]); for (var y = 34; y < h; y += 8) R(c, 0, y, w, 1, RW[2]);
+    R(c, 0, 26, w, 5, "#585860"); R(c, 0, 26, w, 1, "#787880");
+    for (var x = 8; x < w - 8; x += 22) if (Math.abs(x + 4 - cx) > 36) { R(c, x, 44, 8, 8, "#3a1810"); for (var k = 1; k < 8; k += 2) R(c, x + k, 45, 1, 6, "#c89058"); }
+    var gx = cx - 32;
+    R(c, gx + 4, 40, 56, h - 48, "#d8b888");
+    A.hall(c, gx + 10, 46, 44, h - 54, REDP[2], REDP[1], true);
+    A.swallowRoof(c, gx + 2, 24, 60, 16, "#e07830", "#a84818", "#6a2808", true);
+    plaque(c, gx + 18, 41, 28, 6);
+    R(c, gx + 6, h - 8, 52, 8, STONE[1]); stairs(c, gx + 22, h - 8, 20, 8, STONE);
+  });
+  S.tianhou_front = inked(function (c, w, h) { yueFront(c, w, h, ["#f8b060", "#e07828", "#a84818", "#6a2808"], "#d8b888"); });
+  S.guanyin_ting = inked(function (c, w, h) { yueFront(c, w, h, ["#78d0a8", "#2a9a70", "#1a6a50", "#0e4434"], "#e8d8b8"); });
+  S.chongqing_si = inked(function (c, w, h) { yueFront(c, w, h, ["#e09060", "#b85a30", "#883818", "#501808"], "#c8c0b0"); });
+
+  S.vinegar_jar = inked(function (c, w, h) {        // 醋矸: the vinegar jar you stir to make up after a quarrel
+    var cx = w / 2;
+    disc(c, cx, h - 10, 7, "#6a4a30"); R(c, cx - 3, h - 22, 6, 6, "#6a4a30"); R(c, cx - 4, h - 23, 8, 2, "#8a6a48");
+    disc(c, cx - 2, h - 12, 2, "#9a7a58"); R(c, cx - 6, h - 6, 12, 2, "#c82820");
+    R(c, cx + 2, h - 30, 1, 10, WOOD[0]);                                                   // the stirring stick
+  });
+
+  // the gods: 觀音, and four matchmakers who each look a little different
+  A.HEADS.yuelao = function (c, look, dir) { R(c, 6, -3, 4, 3, "#f0f0f0"); R(c, 7, -4, 2, 1, "#c82820"); };
+  A.HEADS.yuelao_wide = function (c, look, dir) {          // 闊嘴月老: a wide mouth for sweet talk, big ears for listening
+    A.HEADS.yuelao(c, look, dir);
+    if (dir === "d") { R(c, 4, 8, 8, 1, "#c83030"); R(c, 1, 5, 2, 4, "#f0c8a0"); R(c, 13, 5, 2, 4, "#f0c8a0"); }
+  };
+  function robe(top, extra) { return { top: top, leg: top, shoe: "#2a2018", skirt: top, paint: extra }; }
+  A.OUTFIT.yuelao_red = robe("#c83030", function (c, d) { R(c, 4, 12, 8, 1, GOLD[1]); if (d === "d") { R(c, 10, 10, 3, 3, "#e83838"); px(c, 11, 11, "#f8f0d8"); } });   // a ball of red thread
+  A.OUTFIT.yuelao_cane = robe("#3858b0", function (c, d) { R(c, 4, 12, 8, 1, GOLD[1]); if (d !== "u") { R(c, 13, 5, 1, 11, "#8a5a30"); R(c, 12, 4, 3, 2, "#8a5a30"); } });
+  A.OUTFIT.yuelao_powder = robe("#c83030", function (c, d) { R(c, 4, 12, 8, 1, GOLD[1]); if (d === "d") { R(c, 9, 10, 4, 3, "#f8a8c0"); R(c, 9, 10, 4, 1, "#d06888"); } });  // a box of 緣粉
+  A.OUTFIT.guanyin_robe = robe("#f4f4f0", function (c, d) { R(c, 4, 12, 8, 1, GOLD[1]); if (d === "d") { R(c, 7, 9, 2, 4, "#7ab060"); px(c, 8, 8, "#f8f8f8"); } });   // a willow sprig in a vase
+  A.NPC.yuelao_wide = { sex: "m", hair: "side", hairColor: "#f0f0f0", beard: "#f8f8f8", head: "yuelao_wide", outfit: "yuelao_red" };
+  A.NPC.yuelao_cane = { sex: "m", hair: "side", hairColor: "#f0f0f0", beard: "#f8f8f8", head: "yuelao", outfit: "yuelao_cane" };
+  A.NPC.yuelao_powder = { sex: "m", hair: "side", hairColor: "#202020", beard: "#202020", head: "yuelao", outfit: "yuelao_powder" };
+  A.NPC.yuelao_vinegar = { sex: "m", hair: "side", hairColor: "#f0f0f0", beard: "#f8f8f8", head: "yuelao", outfit: "yuelao_red" };
+  A.NPC.guanyin = { sex: "f", hair: "bun", head: "whitehood", outfit: "guanyin_robe" };
+
   A.GLOW_STAMP.music_tower = 1;
 
   // overworld minis
   var L = A.LANDMARK;
   L.kaohsiung = ["music_tower", 6, 8];
-  L.zinan = ["golden_rooster", 4, 5]; L.camp = ["bell_tent", 4, 4]; L.dahu = ["big_strawberry", 2, 2]; L.sanyi = ["wood_museum", 12, 7]; L.xinpu = ["sanheyuan", 12, 6];
+  L.zinan = ["golden_rooster", 4, 5]; L.camp = ["bell_tent", 4, 4]; L.dahu = ["big_strawberry", 2, 2]; L.sanyi = ["wood_museum", 12, 7]; L.xinpu = ["sanheyuan", 12, 6]; L.yuelao = ["tianhou_front", 8, 6];
 })(Art);

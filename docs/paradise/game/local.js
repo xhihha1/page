@@ -128,6 +128,17 @@
     if (w) { p.warp_at = p.next_at; p.pending_warp = w; p.route = []; p.face = null; }
   };
 
+  // ---- panorama: straight to a region's entrance (travel); LocalGame checks it was visited ----
+  R.travel = function (region) {
+    var p = this.p;
+    if (p.warp_at !== null) return;
+    var r = this.w.regions.filter(function (x) { return x.id === region; })[0];
+    if (!r) throw GameError("找不到這個地方");
+    if (p.bed) this.getUp();
+    p.held = null; p.route = []; p.face = null;
+    this.warp(r.entry[0], r.entry[1], r.entry[2], r.entry[3]);
+  };
+
   // ---- tap to walk (goto, _route, _walk_route) ----
   function facing(a, b, fallback) {
     var dx = b[0] - a[0], dy = b[1] - a[1];
@@ -276,6 +287,7 @@
       if (msg.t === "in") { this.setInput(msg.d === undefined ? null : msg.d, now); this.tick(now); }
       else if (msg.t === "goto") { if (typeof msg.x === "number" && typeof msg.y === "number") { this.goto(msg.x, msg.y, now); this.tick(now); } }
       else if (msg.t === "clienterr") {}
+      else if (msg.t === "travel") this.travel(String(msg.region));
       else if (msg.t === "vehicle") this.setVehicle(String(msg.v), now);
       else if (msg.t === "lie") this.lieDown();
       else if (msg.t === "getup") this.getUp();
@@ -427,6 +439,10 @@
     sock.send = function (raw) {
       var msg; try { msg = JSON.parse(raw); } catch (e) { return; }
       if (!self.rules || !self.rules.p || msg.t === "ui") return;      // "ui" only mirrors the phone on a TV
+      if (msg.t === "travel" && msg.region !== "airport" && self.save.visits.indexOf(String(msg.region)) < 0) {
+        self.emit({ t: "err", text: "還沒去過的地方，要先自己走一趟才能直接前往" });
+        return;
+      }
       self.rules.handle(msg, now());
       self.flush();
     };
