@@ -253,8 +253,8 @@ var Engine = (function () {
   };
 
   /* The whole overworld as a small picture for the panorama. */
-  Eng.prototype.miniMap = function (scale) {
-    var m = this.world.maps.overworld, cv = Art.mk(m.w * scale, m.h * scale), c = cv.getContext("2d"), C = Art.C;
+  Eng.prototype.miniMap = function (scale, id) {
+    var m = this.world.maps[id || "overworld"], cv = Art.mk(m.w * scale, m.h * scale), c = cv.getContext("2d"), C = Art.C;
     var col = { W: C.sea, s: C.sand, ".": C.grass, ",": C.grass, '"': C.grass2, T: C.leaf, Y: C.leaf, 5: "#b85a30", "=": C.road, "+": C.wood, "^": C.gold, X: C.cream };
     for (var y = 0; y < m.h; y++) for (var x = 0; x < m.w; x++) { c.fillStyle = col[m.rows[y].charAt(x)] || C.grass; c.fillRect(x * scale, y * scale, scale, scale); }
     return cv;

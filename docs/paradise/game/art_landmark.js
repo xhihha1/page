@@ -1706,10 +1706,227 @@
   A.NPC.yuelao_vinegar = { sex: "m", hair: "side", hairColor: "#f0f0f0", beard: "#f8f8f8", head: "yuelao", outfit: "yuelao_red" };
   A.NPC.guanyin = { sex: "f", hair: "bun", head: "whitehood", outfit: "guanyin_robe" };
 
+  // ======== 11/15: 科技島 and the Dutch era ===================================================
+  S.time_lab = inked(function (c, w, h, f) {        // 時空研究所: a white lab under a glass dome, a dish on the roof
+    var cx = w / 2;
+    R(c, 6, 50, w - 12, h - 50, "#f4f6fa"); R(c, 6, 50, 4, h - 50, "#ffffff"); R(c, w - 10, 50, 4, h - 50, "#c8ccd8");
+    R(c, 6, 60, w - 12, 3, f ? "#58e0f8" : "#38b8e8");                                            // a neon band
+    for (var x = 16; x < w - 20; x += 22) if (Math.abs(x + 7 - cx) > 22) { R(c, x, 70, 14, 20, "#2a3a58"); R(c, x + 1, 71, 4, 8, "#6a90c8"); }
+    R(c, cx - 18, h - 34, 36, 34, "#283848"); for (var g = cx - 16; g < cx + 18; g += 9) R(c, g, h - 34, 1, 34, "#58e0f8");
+    for (var y = 0; y < 34; y++) {
+      var t = 1 - y / 34, hw = Math.round(60 * Math.sqrt(1 - t * t));
+      R(c, cx - hw, 16 + y, hw * 2, 1, y % 6 === 5 ? "#a8c8e8" : "#78a8d8"); R(c, cx - hw, 16 + y, Math.round(hw * .5), 1, "#a8d0f0");
+    }
+    for (var k = -48; k <= 48; k += 16) for (var j = 0; j < 30; j++) { var tt = 1 - j / 34, hh = Math.round(60 * Math.sqrt(1 - tt * tt)); if (Math.abs(k) < hh) px(c, cx + k, 18 + j, "#e0f0f8"); }
+    R(c, w - 40, 22, 2, 28, "#a0a8b8"); disc(c, w - 39, 18, 8, "#e0e4ec"); disc(c, w - 37, 17, 5, "#c0c8d8"); px(c, w - 39, 18, "#f05050");
+    R(c, cx - 26, 52, 52, 7, "#203060"); for (var q = cx - 22; q < cx + 22; q += 9) R(c, q, 53, 6, 5, "#58e0f8");
+  });
+  A.GLOW_STAMP.time_lab = 1;
+
+  S.time_gate = inked(function (c, w, h, f) {       // 時光機: a steel ring with time swirling inside
+    var cx = w / 2, cy = h / 2 - 4, r = Math.min(w, h) / 2 - 6;
+    R(c, 4, h - 8, w - 8, 8, "#787c88"); R(c, 4, h - 8, w - 8, 2, "#a8acb8"); R(c, cx - 2, h - 6, 4, 2, f ? "#58e0f8" : "#f058c8");
+    disc(c, cx, cy, r + 3, "#9ca4b4"); disc(c, cx, cy, r, "#3a1870");
+    for (var a = 0; a < 40; a++) {
+      var ang = a * .5 + (f ? .8 : 0), rr = r * (1 - a / 44);
+      R(c, Math.round(cx + Math.cos(ang) * rr) - 1, Math.round(cy + Math.sin(ang) * rr) - 1, 2, 2, a % 3 ? "#8a58f0" : "#58e0f8");
+    }
+    disc(c, cx, cy, 3, "#f8f8ff");
+    for (var b = 0; b < 8; b++) { var an = b * Math.PI / 4; R(c, Math.round(cx + Math.cos(an) * (r + 2)) - 1, Math.round(cy + Math.sin(an) * (r + 2)) - 1, 3, 3, "#e0e4ec"); }
+  });
+  A.GLOW_STAMP.time_gate = 1;
+
+  // ---- 熱蘭遮城 (Fort Zeelandia, about 1640) ----------------------------------------------------
+  var DB = ["#e08060", "#c05a38", "#903c24", "#5a2414"];          // the red bricks shipped from Batavia
+  function bastion(c, x, y, s, flip) {                             // a pointed corner bastion seen from the front
+    for (var j = 0; j < s; j++) { var hw = Math.round(s / 2 - Math.abs(j - s / 2) * .9) + 4; R(c, x - hw, y + j, hw * 2, 1, j % 5 === 4 ? DB[2] : DB[1]); R(c, x - hw, y + j, 2, 1, DB[0]); }
+    R(c, x - 6, y - 3, 12, 4, STONE[1]); for (var k = x - 6; k < x + 6; k += 4) R(c, k, y - 6, 2, 3, STONE[1]);
+    R(c, x + (flip ? -12 : 6), y + s / 2 - 1, 8, 3, "#202020");                                   // a cannon mouth
+  }
+  S.zeelandia_fort = inked(function (c, w, h) {
+    var cx = w / 2;
+    // the lower, outer castle with its gate
+    bricks(c, 8, 92, w - 16, h - 92, DB);
+    for (var x = 8; x < w - 8; x += 8) R(c, x, 88, 5, 5, DB[1]);
+    R(c, 8, h - 6, w - 16, 6, STONE[1]);
+    R(c, cx - 4, h - 34, 24, 34, STONE[0]); disc(c, cx + 8, h - 34, 12, STONE[0]); R(c, cx - 1, h - 30, 18, 30, "#2a1810"); disc(c, cx + 8, h - 30, 9, "#2a1810");
+    for (var w2 = 24; w2 < w - 24; w2 += 34) if (Math.abs(w2 - cx - 8) > 30) { R(c, w2, 108, 6, 10, "#2a1810"); disc(c, w2 + 3, 108, 3, "#2a1810"); }
+    // the square inner castle on its raised ground, a bastion at each corner
+    bricks(c, 52, 26, w - 104, 66, DB);
+    R(c, 52, 26, w - 104, 3, STONE[1]); for (var k = 52; k < w - 52; k += 8) R(c, k, 21, 5, 5, DB[1]);
+    bastion(c, 52, 14, 30, true); bastion(c, w - 52, 14, 30, false); bastion(c, 52, 62, 30, true); bastion(c, w - 52, 62, 30, false);
+    // the governor's house, a bell tower and the flag
+    R(c, cx - 40, 30, 80, 30, "#e8e0d0"); R(c, cx + 36, 30, 4, 30, "#c8c0b0");
+    for (var q = cx - 34; q < cx + 34; q += 14) { R(c, q, 38, 8, 12, "#2a3848"); R(c, q, 38, 8, 2, "#f8f8f0"); R(c, q - 2, 38, 2, 12, "#3a7a48"); R(c, q + 8, 38, 2, 12, "#3a7a48"); }
+    for (var y = 0; y < 12; y++) R(c, cx - 44 + y, 18 + y, 88 - y * 2, 1, y % 3 ? "#6a3a28" : "#4a2818");
+    R(c, cx - 6, 2, 12, 18, "#e8e0d0"); R(c, cx - 3, 6, 6, 6, "#2a2a30"); disc(c, cx, 9, 2, GOLD[1]); for (var t = 0; t < 6; t++) R(c, cx - 7 + t, -4 + t, 14 - t * 2, 1, "#4a2818");
+    R(c, cx + 20, 0, 2, 22, "#5a4a3a");
+    R(c, cx + 22, 1, 16, 3, "#f08020"); R(c, cx + 22, 4, 16, 3, "#f8f8f8"); R(c, cx + 22, 7, 16, 3, "#2050a8");     // the Prince's flag
+    dots(c, "#202020", [cx + 28, 5, cx + 30, 5, cx + 32, 5]);                                                      // the VOC monogram
+  });
+
+  S.dutch_house = inked(function (c, w, h) {         // a narrow brick house with a stepped gable and green shutters
+    var cx = w / 2;
+    bricks(c, 6, 24, w - 12, h - 24, DB);
+    for (var s = 0; s < 4; s++) { var hw = 26 - s * 6; R(c, cx - hw, 24 - s * 6 - 6, hw * 2, 6, DB[1]); R(c, cx - hw, 24 - s * 6 - 6, hw * 2, 1, "#f8f0e0"); }
+    disc(c, cx, 6, 3, "#f8f0e0"); disc(c, cx, 6, 1, "#2a3848");
+    [[14, 30], [w - 26, 30], [14, 52], [w - 26, 52]].forEach(function (p) { R(c, p[0] - 3, p[1], 3, 12, "#3a7a48"); R(c, p[0] + 12, p[1], 3, 12, "#3a7a48"); sash(c, p[0], p[1], 12, 12, "#f8f8f0"); });
+    R(c, cx - 7, h - 22, 14, 22, "#f8f8f0"); R(c, cx - 5, h - 20, 10, 20, "#2a5a38"); px(c, cx + 2, h - 10, GOLD[1]);
+  });
+
+  S.fluyt = inked(function (c, w, h, f) {            // a Dutch East India Company ship (a fluyt) riding at anchor
+    seaBg(c, w, h, f);
+    for (var y = 0; y < 14; y++) { var inset = Math.round(y * y / 14); R(c, 8 + inset, h - 22 + y, w - 16 - inset * 2 - (y < 6 ? 0 : 0), 1, y < 3 ? "#c89048" : "#7a4a28"); }
+    R(c, w - 30, h - 34, 20, 13, "#8a5a30"); R(c, w - 30, h - 34, 20, 2, GOLD[1]); R(c, w - 26, h - 30, 4, 4, "#f8e070");
+    [[22, 10], [46, 4], [70, 14]].forEach(function (m) {
+      R(c, m[0], m[1], 2, h - 22 - m[1], "#5a3a20");
+      for (var k = 0; k < 2; k++) { var sy = m[1] + 4 + k * 16, sw = 22 - k * 4; R(c, m[0] - sw / 2 + 1, sy, sw, 13, "#f8f4e8"); R(c, m[0] - sw / 2 + 1, sy + 11, sw, 2, "#d8d0c0"); }
+    });
+    R(c, 48, 2, 10, 2, "#f08020"); R(c, 48, 4, 10, 2, "#f8f8f8"); R(c, 48, 6, 10, 2, "#2050a8");
+  });
+
+  S.cannon = inked(function (c, w, h) {
+    R(c, 4, 6, w - 8, 5, "#2a2a30"); R(c, 4, 6, w - 8, 1, "#585868"); R(c, w - 6, 5, 3, 7, "#2a2a30");
+    R(c, 6, 10, 14, 4, "#7a4a28"); disc(c, 9, 13, 3, "#4a2a18"); disc(c, 18, 13, 3, "#4a2a18");
+  });
+
+  S.deer_hides = inked(function (c, w, h) {          // 鹿皮: a stack of dried sika deer hides
+    for (var i = 0; i < 4; i++) { var y = h - 8 - i * 6; R(c, 2 + i, y, w - 4 - i * 2, 6, i % 2 ? "#b88050" : "#c89060"); dots(c, "#f0e0c0", [6 + i * 3, y + 2, 14 + i, y + 3, 22 - i, y + 2]); }
+    R(c, 4, 6, w - 8, 3, "#a87040");
+  });
+
+  S.sugar_barrels = inked(function (c, w, h) {        // 蔗糖: barrels of sugar for Japan and Persia
+    [[2, 12], [16, 12], [9, 0]].forEach(function (p) {
+      R(c, p[0], p[1] + 2, 14, 16, "#a87848"); R(c, p[0], p[1] + 4, 14, 2, "#5a3a20"); R(c, p[0], p[1] + 14, 14, 2, "#5a3a20");
+      R(c, p[0] + 1, p[1], 12, 3, "#f8f4e8"); R(c, p[0] + 1, p[1] + 2, 3, 14, "#c89868");
+    });
+  });
+
+  // a sika deer for the plains of Formosa
+  var oldAnimal2 = A.animal, deer = {};
+  A.animal = function (kind, frame) {
+    if (kind !== "deer") return oldAnimal2(kind, frame);
+    var key = frame % 2;
+    if (!deer[key]) {
+      var cv = A.mk(16, 16), c = cv.getContext("2d");
+      R(c, 3, 6, 10, 5, "#b8783c"); dots(c, "#f8f0d8", [5, 7, 8, 8, 11, 7, 6, 9, 10, 9]);
+      R(c, 1, 3, 4, 4, "#b8783c"); px(c, 1, 4, "#202020"); R(c, 0, 5, 2, 1, "#202020");
+      R(c, 2, 0, 1, 3, "#8a6a40"); R(c, 4, 0, 1, 3, "#8a6a40"); px(c, 1, 1, "#8a6a40"); px(c, 5, 1, "#8a6a40");
+      R(c, 4, 11, 1, 5, "#7a4a28"); R(c, 11, 11, 1, 5 - key, "#7a4a28"); R(c, 6, 11, 1, 4 + key, "#7a4a28"); R(c, 13, 6, 2, 2, "#f8f0d8");
+      deer[key] = cv;
+    }
+    return deer[key];
+  };
+
+  // people of the 1600s
+  A.HEADS.morion = function (c, look, dir) { R(c, 3, -2, 10, 4, "#a8b0b8"); R(c, 1, 1, 14, 1, "#a8b0b8"); R(c, 7, -4, 2, 2, "#a8b0b8"); px(c, 5, -1, "#e0e4ec"); };
+  A.HEADS.broadhat = function (c, look, dir) { R(c, 4, -3, 8, 4, "#202024"); R(c, 0, 1, 16, 1, "#202024"); if (dir === "d") R(c, 4, 9, 8, 2, "#f8f8f8"); };   // hat, and a white collar
+  A.OUTFIT.voc_soldier = robe("#a82828", function (c, d) { R(c, 3, 10, 10, 2, "#f08020"); R(c, 4, 13, 8, 1, "#202020"); if (d !== "u") R(c, 13, 4, 1, 12, "#787880"); });
+  A.OUTFIT.dutch_coat = robe("#202028", function (c, d) { if (d === "d") { R(c, 7, 10, 2, 4, "#f8f8f8"); dots(c, GOLD[1], [6, 11, 6, 13]); } });
+  A.OUTFIT.han_robe = robe("#3a5888", function (c, d) { R(c, 4, 12, 8, 1, "#202838"); if (d === "d") R(c, 6, 9, 4, 1, "#f8f0e0"); });
+  A.NPC.dutch_soldier = { sex: "m", hair: "side", hairColor: "#c89048", head: "morion", outfit: "voc_soldier" };
+  A.NPC.dutch_governor = { sex: "m", hair: "long", hairColor: "#6a4a30", beard: "#6a4a30", head: "broadhat", outfit: "dutch_coat" };
+  A.NPC.missionary = { sex: "m", hair: "side", hairColor: "#a87848", head: "broadhat", outfit: "dutch_coat" };
+  A.NPC.han_merchant = { sex: "m", hair: "side", head: "kerchief", kerchief: "#2a2a38", outfit: "han_robe" };
+
+  // ---- 普羅民遮城、承天府、安東尼堡 ---------------------------------------------------------
+  function turret(c, x, y, h) {                                   // a corner watchtower with a pointed cap
+    bricks(c, x, y, 18, h, DB); R(c, x, y, 18, 2, STONE[1]);
+    for (var k = 0; k < 9; k++) R(c, x + k, y - 9 + k, 18 - k * 2, 1, k % 3 ? "#5a3a28" : "#3a2418");
+    R(c, x + 6, y + 8, 6, 8, "#2a1810");
+  }
+  function smallFort(c, w, h, flag) {
+    var cx = w / 2;
+    R(c, 4, h - 8, w - 8, 8, STONE[1]); R(c, 4, h - 8, w - 8, 1, STONE[0]);
+    bricks(c, 22, 34, w - 44, h - 42, DB);
+    R(c, 22, 66, w - 44, 3, STONE[1]);
+    for (var x = 34; x < w - 34; x += 22) if (Math.abs(x + 4 - cx) > 18) { arched(c, x, 42, 9, 16, STONE[0]); arched(c, x, 76, 9, 18, STONE[0]); }
+    R(c, cx - 12, h - 38, 24, 30, STONE[0]); disc(c, cx, h - 38, 12, STONE[0]); R(c, cx - 9, h - 36, 18, 28, "#2a1810"); disc(c, cx, h - 36, 9, "#2a1810");
+    for (var y = 0; y < 14; y++) R(c, 22 + y, 20 + y, w - 44 - y * 2, 1, y % 3 ? "#6a3a28" : "#4a2818");
+    turret(c, 6, 30, h - 38); turret(c, w - 24, 30, h - 38);
+    R(c, cx - 1, 0, 2, 22, "#5a4a3a");
+    if (flag === "voc") { R(c, cx + 1, 1, 16, 3, "#f08020"); R(c, cx + 1, 4, 16, 3, "#f8f8f8"); R(c, cx + 1, 7, 16, 3, "#2050a8"); }
+    else { R(c, cx + 1, 1, 16, 14, "#c82820"); R(c, cx + 5, 4, 8, 8, "#f0c030"); R(c, cx + 7, 6, 4, 4, "#c82820"); }   // a red Ming banner
+  }
+  S.provintia_fort = inked(function (c, w, h) { smallFort(c, w, h, "voc"); });
+  S.chengtian_fort = inked(function (c, w, h) {
+    smallFort(c, w, h, "ming");
+    [[14, 40], [w - 16, 40]].forEach(function (p) { R(c, p[0], p[1], 1, 30, "#5a4a3a"); R(c, p[0] + 1, p[1], 8, 10, "#f0c030"); });   // army flags
+  });
+
+  S.antonio_fort = inked(function (c, w, h) {      // 安東尼堡: a square, two-storey red fort with a flat battlemented roof
+    var cx = w / 2, RD = ["#e87858", "#c84a34", "#983020", "#601c10"];
+    R(c, 0, h - 10, w, 10, GREEN[1]); R(c, 0, h - 10, w, 2, GREEN[0]);
+    bricks(c, 14, 24, w - 28, h - 34, RD); R(c, w - 20, 24, 6, h - 34, RD[2]);
+    for (var x = 14; x < w - 14; x += 8) R(c, x, 18, 5, 6, RD[1]);
+    R(c, 14, 54, w - 28, 3, STONE[1]);
+    for (var a = 24; a < w - 30; a += 22) if (Math.abs(a + 5 - cx) > 16) { arched(c, a, 30, 10, 18, STONE[0]); arched(c, a, 62, 10, 20, STONE[0]); }
+    R(c, cx - 10, h - 40, 20, 30, STONE[0]); disc(c, cx, h - 40, 10, STONE[0]); R(c, cx - 7, h - 38, 14, 28, "#2a1810"); disc(c, cx, h - 38, 7, "#2a1810");
+    R(c, cx + 20, 0, 2, 18, "#5a4a3a"); R(c, cx + 22, 1, 14, 3, "#f08020"); R(c, cx + 22, 4, 14, 3, "#f8f8f8"); R(c, cx + 22, 7, 14, 3, "#2050a8");
+  });
+
+  // ---- 明鄭: 寧靖王府、北極殿 ------------------------------------------------------------------
+  S.wangfu = inked(function (c, w, h) {            // 寧靖王府邸: a Ming residence, grey double roof over red columns, a walled court
+    var cx = w / 2, G = ["#9098a8", "#606878", "#485060", "#303848"];
+    R(c, 0, 46, w, h - 46, "#c84a34"); R(c, 0, 46, w, 3, G[1]); for (var x = 6; x < w - 6; x += 24) R(c, x, 56, 10, 10, "#7a2818");
+    R(c, 26, 40, w - 52, h - 48, "#e8dcc4");
+    for (var p = 30; p < w - 30; p += 16) column(c, p, 44, 5, h - 52, REDP);
+    R(c, cx - 14, 52, 28, h - 60, "#5a1c10"); R(c, cx - 12, 54, 24, h - 62, "#8a3420"); R(c, cx - 1, 54, 2, h - 62, GOLD[2]);
+    R(c, 4, h - 8, w - 8, 8, STONE[1]); stairs(c, cx - 14, h - 8, 28, 8, STONE);
+    roof(c, 20, 24, w - 40, 17, 10, G, 4);
+    R(c, 40, 16, w - 80, 9, "#c84a34");
+    roof(c, 32, 2, w - 64, 15, 12, G, 4);
+    plaque(c, cx - 14, 41, 28, 7);
+  });
+
+  S.beiji_temple = inked(function (c, w, h) {      // 北極殿: a temple on 鷲嶺, the highest ground in the old city, up a long flight of steps
+    var cx = w / 2;
+    R(c, 6, 64, w - 12, h - 64, STONE[1]); for (var y = 66; y < h; y += 6) R(c, 6, y, w - 12, 1, STONE[2]);
+    stairs(c, cx - 16, 64, 32, h - 64, STONE);
+    yueFront(c, w, 68, ["#f8a860", "#d86828", "#a04018", "#602008"], "#d8b888");
+    R(c, 2, 64, w - 4, 2, STONE[3]);
+  });
+
+  // the people of the Ming Zheng era
+  A.HEADS.mingcap = function (c, look, dir) {      // 烏紗帽: a black official cap with two wings
+    R(c, 4, -3, 8, 4, "#202024"); R(c, 5, -4, 6, 1, "#202024");
+    if (dir !== "u") { R(c, 0, -1, 4, 1, "#202024"); R(c, 12, -1, 4, 1, "#202024"); }
+  };
+  A.HEADS.loosehair = function (c, look, dir) { R(c, 3, -1, 10, 3, "#181818"); R(c, 2, 2, 2, 9, "#181818"); R(c, 12, 2, 2, 9, "#181818"); };
+  A.OUTFIT.ming_red = robe("#b83028", function (c, d) { R(c, 4, 12, 8, 1, GOLD[1]); if (d === "d") { R(c, 6, 9, 4, 3, GOLD[1]); px(c, 7, 10, "#2a8a50"); } });   // the rank badge
+  A.OUTFIT.ming_yellow = robe("#d8b030", function (c, d) { R(c, 4, 12, 8, 1, "#c82820"); if (d === "d") { R(c, 6, 9, 4, 3, "#c82820"); px(c, 7, 10, GOLD[0]); } });
+  A.OUTFIT.ming_blue = robe("#4870a8", function (c, d) { R(c, 4, 12, 8, 1, "#202838"); if (d === "d") R(c, 7, 9, 2, 4, "#f8f0e0"); });
+  A.OUTFIT.xuantian = robe("#202028", function (c, d) { R(c, 4, 12, 8, 1, GOLD[1]); if (d === "d") { R(c, 5, 9, 6, 1, GOLD[1]); R(c, 9, 10, 2, 4, "#a8b0b8"); } });   // a sword at the belt
+  A.NPC.koxinga = { sex: "m", hair: "side", beard: "#181818", head: "mingcap", outfit: "ming_red" };
+  A.NPC.ningjing = { sex: "m", hair: "side", beard: "#3a3030", head: "mingcap", outfit: "ming_yellow" };
+  A.NPC.scholar = { sex: "m", hair: "side", beard: "#2a2420", head: "mingcap", outfit: "ming_blue" };
+  A.NPC.xuantian = { sex: "m", hair: "side", hairColor: "#181818", beard: "#181818", skin: "#6a4a38", head: "loosehair", outfit: "xuantian" };
+
+  // ---- 鐵砧山: 劍井 and 國姓廟 ------------------------------------------------------------------
+  S.sword_well = inked(function (c, w, h, f) {      // 劍井: a stone well; the sword still stands where it struck
+    var cx = w / 2 - 4, cy = h - 22;
+    for (var y = -14; y <= 14; y++) { var hw = Math.round(Math.sqrt(196 - y * y) * 1.25); R(c, cx - hw, cy + Math.round(y * .6), hw * 2, 1, (y + 14) % 5 ? STONE[1] : STONE[2]); }
+    for (y = -9; y <= 9; y++) { var hw2 = Math.round(Math.sqrt(81 - y * y) * 1.25); R(c, cx - hw2, cy + Math.round(y * .6) - 1, hw2 * 2, 1, f ? "#58a0e0" : "#4890d8"); }
+    R(c, cx - 6, cy - 3, 4, 1, "#a8d8f8"); R(c, cx + 2, cy + 1, 5, 1, "#a8d8f8");
+    var sx = w - 12;                                              // the sword
+    R(c, sx, 6, 3, 30, "#d8dce4"); R(c, sx, 6, 1, 30, "#ffffff"); R(c, sx - 4, 34, 11, 3, GOLD[2]); R(c, sx, 37, 3, 8, "#5a2a18"); disc(c, sx + 1, 46, 2, GOLD[1]);
+    R(c, sx - 3, 4, 9, 3, "#8a6040");                             // where it went into the red earth
+  });
+
+  S.guoxing_temple = inked(function (c, w, h) {     // 國姓廟: a temple up a flight of steps on the red hill
+    var cx = w / 2;
+    R(c, 6, 64, w - 12, h - 64, "#b86848"); for (var y = 66; y < h; y += 6) R(c, 6, y, w - 12, 1, "#985838");
+    stairs(c, cx - 14, 64, 28, h - 64, STONE);
+    yueFront(c, w, 68, ["#f8d070", "#e8a830", "#b07818", "#704808"], "#e8d0a8");
+    R(c, 2, 64, w - 4, 2, STONE[3]);
+  });
+
   A.GLOW_STAMP.music_tower = 1;
 
   // overworld minis
   var L = A.LANDMARK;
   L.kaohsiung = ["music_tower", 6, 8];
-  L.zinan = ["golden_rooster", 4, 5]; L.camp = ["bell_tent", 4, 4]; L.dahu = ["big_strawberry", 2, 2]; L.sanyi = ["wood_museum", 12, 7]; L.xinpu = ["sanheyuan", 12, 6]; L.yuelao = ["tianhou_front", 8, 6];
+  L.zinan = ["golden_rooster", 4, 5]; L.camp = ["bell_tent", 4, 4]; L.dahu = ["big_strawberry", 2, 2]; L.sanyi = ["wood_museum", 12, 7]; L.xinpu = ["sanheyuan", 12, 6]; L.yuelao = ["tianhou_front", 8, 6]; L.timelab = ["time_lab", 12, 7]; L.zeelandia = ["zeelandia_fort", 18, 10];
+  L.provintia = ["provintia_fort", 14, 8]; L.antonio = ["antonio_fort", 10, 7]; L.mz_yanping = ["chengtian_fort", 14, 8];
+  L.mz_ningjing = ["wangfu", 12, 7]; L.mz_wumiao = ["wumiao_front", 11, 6]; L.mz_beiji = ["beiji_temple", 10, 8]; L.mz_confucius = ["confucius", 12, 8]; L.mz_jianjing = ["sword_well", 4, 4]; L.mz_guoxing = ["guoxing_temple", 10, 8];
 })(Art);

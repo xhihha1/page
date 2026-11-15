@@ -224,6 +224,7 @@
       else if (o.k === "board") openBoard(o.region);
       else if (o.k === "elevator") elevator(o);
       else if (o.k === "telescope") telescope(o);
+      else if (o.k === "timemachine") timeMachine(o);
       else if (o.k === "dress") dressRoom();
       else if (o.k === "baptism") baptism();
       else if (o.k === "bed") send({ t: "lie" });
@@ -248,6 +249,12 @@
     menu("望遠鏡：要去哪裡？", Object.keys(o.floors).map(function (f) {
       return { label: f, fn: function () { closeAll(); send({ t: "elevator", floor: f }); } };
     }).concat([{ label: "只是看看", fn: closeAll }]));
+  }
+
+  function timeMachine(o) {
+    menu("時光機：要去哪個時代？", Object.keys(o.floors).map(function (f) {
+      return { label: f, hint: "到了那裡打開全景圖，就是那個時代的地圖", fn: function () { closeAll(); send({ t: "elevator", floor: f }); } };
+    }).concat([{ label: "先不要", fn: closeAll }]));
   }
 
   function dressRoom() {
@@ -371,7 +378,8 @@
     api("GET", "/api/v1/game/overview").then(function (ov) {
       var regs = ov.regions, sel = 0, here = -1, wide = false, t = 0, timer = 0, hold = null, holdT = 0;
       regs.forEach(function (r, i) { if (r.id === ov.where) sel = here = i; });
-      var m = world.maps.overworld, cam = { x: 0, y: 0 }, T = 4, cv = null, base = null, baseT = 0, drag = null;
+      var mapId = ov.world || "overworld", m = world.maps[mapId], cam = { x: 0, y: 0 }, T = 4, cv = null, base = null, baseT = 0, drag = null;
+      var title = ov.era ? ov.era.name + "全景圖（" + ov.era.years + "）" : "樂園全景圖";
       var islands = {}, names = [];
       regs.forEach(function (r) {
         var g = islands[r.sub];
@@ -393,7 +401,7 @@
       function paint() {
         if (!cv) return;
         var c = cv.getContext("2d"), fs = Math.max(9, Math.round(T * 1.4)), s = Math.max(7, Math.round(T * 2.2));
-        if (baseT !== T) { base = eng.miniMap(T); baseT = T; }
+        if (baseT !== T) { base = eng.miniMap(T, mapId); baseT = T; }
         c.imageSmoothingEnabled = false;
         c.fillStyle = Art.C.sea; c.fillRect(0, 0, cv.width, cv.height);
         c.drawImage(base, Math.round(-cam.x * T), Math.round(-cam.y * T));
@@ -409,11 +417,11 @@
           var on = i === sel, b = on ? Math.max(2, T >> 2) : 1;
           c.fillStyle = "#181820"; c.fillRect(x - b, y - b, s + b * 2, s + b * 2);
           c.fillStyle = on ? "#f8f070" : (r.visited ? "#f8f8f0" : "#a0a0a8"); c.fillRect(x, y, s, s);
-          c.fillStyle = "#181820"; c.fillText(r.no ? String(r.no) : "機", x + s / 2, y + s / 2 + 1);
+          c.fillStyle = "#181820"; c.fillText(r.label || (r.no ? String(r.no) : "機"), x + s / 2, y + s / 2 + 1);
           if (r.people.length) { c.fillStyle = "#30a0f0"; c.fillRect(x + s - 2, y - 4, 6, 6); }
           if (i === here && t % 2) { c.strokeStyle = "#e02020"; c.lineWidth = 2; c.strokeRect(x - b - 2, y - b - 2, s + b * 2 + 4, s + b * 2 + 4); }
         });
-        if (ov.where === "overworld" && ov.at && t % 2) { c.fillStyle = "#e02020"; c.fillRect(Math.round((ov.at.x - cam.x) * T), Math.round((ov.at.y - cam.y) * T), T, T); }
+        if (ov.where === mapId && ov.at && t % 2) { c.fillStyle = "#e02020"; c.fillRect(Math.round((ov.at.x - cam.x) * T), Math.round((ov.at.y - cam.y) * T), T, T); }
       }
       function info() {
         var el = $("pano-info"), r = regs[sel], people = r.people.map(function (p) { return p.n; }).join("、");
@@ -469,12 +477,12 @@
       var view = {
         render: function (box) {
           stopHold();
-          box.innerHTML = '<div class="win full"><h3>樂園全景圖<small>' + (wide ? "方向鍵移動・SELECT 回列表" : "SELECT 看全圖") + "</small></h3>" +
+          box.innerHTML = '<div class="win full"><h3>' + esc(title) + '<small>' + (wide ? "方向鍵移動・SELECT 回列表" : "SELECT 看全圖") + "</small></h3>" +
             '<div class="pano' + (wide ? " wide" : "") + '"><div class="pano-map"><canvas id="pano"></canvas></div><ul class="items" id="pano-list"></ul></div>' +
             '<div class="pano-info" id="pano-info"></div></div>';
           var ul = $("pano-list");
           regs.forEach(function (x, i) {
-            var li = document.createElement("li"); li.textContent = (x.no ? x.no + ". " : "✈ ") + x.name;
+            var li = document.createElement("li"); li.textContent = (x.label ? x.label + " " : x.no ? x.no + ". " : "✈ ") + x.name;
             li.onclick = function () { if (sel === i) view.key("a"); else { sel = i; follow(); paint(); info(); } };
             ul.appendChild(li);
           });
@@ -510,7 +518,11 @@
   var DIRS_UI = { u: 1, d: 1, l: 1, r: 1 };
 
   // ---- message boards ------------------------------------------------------
-  function regionName(id) { var r = world.regions.filter(function (x) { return x.id === id; })[0]; return r ? r.name : id; }
+  function regionName(id) {
+    var r = world.regions.filter(function (x) { return x.id === id; })[0];
+    Object.keys(world.eras || {}).forEach(function (e) { world.eras[e].regions.forEach(function (x) { if (x.id === id) r = x; }); });
+    return r ? r.name : id;
+  }
   function openBoard(region) {
     api("GET", "/api/v1/game/boards/" + region).then(function (d) {
       var msgs = d.messages, title = regionName(region) + "留言板";

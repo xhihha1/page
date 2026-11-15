@@ -9,6 +9,13 @@
   var VEHICLE_NAMES = { bike: "單車", moto: "機車", car: "汽車", boat: "船" };
   var WEDDING = { m: "suit", f: "gown" };
 
+  // today's regions and the spots of every past era (each era spot knows its era)
+  function allRegions(w) {
+    var out = w.regions.slice();
+    Object.keys(w.eras || {}).forEach(function (e) { w.eras[e].regions.forEach(function (r) { var c = {}; for (var k in r) c[k] = r[k]; c.era = e; out.push(c); }); });
+    return out;
+  }
+
   function GameError(text) { var e = new Error(text); e.game = true; return e; }
 
   // ---- rules: world.py -------------------------------------------------------------
@@ -40,7 +47,7 @@
     var onWater = m && p.vehicle === "boat" && this.tileClass(m, p.x, p.y) === "water";
     if (m && (onWater || (this.walkable(m, p.x, p.y) && !this.cutOff(m, p.x, p.y)))) return;
     var entry = this.w.spawn;
-    if (m) this.w.regions.forEach(function (r) { if (r.id === m.region) entry = r.entry; });
+    if (m) allRegions(this.w).forEach(function (r) { if (r.id === m.region) entry = r.entry; });
     p.map = entry[0]; p.x = entry[1]; p.y = entry[2]; p.d = entry[3]; p.vehicle = "none";
   };
 
@@ -132,8 +139,9 @@
   R.travel = function (region) {
     var p = this.p;
     if (p.warp_at !== null) return;
-    var r = this.w.regions.filter(function (x) { return x.id === region; })[0];
+    var r = allRegions(this.w).filter(function (x) { return x.id === region; })[0];
     if (!r) throw GameError("找不到這個地方");
+    if ((r.era || null) !== (this.maps[p.map].era || null)) throw GameError("那是另一個時代的地方，要坐時光機才到得了");
     if (p.bed) this.getUp();
     p.held = null; p.route = []; p.face = null;
     this.warp(r.entry[0], r.entry[1], r.entry[2], r.entry[3]);
@@ -258,7 +266,7 @@
 
   R.useElevator = function (floor) {
     var p = this.p, obj = this.objectAt(this.maps[p.map], p.x + DIRS[p.d][0], p.y + DIRS[p.d][1]);
-    if (!obj || (obj.k !== "elevator" && obj.k !== "telescope") || !obj.floors[floor]) throw GameError("這裡沒有電梯");
+    if (!obj || (obj.k !== "elevator" && obj.k !== "telescope" && obj.k !== "timemachine") || !obj.floors[floor]) throw GameError("這裡沒有電梯");
     var f = obj.floors[floor];
     this.warp(f.to, f.x, f.y, f.d);
   };
@@ -376,19 +384,23 @@
       return this.charPayload();
     }
     if (path === "overview") {
-      var p = this.rules && this.rules.p, here = p ? (w.maps[p.map].region || "overworld") : null, counts = {};
+      var p = this.rules && this.rules.p, counts = {};
+      var era = p ? w.maps[p.map].era : null, E = era ? w.eras[era] : null, worldMap = E ? E.world : "overworld";
+      var here = p ? (w.maps[p.map].region || worldMap) : null;
       s.messages.forEach(function (x) { counts[x.region] = (counts[x.region] || 0) + 1; });
       return {
-        regions: w.regions.map(function (r) {
-          return { id: r.id, name: r.name, sub: r.sub, isle: r.isle, no: r.no, messages: counts[r.id] || 0, visited: s.visits.indexOf(r.id) >= 0, people: [] };
+        regions: (E ? E.regions : w.regions).map(function (r) {
+          return { id: r.id, name: r.name, sub: r.sub, isle: r.isle, no: r.no || null, label: r.label || null, messages: counts[r.id] || 0,
+                   visited: s.visits.indexOf(r.id) >= 0, people: [] };
         }),
+        world: worldMap, era: E ? { id: era, name: E.name, years: E.years } : null,
         where: here, at: p ? { map: p.map, x: p.x, y: p.y } : null, sea: [], party: [],
         me: p ? { lead: null, followers: 0, v: p.vehicle } : null
       };
     }
     if ((m = path.match(/^boards\/([a-z_0-9]+)$/))) {
       var region = m[1];
-      if (!w.regions.some(function (r) { return r.id === region; })) throw new Error("沒有這個區域");
+      if (!allRegions(w).some(function (r) { return r.id === region; })) throw new Error("沒有這個區域");
       if (method === "GET") {
         return { messages: s.messages.filter(function (x) { return x.region === region; }).slice().reverse().map(function (x) {
           return { id: x.id, name: x.name, body: x.body, visited_on: x.visited_on, mine: true, can_delete: true };
