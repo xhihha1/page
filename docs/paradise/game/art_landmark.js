@@ -1921,6 +1921,55 @@
     R(c, 2, 64, w - 4, 2, STONE[3]);
   });
 
+  // ---- 西班牙在北台灣 (1626–1642) ---------------------------------------------------------------
+  function burgundy(c, x, y) {                                     // the Cross of Burgundy: a ragged red saltire on white
+    R(c, x, y, 16, 11, "#f8f8f0");
+    for (var i = 0; i < 11; i++) { px(c, x + Math.round(i * 1.4), y + i, "#c82020"); px(c, x + 1 + Math.round(i * 1.4), y + i, "#c82020"); px(c, x + 14 - Math.round(i * 1.4), y + i, "#c82020"); px(c, x + 15 - Math.round(i * 1.4), y + i, "#c82020"); }
+  }
+  S.salvador_fort = inked(function (c, w, h) {      // 聖薩爾瓦多城: grey stone walls, a round bastion at each corner
+    var cx = w / 2, ST2 = ["#d8d4c8", "#b0aa9c", "#868074", "#5a5448"];
+    R(c, 18, 30, w - 36, h - 38, ST2[1]); for (var y = 34; y < h - 8; y += 6) for (var x = 18 + (y % 12 ? 0 : 5); x < w - 18; x += 10) R(c, x, y, 8, 1, ST2[2]);
+    for (var k = 18; k < w - 18; k += 8) R(c, k, 25, 5, 5, ST2[1]);
+    [[18, 30], [w - 18, 30], [18, h - 22], [w - 18, h - 22]].forEach(function (p) {
+      disc(c, p[0], p[1], 14, ST2[1]); disc(c, p[0] - 3, p[1] - 3, 7, ST2[0]); R(c, p[0] - 2, p[1] - 2, 4, 3, "#2a2420");
+    });
+    R(c, cx - 10, h - 34, 20, 26, ST2[0]); disc(c, cx, h - 34, 10, ST2[0]); R(c, cx - 7, h - 32, 14, 24, "#2a1810"); disc(c, cx, h - 32, 7, "#2a1810");
+    R(c, 4, h - 8, w - 8, 8, "#a89878");
+    R(c, cx + 14, 2, 2, 30, "#5a4a3a"); burgundy(c, cx + 16, 3);
+  });
+
+  S.todos_santos = inked(function (c, w, h) {       // 諸聖堂: a whitewashed church with a bell gable and a cross
+    var cx = w / 2;
+    R(c, 8, 34, w - 16, h - 34, PLASTER[0]); R(c, w - 14, 34, 6, h - 34, PLASTER[2]);
+    for (var y = 0; y < 18; y++) R(c, cx - 8 - y * 2, 18 + y, 16 + y * 4, 1, y % 4 === 3 ? "#8a4a30" : "#a85a38");
+    R(c, cx - 8, 6, 16, 14, PLASTER[0]); arched(c, cx - 4, 8, 8, 10, "#3a2a20"); R(c, cx - 2, 12, 4, 4, GOLD[1]);
+    R(c, cx - 1, 0, 2, 7, "#5a4a3a"); R(c, cx - 3, 2, 6, 2, "#5a4a3a");
+    arched(c, cx - 8, h - 30, 16, 30, "#e8e0d0"); R(c, cx - 6, h - 22, 12, 22, WOOD[2]);
+    arched(c, 14, 46, 8, 14, "#e8e0d0"); arched(c, w - 22, 46, 8, 14, "#e8e0d0");
+  });
+
+  S.galleon = inked(function (c, w, h, f) {         // a Spanish galleon from Manila: high stern castle, the Burgundy flag
+    seaBg(c, w, h, f);
+    for (var y = 0; y < 14; y++) { var inset = Math.round(y * y / 14); R(c, 8 + inset, h - 22 + y, w - 16 - inset * 2, 1, y < 3 ? GOLD[1] : "#5a3420"); }
+    R(c, w - 32, h - 40, 24, 19, "#6a4028"); R(c, w - 32, h - 40, 24, 2, GOLD[1]); R(c, w - 28, h - 34, 4, 4, "#f8e070"); R(c, w - 20, h - 34, 4, 4, "#f8e070");
+    R(c, 8, h - 30, 14, 9, "#6a4028");
+    [[26, 8], [48, 4]].forEach(function (m) {
+      R(c, m[0], m[1], 2, h - 22 - m[1], "#4a2a18");
+      for (var k = 0; k < 2; k++) { var sy = m[1] + 4 + k * 15, sw = 20 - k * 3; R(c, m[0] - sw / 2 + 1, sy, sw, 12, "#f0e8d0"); R(c, m[0] - 4, sy + 3, 10, 6, k ? "#f0e8d0" : "#c82020"); }
+    });
+    burgundy(c, 50, 0);
+  });
+
+  S.landing_flag = inked(function (c, w, h) {      // the Burgundy flag the fleet planted on the cape they called Santiago
+    disc(c, w / 2, h - 8, 10, STONE[1]); disc(c, w / 2 - 3, h - 10, 4, STONE[0]);
+    R(c, w / 2 - 1, 4, 2, h - 14, "#5a4a3a"); burgundy(c, w / 2 + 1, 5);
+  });
+
+  A.OUTFIT.spanish = robe("#c8a030", function (c, d) { R(c, 4, 10, 8, 1, "#a82020"); R(c, 4, 12, 8, 1, "#a82020"); if (d !== "u") R(c, 13, 4, 1, 12, "#a8b0b8"); });
+  A.OUTFIT.friar = robe("#f0ece0", function (c, d) { R(c, 3, 9, 10, 3, "#202020"); R(c, 7, 12, 2, 4, "#a08060"); });
+  A.NPC.spanish_soldier = { sex: "m", hair: "side", hairColor: "#3a2418", beard: "#3a2418", head: "morion", outfit: "spanish" };
+  A.NPC.friar = { sex: "m", hair: "side", hairColor: "#5a3a20", head: "none", outfit: "friar" };
+
   A.GLOW_STAMP.music_tower = 1;
 
   // overworld minis
@@ -1928,5 +1977,5 @@
   L.kaohsiung = ["music_tower", 6, 8];
   L.zinan = ["golden_rooster", 4, 5]; L.camp = ["bell_tent", 4, 4]; L.dahu = ["big_strawberry", 2, 2]; L.sanyi = ["wood_museum", 12, 7]; L.xinpu = ["sanheyuan", 12, 6]; L.yuelao = ["tianhou_front", 8, 6]; L.timelab = ["time_lab", 12, 7]; L.zeelandia = ["zeelandia_fort", 18, 10];
   L.provintia = ["provintia_fort", 14, 8]; L.antonio = ["antonio_fort", 10, 7]; L.mz_yanping = ["chengtian_fort", 14, 8];
-  L.mz_ningjing = ["wangfu", 12, 7]; L.mz_wumiao = ["wumiao_front", 11, 6]; L.mz_beiji = ["beiji_temple", 10, 8]; L.mz_confucius = ["confucius", 12, 8]; L.mz_jianjing = ["sword_well", 4, 4]; L.mz_guoxing = ["guoxing_temple", 10, 8];
+  L.mz_ningjing = ["wangfu", 12, 7]; L.mz_wumiao = ["wumiao_front", 11, 6]; L.mz_beiji = ["beiji_temple", 10, 8]; L.mz_confucius = ["confucius", 12, 8]; L.mz_jianjing = ["sword_well", 4, 4]; L.sansalvador = ["salvador_fort", 12, 8]; L.santiago = ["landing_flag", 3, 3]; L.mz_guoxing = ["guoxing_temple", 10, 8];
 })(Art);
