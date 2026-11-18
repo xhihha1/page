@@ -225,6 +225,7 @@
       else if (o.k === "elevator") elevator(o);
       else if (o.k === "telescope") telescope(o);
       else if (o.k === "timemachine") timeMachine(o);
+      else if (o.k === "train") train(o);
       else if (o.k === "dress") dressRoom();
       else if (o.k === "baptism") baptism();
       else if (o.k === "bed") send({ t: "lie" });
@@ -255,6 +256,12 @@
     menu("時光機：要去哪個時代？", Object.keys(o.floors).map(function (f) {
       return { label: f, hint: "到了那裡打開全景圖，就是那個時代的地圖", fn: function () { closeAll(); send({ t: "elevator", floor: f }); } };
     }).concat([{ label: "先不要", fn: closeAll }]));
+  }
+
+  function train(o) {
+    menu("火車：要坐到哪一站？", Object.keys(o.floors).map(function (f) {
+      return { label: f, fn: function () { closeAll(); send({ t: "elevator", floor: f }); } };
+    }).concat([{ label: "不坐了", fn: closeAll }]));
   }
 
   function dressRoom() {

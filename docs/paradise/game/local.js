@@ -266,7 +266,7 @@
 
   R.useElevator = function (floor) {
     var p = this.p, obj = this.objectAt(this.maps[p.map], p.x + DIRS[p.d][0], p.y + DIRS[p.d][1]);
-    if (!obj || (obj.k !== "elevator" && obj.k !== "telescope" && obj.k !== "timemachine") || !obj.floors[floor]) throw GameError("這裡沒有電梯");
+    if (!obj || (obj.k !== "elevator" && obj.k !== "telescope" && obj.k !== "timemachine" && obj.k !== "train") || !obj.floors[floor]) throw GameError("這裡沒有電梯");
     var f = obj.floors[floor];
     this.warp(f.to, f.x, f.y, f.d);
   };

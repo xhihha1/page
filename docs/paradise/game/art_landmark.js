@@ -1854,7 +1854,7 @@
     [[14, 40], [w - 16, 40]].forEach(function (p) { R(c, p[0], p[1], 1, 30, "#5a4a3a"); R(c, p[0] + 1, p[1], 8, 10, "#f0c030"); });   // army flags
   });
 
-  S.antonio_fort = inked(function (c, w, h) {      // 安東尼堡: a square, two-storey red fort with a flat battlemented roof
+  function redFort(british) { return inked(function (c, w, h) {      // 安東尼堡: a square, two-storey red fort with a flat battlemented roof
     var cx = w / 2, RD = ["#e87858", "#c84a34", "#983020", "#601c10"];
     R(c, 0, h - 10, w, 10, GREEN[1]); R(c, 0, h - 10, w, 2, GREEN[0]);
     bricks(c, 14, 24, w - 28, h - 34, RD); R(c, w - 20, 24, 6, h - 34, RD[2]);
@@ -1862,8 +1862,13 @@
     R(c, 14, 54, w - 28, 3, STONE[1]);
     for (var a = 24; a < w - 30; a += 22) if (Math.abs(a + 5 - cx) > 16) { arched(c, a, 30, 10, 18, STONE[0]); arched(c, a, 62, 10, 20, STONE[0]); }
     R(c, cx - 10, h - 40, 20, 30, STONE[0]); disc(c, cx, h - 40, 10, STONE[0]); R(c, cx - 7, h - 38, 14, 28, "#2a1810"); disc(c, cx, h - 38, 7, "#2a1810");
-    R(c, cx + 20, 0, 2, 18, "#5a4a3a"); R(c, cx + 22, 1, 14, 3, "#f08020"); R(c, cx + 22, 4, 14, 3, "#f8f8f8"); R(c, cx + 22, 7, 14, 3, "#2050a8");
-  });
+    R(c, cx + 20, 0, 2, 18, "#5a4a3a");
+    if (!british) { R(c, cx + 22, 1, 14, 3, "#f08020"); R(c, cx + 22, 4, 14, 3, "#f8f8f8"); R(c, cx + 22, 7, 14, 3, "#2050a8"); return; }
+    R(c, cx + 22, 1, 14, 9, "#203878"); R(c, cx + 22, 4, 14, 3, "#f8f8f8"); R(c, cx + 27, 1, 4, 9, "#f8f8f8");   // the Union Jack: the British consulate
+    R(c, cx + 22, 5, 14, 1, "#c82028"); R(c, cx + 28, 1, 2, 9, "#c82028");
+  }); }
+  S.antonio_fort = redFort(false);
+  S.consulate_fort = redFort(true);              // 紅毛城 as the British consulate (1867–)
 
   // ---- 明鄭: 寧靖王府、北極殿 ------------------------------------------------------------------
   S.wangfu = inked(function (c, w, h) {            // 寧靖王府邸: a Ming residence, grey double roof over red columns, a walled court
@@ -2075,6 +2080,122 @@
     return ducks[key];
   };
 
+  // ======== 清領時期 Phase 2 (1860–1895): open ports, sea defence, the new province ===============
+  S.eternal_fort = inked(function (c, w, h) {        // 億載金城: a western-style square fort, bastions at the corners, a moat
+    var cx = w / 2, top = 14, bot = h - 22;
+    R(c, 0, h - 16, w, 16, "#4878a8"); for (var x = 4; x < w; x += 12) R(c, x, h - 10, 6, 1, "#78a8d0");
+    R(c, 0, bot + 2, w, h - 18 - bot, "#6a9a48");
+    bricks(c, 12, top, w - 24, bot - top, BRICK);
+    [[0, top - 6], [w - 28, top - 6]].forEach(function (p) {      // the two front bastions, pointed like arrowheads
+      for (var y = 0; y < bot - top + 10; y++) { var hw = Math.min(14, 4 + y); R(c, p[0] + 14 - hw, p[1] + y, hw * 2, 1, y % 4 === 3 ? BRICK[2] : BRICK[1]); }
+    });
+    R(c, 12, top - 2, w - 24, 3, "#6a9a48");
+    R(c, cx - 10, bot - 22, 20, 22, PLASTER[1]); disc(c, cx, bot - 14, 7, "#2a2018"); R(c, cx - 7, bot - 14, 14, 14, "#2a2018");
+    R(c, cx - 14, bot - 30, 28, 7, PLASTER[0]); for (var g = cx - 11; g < cx + 11; g += 6) R(c, g, bot - 28, 4, 3, "#2a2a30");   // 億載金城
+    R(c, cx - 4, bot, 8, h - 16 - bot + 4, WOOD[1]);                 // the bridge over the moat
+    [cx - 34, cx + 22].forEach(function (x) { R(c, x, top - 6, 12, 4, "#303038"); R(c, x + 10, top - 7, 6, 2, "#202028"); });   // Armstrong guns
+  });
+
+  S.stone_gate = inked(function (c, w, h) {          // 恆春古城: a plain stone gate in a brick wall, battlements on top
+    var cx = w / 2;
+    bricks(c, 0, 14, w, h - 14, ["#d89070", "#a86048", "#784030", "#4a2418"]);
+    for (var x = 0; x < w; x += 10) R(c, x, 8, 6, 6, "#a86048");
+    R(c, cx - 18, 8, 36, h - 8, "#b8b0a0"); for (var y = 12; y < h; y += 7) R(c, cx - 18, y, 36, 1, "#988f80");
+    for (var x2 = cx - 18; x2 < cx + 18; x2 += 9) R(c, x2, 2, 6, 6, "#b8b0a0");
+    R(c, cx - 9, h - 26, 18, 26, "#2a2018"); disc(c, cx, h - 26, 9, "#2a2018");
+    R(c, cx - 10, 14, 20, 6, "#e8e0d0"); R(c, cx - 7, 16, 14, 2, "#3a3030");
+  });
+
+  S.north_gate = inked(function (c, w, h) {          // 台北府城北門（承恩門）: a stone base and a closed, fortress-like gate tower
+    var cx = w / 2;
+    R(c, 4, 30, w - 8, h - 30, "#b0a898"); for (var y = 34; y < h; y += 6) for (var x = (y % 12) ? 4 : 10; x < w - 8; x += 12) R(c, x, y, 10, 1, "#908878");
+    R(c, cx - 10, h - 24, 20, 24, "#2a2018"); disc(c, cx, h - 24, 10, "#2a2018");
+    R(c, cx - 22, 12, 44, 18, "#c8a088"); R(c, cx - 22, 12, 4, 18, "#e0c0a8");
+    [cx - 15, cx - 3, cx + 9].forEach(function (x) { R(c, x, 18, 6, 6, "#2a2018"); });   // small gun ports instead of open galleries
+    R(c, cx - 10, 32, 20, 6, "#203060"); for (var g = cx - 7; g < cx + 7; g += 5) R(c, g, 34, 3, 2, GOLD[1]);   // 承恩門
+    roof(c, cx - 28, 0, 56, 13, 9, QTILE, 4);
+  });
+
+  S.yanping_shrine = inked(function (c, w, h) {      // 延平郡王祠 (1875): a Fuzhou-style shrine, its gables curving like waves
+    var cx = w / 2;
+    R(c, 6, 24, w - 12, h - 30, "#f0ece0"); R(c, 4, h - 6, w - 8, 6, STONE[1]);
+    [6, w - 22].forEach(function (x) {                      // the wavy gable walls (馬鞍牆)
+      for (var i = 0; i < 16; i++) { var top = 6 + Math.round(6 * Math.abs(Math.sin(i / 5))); R(c, x + i, top, 1, 24 - top + 4, "#e8e4d8"); R(c, x + i, top, 1, 2, "#303038"); }
+    });
+    roof(c, 18, 10, w - 36, 16, 8, QTILE, 3);
+    for (var x = 24; x < w - 24; x += 14) column(c, x, 28, 4, h - 34, REDP);
+    R(c, cx - 12, 34, 24, h - 40, "#902018"); R(c, cx - 1, 34, 2, h - 40, GOLD[2]);
+    plaque(c, cx - 14, 26, 28, 6);
+  });
+
+  S.lamp_post = inked(function (c, w, h) {           // one of 劉銘傳's first electric lamps
+    R(c, w / 2 - 1, 8, 2, h - 8, "#303038"); R(c, w / 2 - 4, h - 3, 8, 3, "#303038");
+    R(c, w / 2 - 4, 4, 8, 2, "#303038"); disc(c, w / 2, 9, 3, "#f8f0a0"); px(c, w / 2, 9, "#ffffff");
+  });
+  A.GLOW_STAMP.lamp_post = 1;
+
+  S.tea_boxes = inked(function (c, w, h) {           // wooden chests of Formosa Oolong, ready for the ships
+    [[0, h - 12], [12, h - 12], [6, h - 22]].forEach(function (p) {
+      R(c, p[0], p[1], 12, 10, "#b88850"); R(c, p[0], p[1], 12, 2, "#d8a868"); R(c, p[0] + 2, p[1] + 4, 8, 4, "#f0e0c0"); px(c, p[0] + 5, p[1] + 5, "#c82820"); px(c, p[0] + 6, p[1] + 6, "#202020");
+    });
+  });
+
+  S.tiger_flag = inked(function (c, w, h) {          // 黃虎旗: the 1895 flag, a yellow tiger on blue
+    R(c, 2, 0, 2, h, "#6a4a30"); disc(c, 3, 1, 2, GOLD[1]);
+    R(c, 4, 3, w - 6, 26, "#2a50a8"); R(c, 4, 3, w - 6, 2, "#3a68c8");
+    R(c, 10, 14, 14, 6, "#e8c030"); R(c, 22, 10, 5, 6, "#e8c030"); R(c, 8, 12, 3, 2, "#e8c030");   // body, head, tail
+    [11, 15, 19, 23].forEach(function (x) { R(c, x, 20, 2, 4, "#e8c030"); });
+    dots(c, "#202020", [14, 15, 17, 16, 20, 15, 25, 12]); px(c, 26, 11, "#c82820");
+  });
+
+  S.lion_tunnel = inked(function (c, w, h) {         // 獅球嶺隧道 (1887–1890): a red brick portal with 劉銘傳's words above it
+    bushes(c, 0, 0, w, h - 4);
+    var cx = w / 2;
+    bricks(c, cx - 30, 16, 60, h - 16, BRICK);
+    R(c, cx - 16, h - 32, 32, 32, "#181818"); disc(c, cx, h - 32, 16, "#181818");
+    R(c, cx - 20, 20, 40, 9, "#e8e0d0"); for (var g = cx - 16; g < cx + 16; g += 9) R(c, g, 22, 6, 5, "#3a3030");   // 曠宇天開
+    R(c, 0, h - 4, w, 4, "#787880"); for (var x = 2; x < w; x += 6) R(c, x, h - 5, 3, 5, "#6a4a30");
+  });
+
+  S.cihou_gate = inked(function (c, w, h) {          // 旗後砲台: a brick gate set with a pattern of bricks shaped like 囍
+    var cx = w / 2;
+    R(c, 0, 18, w, h - 18, "#a8a090");
+    bricks(c, cx - 22, 6, 44, h - 6, BRICK);
+    R(c, cx - 8, h - 22, 16, 22, "#2a2018"); disc(c, cx, h - 22, 8, "#2a2018");
+    for (var i = 0; i < 2; i++) { var x = cx - 18 + i * 26; R(c, x, 12, 10, 1, PLASTER[0]); R(c, x, 16, 10, 1, PLASTER[0]); R(c, x + 2, 10, 1, 10, PLASTER[0]); R(c, x + 7, 10, 1, 10, PLASTER[0]); }
+  });
+
+  S.station = inked(function (c, w, h) {             // a little wooden railway station of the 1890s
+    R(c, 4, 16, w - 8, h - 22, "#e8dcc4"); timber(c, 4, 16, w - 8, 10);
+    for (var x = 10; x < w - 14; x += 14) sash(c, x, 30, 8, 10);
+    R(c, w / 2 - 6, h - 20, 12, 14, WOOD[2]);
+    roof(c, 0, 4, w, 13, 6, SLATE, 2);
+    R(c, 0, h - 6, w, 6, STONE[1]);
+  });
+
+  S.opera_stage = inked(function (c, w, h) {        // 戲台: a raised stage under a sweeping roof, red pillars, a painted back wall
+    var cx = w / 2;
+    R(c, 4, h - 14, w - 8, 14, STONE[1]); R(c, 4, h - 14, w - 8, 2, STONE[0]);
+    R(c, 10, 22, w - 20, h - 36, "#3a5a48"); R(c, cx - 14, 30, 28, 14, "#d8b060"); R(c, cx - 12, 32, 24, 10, "#a83020");
+    [10, w - 16].forEach(function (x) { column(c, x, 22, 6, h - 36, REDP); });
+    roof(c, 0, 4, w, 20, 14, QTILE, 6);
+    R(c, 12, 22, w - 24, 3, GOLD[1]);
+  });
+
+  // Phase 2 people
+  A.HEADS.headband = function (c) { R(c, 3, 1, 10, 2, "#c82820"); px(c, 5, 1, "#f0c030"); px(c, 9, 1, "#f0c030"); };
+  A.OUTFIT.frock = robe("#202028", function (c, d) { if (d === "d") { R(c, 6, 9, 4, 4, "#f8f8f8"); R(c, 7, 9, 2, 1, "#202028"); } });
+  A.OUTFIT.merchant_suit = robe("#5a4a38", function (c, d) { if (d === "d") { R(c, 6, 9, 4, 3, "#f8f8f0"); px(c, 7, 12, GOLD[1]); } });
+  A.OUTFIT.tea_picker = { top: "#4a78a0", leg: "#2a3a58", shoe: "#2a2018", skirt: "#4a78a0", paint: function (c, d) { if (d === "d") R(c, 5, 11, 6, 4, "#f0ece0"); } };
+  A.OUTFIT.black_flag = robe("#2a2a30", function (c, d) { R(c, 4, 10, 8, 1, "#c8a030"); R(c, 4, 12, 8, 1, "#c8a030"); if (d !== "u") R(c, 13, 4, 1, 12, "#a8b0b8"); });
+  A.OUTFIT.paiwan = { top: "#202020", leg: "#202020", shoe: "#8a5a30", legShort: true, paint: function (c, d) { R(c, 4, 10, 8, 1, "#e8c030"); R(c, 4, 12, 8, 1, "#c82820"); if (d === "d") dots(c, "#3aa060", [5, 11, 8, 11, 11, 11]); } };
+  A.NPC.mackay = { sex: "m", hair: "side", hairColor: "#202020", beard: "#202020", head: "none", outfit: "frock" };
+  A.NPC.westerner = { sex: "m", hair: "side", hairColor: "#a87848", beard: "#a87848", head: "broadhat", outfit: "merchant_suit" };
+  A.NPC.tea_girl = { sex: "f", hair: "bun", head: "none", outfit: "tea_picker" };
+  A.NPC.liu_mingchuan = { sex: "m", hair: "side", beard: "#3a3430", head: "qingcap", outfit: "qing_official" };
+  A.NPC.black_flag = { sex: "m", hair: "side", beard: "#181818", head: "kerchief", kerchief: "#202020", outfit: "black_flag" };
+  A.NPC.paiwan = { sex: "m", hair: "side", head: "headband", outfit: "paiwan" };
+
   A.GLOW_STAMP.music_tower = 1;
 
   // overworld minis
@@ -2085,5 +2206,8 @@
   L.mz_ningjing = ["wangfu", 12, 7]; L.mz_wumiao = ["wumiao_front", 11, 6]; L.mz_beiji = ["beiji_temple", 10, 8]; L.mz_confucius = ["confucius", 12, 8]; L.mz_jianjing = ["sword_well", 4, 4]; L.sansalvador = ["salvador_fort", 12, 8]; L.santiago = ["landing_flag", 3, 3];
   L.mz_penghu = ["junk", 6, 4]; L.qg_penghu = ["tianhou_front", 8, 6]; L.qg_fucheng = ["yamen", 10, 6]; L.qg_tianhou = ["tianhou_front", 8, 6];
   L.qg_chihkan = ["chihkan", 12, 8]; L.qg_zhuluo = ["city_gate", 8, 5]; L.qg_babao = ["sugar_mill", 5, 4]; L.qg_lukang = ["junk", 6, 4];
-  L.qg_banqiao = ["dingjing", 11, 8]; L.qg_mengjia = ["longshan", 16, 9]; L.qg_kavalan = ["brick_shophouse", 4, 5]; L.mz_guoxing = ["guoxing_temple", 10, 8];
+  L.qg_banqiao = ["dingjing", 11, 8]; L.qg_mengjia = ["longshan", 16, 9]; L.qg_kavalan = ["brick_shophouse", 4, 5];
+  L.qg_hobe = ["consulate_fort", 10, 7]; L.qg_dadaocheng = ["tea_boxes", 2, 2]; L.qg_eternal = ["eternal_fort", 12, 7]; L.qg_hengchun = ["stone_gate", 6, 4];
+  L.qg_yanping = ["yanping_shrine", 8, 5]; L.qg_taipei = ["north_gate", 6, 5]; L.qg_railway = ["lion_tunnel", 6, 4]; L.qg_wufeng = ["opera_stage", 6, 5];
+  L.qg_takow = ["cihou_gate", 5, 4]; L.qg_republic = ["tiger_flag", 2, 2]; L.mz_guoxing = ["guoxing_temple", 10, 8];
 })(Art);
