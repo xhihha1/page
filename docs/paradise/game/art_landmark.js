@@ -1970,6 +1970,111 @@
   A.NPC.spanish_soldier = { sex: "m", hair: "side", hairColor: "#3a2418", beard: "#3a2418", head: "morion", outfit: "spanish" };
   A.NPC.friar = { sex: "m", hair: "side", hairColor: "#5a3a20", head: "none", outfit: "friar" };
 
+  // ======== 清領時期 (1683–1895), Phase 1 ======================================================
+  var QTILE = ["#9098a0", "#606870", "#485058", "#303840"];          // grey southern Fujian roof tiles
+  S.junk = inked(function (c, w, h, f) {            // 戎克船: a junk with batten sails and an eye on the bow
+    seaBg(c, w, h, f);
+    for (var y = 0; y < 12; y++) { var inset = Math.round(y * y / 12); R(c, 6 + inset, h - 20 + y, w - 12 - inset * 2, 1, y < 2 ? "#c83020" : "#6a4024"); }
+    R(c, w - 26, h - 32, 18, 13, "#7a4a28"); R(c, w - 26, h - 32, 18, 2, "#c83020");
+    disc(c, 14, h - 15, 2, "#f8f8f0"); px(c, 14, h - 15, "#202020");
+    [[30, 4, 22], [52, 10, 16]].forEach(function (m) {
+      R(c, m[0], m[1], 2, h - 20 - m[1], "#4a2a18");
+      for (var y2 = 0; y2 < 24; y2++) { R(c, m[0] - m[2] / 2 + 1, m[1] + 2 + y2, m[2], 1, y2 % 5 === 4 ? "#6a3018" : "#b8603a"); }
+    });
+  });
+
+  S.city_gate = inked(function (c, w, h) {          // a Qing city gate: a stone base with an arch, walls, a gate tower on top
+    var cx = w / 2;
+    for (var x = 0; x < w; x += 8) R(c, x, 30, 5, 5, "#a8a090");
+    R(c, 0, 34, w, h - 34, "#b8b0a0"); for (var y = 38; y < h; y += 6) for (var x2 = (y % 12) ? 0 : 6; x2 < w; x2 += 12) R(c, x2, y, 10, 1, "#988f80");
+    R(c, cx - 30, 30, 60, h - 30, "#c8c0b0"); R(c, cx - 30, 30, 4, h - 30, "#e0d8c8");
+    R(c, cx - 11, h - 28, 22, 28, "#2a2018"); disc(c, cx, h - 28, 11, "#2a2018"); R(c, cx - 1, h - 28, 2, 28, "#4a3424");
+    R(c, cx - 12, 38, 24, 7, "#203060"); for (var g = cx - 9; g < cx + 9; g += 5) R(c, g, 40, 3, 3, GOLD[1]);
+    R(c, cx - 26, 14, 52, 16, "#c03828"); for (var p = cx - 22; p < cx + 24; p += 11) R(c, p, 14, 3, 16, "#902018");
+    roof(c, cx - 34, 2, 68, 13, 10, QTILE, 4);
+  });
+
+  S.yamen = inked(function (c, w, h) {              // 府署: a government hall, red pillars, two stone lions at the gate
+    var cx = w / 2;
+    R(c, 4, h - 8, w - 8, 8, STONE[1]); stairs(c, cx - 14, h - 8, 28, 8, STONE);
+    R(c, 10, 40, w - 20, h - 48, "#e8dcc4");
+    for (var x = 14; x < w - 16; x += 16) column(c, x, 42, 5, h - 50, REDP);
+    R(c, cx - 16, 50, 32, h - 58, "#5a1c10"); R(c, cx - 14, 52, 28, h - 60, "#8a3420"); R(c, cx - 1, 52, 2, h - 60, GOLD[2]);
+    roof(c, 2, 20, w - 4, 21, 14, QTILE, 4);
+    plaque(c, cx - 16, 41, 32, 7);
+    [16, w - 28].forEach(function (x) { R(c, x, h - 22, 12, 14, STONE[2]); disc(c, x + 6, h - 24, 6, STONE[1]); dots(c, "#3a3030", [x + 4, h - 25, x + 8, h - 25]); });
+  });
+
+  S.sugar_mill = inked(function (c, w, h) {          // 糖廍: an ox-driven stone mill under a thatched shed, pots of sugar
+    var cx = w / 2;
+    for (var y = 0; y < 18; y++) { var hw = Math.round(8 + y * (w / 2 - 8) / 17); R(c, cx - hw, 2 + y, hw * 2, 1, y % 4 === 3 ? STRAW[2] : STRAW[1]); }
+    column(c, 6, 20, 4, h - 26, WOOD); column(c, w - 10, 20, 4, h - 26, WOOD);
+    R(c, cx - 10, h - 30, 8, 22, "#a8a098"); R(c, cx + 2, h - 30, 8, 22, "#a8a098"); R(c, cx - 10, h - 30, 8, 2, "#d0c8c0"); R(c, cx + 2, h - 30, 8, 2, "#d0c8c0");
+    R(c, cx - 1, h - 36, 2, 8, WOOD[2]); R(c, cx - 22, h - 36, 44, 2, WOOD[1]);
+    [[8, h - 12], [w - 18, h - 12], [w - 28, h - 12]].forEach(function (p) { disc(c, p[0] + 5, p[1] + 4, 5, "#6a4a30"); R(c, p[0] + 2, p[1], 6, 2, "#d8b880"); });
+    R(c, 2, h - 4, w - 4, 4, "#a08060");
+  });
+
+  S.bixi_stele = inked(function (c, w, h) {          // 贔屭碑: a stone turtle carrying an imperial stele
+    var cx = w / 2;
+    disc(c, cx, h - 7, 10, "#8a8478"); disc(c, cx - 2, h - 9, 6, "#a8a094"); R(c, cx + 8, h - 9, 6, 5, "#8a8478"); px(c, cx + 12, h - 8, "#202020");
+    R(c, cx - 6, 2, 12, h - 12, "#b8b0a0"); R(c, cx - 6, 2, 3, h - 12, "#d0c8b8"); R(c, cx - 7, 0, 14, 4, "#a8a090");
+    for (var y = 6; y < h - 12; y += 3) R(c, cx - 3, y, 6, 1, "#787064");
+  });
+
+  S.bamboo_cage = inked(function (c, w, h) {         // 石笱: bamboo baskets full of stones, laid across the river to turn the water
+    for (var i = 0; i < w; i += 10) {
+      for (var y = 0; y < 10; y++) R(c, i + Math.round(y / 2), 3 + y, 10 - y, 1, y % 2 ? "#a88848" : "#c8a868");
+      dots(c, "#8a8478", [i + 2, 6, i + 5, 8, i + 4, 5]);
+    }
+  });
+
+  S.brick_shophouse = inked(function (c, w, h) {     // a southern Fujian brick shophouse: board doors, red lanterns
+    var cx = w / 2;
+    bricks(c, 2, 20, w - 4, h - 20, BRICK);
+    roof(c, 0, 8, w, 13, 4, QTILE, 2);
+    R(c, 6, h - 30, w - 12, 30, WOOD[2]); for (var x = 8; x < w - 8; x += 6) R(c, x, h - 28, 4, 28, WOOD[1]);
+    R(c, 8, 26, w - 16, 8, "#f0e0c0"); for (var k = 10; k < w - 10; k += 6) R(c, k, 28, 3, 4, "#5a2a18");
+    [10, w - 15].forEach(function (x) { R(c, x + 2, 34, 1, 2, "#202020"); disc(c, x + 2, 39, 3, "#e03028"); });
+  });
+
+  // Qing people: queues, official hats, robes
+  A.HEADS.queue = function (c, look, dir) {           // the shaved forehead and the long braid
+    R(c, 4, 0, 8, 2, "#f0c8a0");
+    if (dir !== "d") { R(c, 7, 6, 2, 9, "#181818"); px(c, 7, 15, "#c82820"); }
+  };
+  A.HEADS.qingcap = function (c, look, dir) {        // an official's hat: wide brim, red finial, a peacock feather behind
+    R(c, 2, 0, 12, 2, "#2a2a30"); R(c, 4, -3, 8, 3, "#3a3a44"); R(c, 7, -5, 2, 2, "#c82820");
+    if (dir !== "d") R(c, 10, -1, 4, 6, "#3a7a68");
+  };
+  A.HEADS.strawhat = function (c) { R(c, 0, 0, 16, 2, "#d8b868"); R(c, 4, -3, 8, 3, "#e8c878"); };
+  A.OUTFIT.qing_official = robe("#284878", function (c, d) { R(c, 4, 12, 8, 1, "#181820"); if (d === "d") { R(c, 5, 9, 6, 4, "#e8d8a0"); px(c, 7, 10, "#c82820"); px(c, 8, 11, "#2a8a50"); } });   // the rank badge
+  A.OUTFIT.qing_armor = robe("#c8a030", function (c, d) { R(c, 4, 10, 8, 1, "#902018"); R(c, 4, 12, 8, 1, "#902018"); dots(c, "#e8e0c0", [5, 11, 8, 11, 11, 11]); });
+  A.OUTFIT.magua = robe("#3a5888", function (c, d) { R(c, 3, 8, 10, 4, "#2a2a30"); if (d === "d") R(c, 7, 8, 2, 4, "#c8a030"); });   // a black jacket over a long gown
+  A.OUTFIT.farmer = { top: "#6a8aa8", leg: "#3a4a68", shoe: "#c8a878", legShort: true, paint: function (c) { R(c, 4, 12, 8, 1, "#2a2a30"); } };
+  A.NPC.shilang = { sex: "m", hair: "side", beard: "#2a2420", head: "qingcap", outfit: "qing_official" };
+  A.NPC.qing_official = { sex: "m", hair: "side", beard: "#3a3430", head: "qingcap", outfit: "qing_official" };
+  A.NPC.qing_general = { sex: "m", hair: "side", beard: "#2a2420", head: "qingcap", outfit: "qing_armor" };
+  A.NPC.jiao_merchant = { sex: "m", hair: "side", head: "queue", outfit: "magua" };
+  A.NPC.farmer = { sex: "m", hair: "side", head: "strawhat", outfit: "farmer" };
+  A.NPC.settler = { sex: "m", hair: "side", beard: "#2a2420", head: "queue", outfit: "farmer" };
+  A.NPC.ming_prince = { sex: "m", hair: "side", head: "mingcap", outfit: "ming_yellow" };          // 鄭克塽, still a boy
+  A.NPC.ming_general = { sex: "m", hair: "side", beard: "#181818", head: "plume", outfit: "armor" };
+
+  // a duck, for 朱一貴 the duck-herder
+  var oldAnimal3 = A.animal, ducks = {};
+  A.animal = function (kind, frame) {
+    if (kind !== "duck") return oldAnimal3(kind, frame);
+    var key = frame % 2;
+    if (!ducks[key]) {
+      var cv = A.mk(16, 16), c = cv.getContext("2d");
+      R(c, 4, 8, 9, 5, "#f8f8f0"); R(c, 3, 9, 2, 3, "#f8f8f0"); disc(c, 11, 6, 3, "#3a8a48"); R(c, 13, 6, 3, 2, "#e8a020"); px(c, 11, 5, "#202020");
+      R(c, 6, 13, 1, 2 + key, "#e8a020"); R(c, 10, 13, 1, 3 - key, "#e8a020");
+      ducks[key] = cv;
+    }
+    return ducks[key];
+  };
+
   A.GLOW_STAMP.music_tower = 1;
 
   // overworld minis
@@ -1977,5 +2082,8 @@
   L.kaohsiung = ["music_tower", 6, 8];
   L.zinan = ["golden_rooster", 4, 5]; L.camp = ["bell_tent", 4, 4]; L.dahu = ["big_strawberry", 2, 2]; L.sanyi = ["wood_museum", 12, 7]; L.xinpu = ["sanheyuan", 12, 6]; L.yuelao = ["tianhou_front", 8, 6]; L.timelab = ["time_lab", 12, 7]; L.zeelandia = ["zeelandia_fort", 18, 10];
   L.provintia = ["provintia_fort", 14, 8]; L.antonio = ["antonio_fort", 10, 7]; L.mz_yanping = ["chengtian_fort", 14, 8];
-  L.mz_ningjing = ["wangfu", 12, 7]; L.mz_wumiao = ["wumiao_front", 11, 6]; L.mz_beiji = ["beiji_temple", 10, 8]; L.mz_confucius = ["confucius", 12, 8]; L.mz_jianjing = ["sword_well", 4, 4]; L.sansalvador = ["salvador_fort", 12, 8]; L.santiago = ["landing_flag", 3, 3]; L.mz_guoxing = ["guoxing_temple", 10, 8];
+  L.mz_ningjing = ["wangfu", 12, 7]; L.mz_wumiao = ["wumiao_front", 11, 6]; L.mz_beiji = ["beiji_temple", 10, 8]; L.mz_confucius = ["confucius", 12, 8]; L.mz_jianjing = ["sword_well", 4, 4]; L.sansalvador = ["salvador_fort", 12, 8]; L.santiago = ["landing_flag", 3, 3];
+  L.mz_penghu = ["junk", 6, 4]; L.qg_penghu = ["tianhou_front", 8, 6]; L.qg_fucheng = ["yamen", 10, 6]; L.qg_tianhou = ["tianhou_front", 8, 6];
+  L.qg_chihkan = ["chihkan", 12, 8]; L.qg_zhuluo = ["city_gate", 8, 5]; L.qg_babao = ["sugar_mill", 5, 4]; L.qg_lukang = ["junk", 6, 4];
+  L.qg_banqiao = ["dingjing", 11, 8]; L.qg_mengjia = ["longshan", 16, 9]; L.qg_kavalan = ["brick_shophouse", 4, 5]; L.mz_guoxing = ["guoxing_temple", 10, 8];
 })(Art);
