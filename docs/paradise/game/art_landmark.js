@@ -2349,5 +2349,5 @@
   L.jp_beitou = ["hotspring_museum", 10, 7]; L.jp_baguashan = ["memorial_stone", 2, 3];
   L.jp_wushantou = ["dam_gate", 6, 3]; L.jp_bunka = ["brick_shophouse", 4, 5]; L.jp_wufeng = ["opera_stage", 6, 5]; L.jp_ponlai = ["sanheyuan", 12, 6];
   L.jp_wushe = ["mona_statue", 2, 3]; L.jp_kano = ["ball_field", 8, 6]; L.jp_hayashi = ["hayashi", 10, 8]; L.jp_sunmoon = ["power_station", 6, 4];
-  L.jp_expo = ["expo_gate", 8, 4]; L.jp_war = ["shelter", 5, 3]; L.mz_guoxing = ["guoxing_temple", 10, 8];
+  L.jp_expo = ["expo_gate", 8, 4]; L.jp_war = ["shelter", 5, 3]; L.jp_guesthouse = ["guest_house", 7, 6]; L.jp_waterworks = ["water_museum", 12, 7]; L.mz_guoxing = ["guoxing_temple", 10, 8];
 })(Art);

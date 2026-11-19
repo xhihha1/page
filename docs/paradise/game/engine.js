@@ -183,6 +183,8 @@ var Engine = (function () {
     c.fillStyle = "#101018"; c.fillRect(0, 0, this.vw, this.vh);
     c.drawImage(layer, -cx, -cy);
 
+    this.hints(m, cx, cy, now);
+
     var list = [], self = this;
     Object.keys(this.actors).forEach(function (id) {
       var a = self.actors[id];
@@ -213,6 +215,29 @@ var Engine = (function () {
     var fade = 1 - (now - this.fadeAt) / 350;
     if (fade > 0) { c.fillStyle = "rgba(0,0,0," + fade + ")"; c.fillRect(0, 0, this.vw, this.vh); }
     if (this.mono) this.toGreens();
+  };
+
+  /* Say where you can go in and what you can ride, so nobody has to bump into every wall to find out:
+     a bobbing arrow over every entrance (doors, gates, the way out), an "A" bubble over what you face and press A on. */
+  var RIDE = { train: 1, elevator: 1, telescope: 1, timemachine: 1, dress: 1, baptism: 1, shaft: 1 };
+  Eng.prototype.hints = function (m, cx, cy, now) {
+    var c = this.c, vw = this.vw, vh = this.vh, bob = Math.floor(now / 400) % 2;
+    function seen(x, y) { var px = x * TS - cx, py = y * TS - cy; return px > -TS && py > -TS * 2 && px < vw + TS && py < vh + TS; }
+    Object.keys(m.warps).forEach(function (k) {
+      var i = k.indexOf(","), x = +k.slice(0, i), y = +k.slice(i + 1);
+      if (!seen(x, y)) return;
+      var px = x * TS - cx + 4, py = y * TS - cy + 3 + bob;          // a down arrow on the doorway itself
+      c.fillStyle = "#202020"; c.fillRect(px + 1, py - 1, 6, 5); c.fillRect(px - 1, py + 3, 10, 2); c.fillRect(px + 1, py + 5, 6, 1); c.fillRect(px + 2, py + 6, 4, 1); c.fillRect(px + 3, py + 7, 2, 1);
+      c.fillStyle = "#f8d838"; c.fillRect(px + 2, py, 4, 4); c.fillRect(px, py + 4, 8, 1); c.fillRect(px + 1, py + 5, 6, 1); c.fillRect(px + 2, py + 6, 4, 1);
+      c.fillStyle = "#fff8c0"; c.fillRect(px + 2, py, 1, 4);
+    });
+    m.objects.forEach(function (o) {
+      if (!RIDE[o.k] || !seen(o.x, o.y)) return;
+      var px = o.x * TS - cx + 3, py = o.y * TS - cy + 2 + bob;      // an "A" button bubble: face it and press A
+      c.fillStyle = "#202020"; c.fillRect(px, py, 11, 10); c.fillRect(px + 4, py + 10, 3, 2);
+      c.fillStyle = "#f8f8f0"; c.fillRect(px + 1, py + 1, 9, 8); c.fillRect(px + 5, py + 9, 1, 1);
+      c.fillStyle = "#c83048"; c.fillRect(px + 4, py + 2, 3, 1); c.fillRect(px + 3, py + 3, 1, 5); c.fillRect(px + 7, py + 3, 1, 5); c.fillRect(px + 4, py + 5, 3, 1);
+    });
   };
 
   Eng.prototype.fireworks = function (now) {
