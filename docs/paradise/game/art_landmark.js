@@ -2196,6 +2196,140 @@
   A.NPC.black_flag = { sex: "m", hair: "side", beard: "#181818", head: "kerchief", kerchief: "#202020", outfit: "black_flag" };
   A.NPC.paiwan = { sex: "m", hair: "side", head: "headband", outfit: "paiwan" };
 
+  // ======== 日治時期 (1895–1945) =================================================================
+  S.governor_office = inked(function (c, w, h) {     // 台灣總督府 (1919): red brick and white bands, a tall central tower
+    var cx = w / 2;
+    bricks(c, 4, 40, w - 8, h - 44, BRICK); [40, 62, h - 6].forEach(function (y) { R(c, 4, y, w - 8, 3, PLASTER[1]); });
+    for (var x = 10; x < w - 12; x += 14) if (Math.abs(x + 3 - cx) > 16) { sash(c, x, 46, 7, 12, PLASTER[1]); sash(c, x, 68, 7, h - 78, PLASTER[1]); }
+    [4, w - 24].forEach(function (x) { bricks(c, x, 30, 20, h - 34, BRICK); R(c, x, 30, 20, 3, PLASTER[1]); roof(c, x - 2, 22, 24, 9, 4, SLATE, 1); });
+    bricks(c, cx - 14, 18, 28, h - 22, BRICK); for (var y = 22; y < h - 8; y += 12) R(c, cx - 14, y, 28, 2, PLASTER[1]);
+    R(c, cx - 8, 0, 16, 20, PLASTER[1]); R(c, cx - 6, 4, 12, 3, BRICK[2]); R(c, cx - 10, 16, 20, 3, PLASTER[2]); R(c, cx - 1, -2, 2, 4, "#5a5a60");
+    sash(c, cx - 4, 26, 8, 14, PLASTER[1]); arched(c, cx - 8, h - 30, 16, 26, PLASTER[1]);
+  });
+
+  S.monopoly = inked(function (c, w, h) {            // 專賣局 (森山松之助): red brick, white bands, a domed corner tower
+    bricks(c, 2, 26, w - 4, h - 28, BRICK); [26, 52, h - 5].forEach(function (y) { R(c, 2, y, w - 4, 3, PLASTER[1]); });
+    for (var x = 8; x < w - 30; x += 14) { arched(c, x, 32, 8, 16, PLASTER[1]); arched(c, x, 58, 8, h - 66, PLASTER[1]); }
+    var tx = w - 30;
+    bricks(c, tx, 14, 26, h - 16, BRICK); R(c, tx, 14, 26, 3, PLASTER[1]); arched(c, tx + 8, 22, 10, 20, PLASTER[1]); arched(c, tx + 7, h - 30, 12, 26, PLASTER[1]);
+    for (var y = 0; y < 12; y++) { var hw = Math.round(11 * Math.sqrt(1 - Math.pow((12 - y) / 12, 2))); R(c, tx + 13 - hw, 2 + y, hw * 2, 1, y < 3 ? "#7ab0a0" : "#4a8a78"); }
+    R(c, tx + 12, 0, 2, 3, GOLD[1]);
+    roof(c, 0, 18, w - 28, 9, 3, SLATE, 1);
+  });
+
+  S.lake_pavilion = inked(function (c, w, h) {       // 台中公園湖心亭 (1908): two gabled pavilions joined on the water
+    seaBg(c, w, h, 0);
+    R(c, 6, h - 14, w - 12, 4, WOOD[2]);
+    [8, w / 2 + 4].forEach(function (x) {
+      var pw = w / 2 - 12;
+      column(c, x + 2, 26, 3, h - 40, WOOD); column(c, x + pw - 5, 26, 3, h - 40, WOOD); R(c, x, 34, pw, 2, WOOD[1]);
+      for (var y = 0; y < 22; y++) { var hw = Math.round(3 + y * (pw / 2 + 2) / 21); R(c, x + pw / 2 - hw, 6 + y, hw * 2, 1, y % 4 === 3 ? "#7a5a3a" : "#a07a50"); }
+      R(c, x + pw / 2 - 1, 2, 2, 5, "#5a4030");
+    });
+  });
+
+  S.memorial_stone = inked(function (c, w, h) {      // a memorial stone on a stepped base
+    R(c, 2, h - 6, w - 4, 6, STONE[2]); R(c, 4, h - 10, w - 8, 4, STONE[1]);
+    R(c, w / 2 - 6, 4, 12, h - 14, "#8a8a84"); R(c, w / 2 - 6, 4, 3, h - 14, "#a8a8a0"); disc(c, w / 2, 5, 6, "#8a8a84");
+    for (var y = 10; y < h - 14; y += 3) R(c, w / 2 - 2, y, 4, 1, "#5a5a54");
+  });
+
+  S.rickshaw = inked(function (c, w, h) {            // 人力車: a two-wheeled cart with a folding hood
+    disc(c, 18, h - 8, 7, "#303030"); disc(c, 18, h - 8, 5, "#8a6a40"); disc(c, 18, h - 8, 1, "#303030");
+    R(c, 8, h - 18, 18, 8, "#202028"); R(c, 10, h - 26, 12, 9, "#202028"); R(c, 10, h - 26, 12, 2, "#40404a");
+    R(c, 24, h - 12, w - 26, 2, "#8a6a40"); R(c, 12, h - 16, 10, 3, "#a83028");
+  });
+
+  S.shay = inked(function (c, w, h) {               // the Shay engine of the 阿里山 forest railway, geared and upright
+    R(c, 0, h - 4, w, 4, "#6a4a30"); for (var x = 2; x < w; x += 6) R(c, x, h - 5, 3, 5, "#5a3a20");
+    R(c, 6, 8, 26, h - 18, "#202028"); R(c, 6, 8, 26, 3, "#40404a"); R(c, 10, 12, 8, 6, "#a8c8e0");
+    R(c, 34, 14, 22, h - 24, "#282830"); R(c, 38, 4, 6, 12, "#202028"); R(c, 36, 2, 10, 3, "#40404a");
+    [6, 22, 40].forEach(function (x) { disc(c, x + 6, h - 9, 5, "#c03030"); disc(c, x + 6, h - 9, 2, "#202028"); });
+    R(c, 32, h - 16, 2, 10, "#a8a8b0");
+  });
+
+  S.hinoki = inked(function (c, w, h) {             // a giant 紅檜: a tall straight trunk, dark crown
+    R(c, w / 2 - 5, h - 26, 10, 26, "#7a4a2a"); R(c, w / 2 - 5, h - 26, 3, 26, "#9a6a40");
+    for (var y = 0; y < h - 20; y++) { var hw = Math.round((w / 2 - 2) * Math.sin(Math.PI * (y + 2) / (h - 16))); R(c, w / 2 - hw, y, hw * 2, 1, y % 5 === 4 ? "#1a4a2a" : "#2a6a3a"); }
+  });
+
+  S.dam_gate = inked(function (c, w, h) {           // 烏山頭: the long earth dam, the sluice gate letting water into the canal
+    R(c, 0, 0, w, h / 2, "#4878a8"); for (var x = 3; x < w; x += 10) R(c, x, 6, 5, 1, "#78a8d0");
+    for (var y = 0; y < h / 2; y++) R(c, 0, h / 2 + y, w, 1, y < 3 ? "#8aa860" : (y % 4 === 3 ? "#6a8a48" : "#7a9a50"));
+    var gx = w / 2 - 14;
+    R(c, gx, h / 2 - 8, 28, h / 2 + 8, "#b8b0a0"); R(c, gx + 4, h / 2, 20, h / 2, "#4878a8"); R(c, gx + 4, h / 2 - 6, 20, 4, "#5a5a60");
+    R(c, gx - 2, h / 2 - 12, 32, 4, "#a8a098");
+  });
+
+  S.hatta_statue = inked(function (c, w, h) {       // 八田與一's statue: sitting on the ground, chin in hand, as he used to on site
+    R(c, 2, h - 6, w - 4, 6, STONE[1]);
+    R(c, 8, h - 16, 16, 10, "#5a6048"); R(c, 10, h - 26, 10, 12, "#5a6048"); disc(c, 15, h - 28, 4, "#6a7058"); R(c, 18, h - 24, 4, 6, "#6a7058");
+  });
+
+  S.mona_statue = inked(function (c, w, h) {        // the memorial statue of 莫那・魯道 at 霧社
+    R(c, 2, h - 8, w - 4, 8, STONE[2]); R(c, 6, h - 12, w - 12, 4, STONE[1]);
+    R(c, w / 2 - 5, 12, 10, h - 24, "#4a4a44"); disc(c, w / 2, 9, 4, "#4a4a44"); R(c, w / 2 - 5, 18, 10, 3, "#6a6a60");
+    R(c, w / 2 + 5, 14, 3, 14, "#4a4a44");
+  });
+
+  S.ball_field = inked(function (c, w, h) {         // 嘉農's ball ground: a dirt diamond, white bases, a backstop
+    R(c, 0, 0, w, h, "#6aa048"); for (var y = 0; y < h; y += 8) R(c, 0, y, w, 4, "#78ac50");
+    var cx = w / 2, by = h - 10;
+    for (var i = 0; i < 40; i++) { R(c, cx - i, by - i, 2 * i, 1, "#c89a68"); }
+    R(c, cx - 26, by - 46, 52, 6, "#6aa048");
+    dots(c, "#ffffff", [cx, by - 1, cx - 30, by - 30, cx + 30, by - 30, cx, by - 58]);
+    R(c, cx - 2, by - 31, 4, 2, "#f8f8f0");
+    R(c, cx - 18, h - 4, 36, 4, "#5a5a60"); for (var x = cx - 18; x < cx + 18; x += 4) R(c, x, h - 12, 1, 8, "#5a5a60");
+  });
+
+  S.power_station = inked(function (c, w, h) {      // 日月潭第一發電所 (門牌潭): penstocks down the hill into the power house
+    bushes(c, 0, 0, w, h - 10);
+    [w / 2 - 10, w / 2 + 2].forEach(function (x) { for (var y = 0; y < h - 22; y++) R(c, x + Math.round(y / 6), y, 6, 1, y % 6 ? "#787880" : "#a8a8b0"); });
+    R(c, 8, h - 24, w - 16, 20, "#d8d0c0"); R(c, 8, h - 24, w - 16, 3, "#a8a090");
+    for (var x2 = 14; x2 < w - 16; x2 += 12) arched(c, x2, h - 18, 7, 12, PLASTER[1]);
+    R(c, 0, h - 4, w, 4, "#4878a8");
+  });
+
+  S.rice_bags = inked(function (c, w, h) {          // 配給: sacks of rationed rice
+    [[2, h - 12], [16, h - 12], [9, h - 22]].forEach(function (p) {
+      R(c, p[0], p[1], 13, 11, "#d8c8a0"); R(c, p[0] + 2, p[1] - 1, 9, 2, "#c8b888"); R(c, p[0] + 4, p[1] + 4, 5, 3, "#a83028");
+    });
+  });
+
+  S.expo_gate = inked(function (c, w, h) {          // 1935 台灣博覽會: a modern white gate with flags and a banner
+    var cx = w / 2;
+    [6, w - 18].forEach(function (x) { R(c, x, 8, 12, h - 8, "#f0ece0"); R(c, x, 8, 3, h - 8, "#ffffff"); R(c, x + 5, 0, 2, 9, "#5a5a60"); R(c, x + 7, 1, 8, 5, "#c83028"); });
+    R(c, 18, 14, w - 36, 12, "#2a5aa8"); for (var g = 22; g < w - 22; g += 8) R(c, g, 18, 5, 4, "#f8f0d8");
+    R(c, 18, 26, w - 36, 3, GOLD[1]);
+    for (var x2 = 24; x2 < w - 24; x2 += 10) disc(c, x2, 34, 3, ["#e83838", "#f0c030", "#38a0e0"][(x2 / 10) % 3 | 0]);
+  });
+
+  S.warship = inked(function (c, w, h) {            // a grey steam warship of the 1890s: two funnels, masts, a ram bow
+    seaBg(c, w, h, 0);
+    for (var y = 0; y < 10; y++) { var inset = Math.round(y * y / 10); R(c, 4 + inset, h - 16 + y, w - 8 - inset * 2, 1, y < 2 ? "#a8a8b0" : "#686870"); }
+    R(c, 24, h - 26, w - 52, 10, "#888890"); R(c, 24, h - 26, w - 52, 2, "#b0b0b8");
+    [w / 2 - 14, w / 2 + 6].forEach(function (x) { R(c, x, h - 40, 8, 14, "#383840"); R(c, x, h - 42, 8, 3, "#202028"); });
+    [20, w - 22].forEach(function (x) { R(c, x, 2, 2, h - 26, "#4a4a50"); R(c, x - 6, 10, 14, 2, "#4a4a50"); });
+    for (var x2 = 30; x2 < w - 30; x2 += 8) disc(c, x2, h - 12, 1, "#202028");
+  });
+
+  // 日治 people
+  A.OUTFIT.jp_uniform = { top: "#6a6a48", leg: "#6a6a48", shoe: "#2a2018", paint: function (c, d) { if (d === "d") { dots(c, GOLD[1], [7, 9, 7, 11, 7, 13]); R(c, 4, 12, 8, 1, "#3a2a18"); } } };
+  A.OUTFIT.jp_police = { top: "#f0f0e8", leg: "#f0f0e8", shoe: "#181818", paint: function (c, d) { R(c, 4, 12, 8, 1, "#202020"); if (d !== "u") R(c, d === "l" ? 3 : 12, 11, 1, 5, "#a8a8b0"); } };
+  A.OUTFIT.baseball = { top: "#f4f4f0", leg: "#f4f4f0", shoe: "#181818", paint: function (c, d) { if (d === "d") { R(c, 5, 9, 6, 2, "#283868"); } R(c, 4, 12, 8, 1, "#283868"); } };
+  A.OUTFIT.engineer = { top: "#8a8a70", leg: "#5a5a48", shoe: "#3a2a18", paint: function (c) { R(c, 4, 12, 8, 1, "#3a2a18"); } };
+  A.OUTFIT.short_shirt = { top: "#e8e4d8", leg: "#2a2a30", shoe: "#181818", legShort: true, paint: function (c) { R(c, 4, 12, 8, 1, "#2a2a30"); } };
+  A.NPC.jp_general = { sex: "m", hair: "side", beard: "#181818", head: "cap", capColor: "#4a4a38", outfit: "jp_uniform" };
+  A.NPC.jp_soldier = { sex: "m", hair: "side", head: "cap", capColor: "#4a4a38", outfit: "jp_uniform" };
+  A.NPC.jp_police = { sex: "m", hair: "side", head: "cap", capColor: "#181818", outfit: "jp_police" };
+  A.NPC.goto_shinpei = { sex: "m", hair: "side", glasses: true, beard: "#202020", head: "none", outfit: "suit" };
+  A.NPC.jp_engineer = { sex: "m", hair: "side", head: "cap", capColor: "#5a5048", outfit: "engineer" };
+  A.NPC.jp_doctor = { sex: "m", hair: "side", glasses: true, head: "none", outfit: "suit" };
+  A.NPC.gentleman = { sex: "m", hair: "side", beard: "#3a3430", head: "none", outfit: "magua" };
+  A.NPC.liao = { sex: "m", hair: "side", head: "cap", capColor: "#3a3a40", outfit: "short_shirt" };
+  A.NPC.ballplayer = { sex: "m", hair: "side", head: "cap", capColor: "#283868", outfit: "baseball" };
+  A.NPC.modern_girl = { sex: "f", hair: "curl", head: "none", outfit: "qipao" };
+
   A.GLOW_STAMP.music_tower = 1;
 
   // overworld minis
@@ -2209,5 +2343,11 @@
   L.qg_banqiao = ["dingjing", 11, 8]; L.qg_mengjia = ["longshan", 16, 9]; L.qg_kavalan = ["brick_shophouse", 4, 5];
   L.qg_hobe = ["consulate_fort", 10, 7]; L.qg_dadaocheng = ["tea_boxes", 2, 2]; L.qg_eternal = ["eternal_fort", 12, 7]; L.qg_hengchun = ["stone_gate", 6, 4];
   L.qg_yanping = ["yanping_shrine", 8, 5]; L.qg_taipei = ["north_gate", 6, 5]; L.qg_railway = ["lion_tunnel", 6, 4]; L.qg_wufeng = ["opera_stage", 6, 5];
-  L.qg_takow = ["cihou_gate", 5, 4]; L.qg_republic = ["tiger_flag", 2, 2]; L.mz_guoxing = ["guoxing_temple", 10, 8];
+  L.qg_takow = ["cihou_gate", 5, 4]; L.qg_republic = ["tiger_flag", 2, 2];
+  L.jp_aodi = ["memorial_stone", 2, 3]; L.jp_governor = ["governor_office", 12, 8]; L.jp_sanxian = ["rickshaw", 2, 2]; L.jp_monopoly = ["monopoly", 10, 6];
+  L.jp_railway = ["lake_pavilion", 6, 4]; L.jp_liaotianding = ["temple", 4, 5]; L.jp_alishan = ["hinoki", 3, 4]; L.jp_xilaian = ["memorial_stone", 2, 3];
+  L.jp_beitou = ["hotspring_museum", 10, 7]; L.jp_baguashan = ["memorial_stone", 2, 3];
+  L.jp_wushantou = ["dam_gate", 6, 3]; L.jp_bunka = ["brick_shophouse", 4, 5]; L.jp_wufeng = ["opera_stage", 6, 5]; L.jp_ponlai = ["sanheyuan", 12, 6];
+  L.jp_wushe = ["mona_statue", 2, 3]; L.jp_kano = ["ball_field", 8, 6]; L.jp_hayashi = ["hayashi", 10, 8]; L.jp_sunmoon = ["power_station", 6, 4];
+  L.jp_expo = ["expo_gate", 8, 4]; L.jp_war = ["shelter", 5, 3]; L.mz_guoxing = ["guoxing_temple", 10, 8];
 })(Art);
